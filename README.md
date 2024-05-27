@@ -19,3 +19,8 @@ Styling: CSS/SCSS
 Deployment: Vercel/Netlify (Frontend), Heroku/AWS (Backend)
 
 # Installation
+
+```
+npm install
+npm run start
+```
