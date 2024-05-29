@@ -5,30 +5,40 @@ import {
   Get,
   Param,
   Post,
-  Req,
+  NotFoundException,
 } from '@nestjs/common';
+import { Plant } from './plant.entity';
 
 @Controller({ path: 'plant' })
 export class PlantController {
-  plants = [];
+  plants: Plant[] = [];
+  idCounter = 1;
 
   @Get()
-  findPlants() {
+  findPlants(): Plant[] {
     return this.plants;
   }
 
-  @Get(':id/requirements/:reqId')
-  findPlantById(@Param() params: any) {
-    return this.plants.find((item) => item.id === id);
+  @Get(':id')
+  findPlantById(@Param('id') id: number): Plant {
+    console.log('id', id);
+    const numId = Number(id);
+    const plant = this.plants.find((item) => item.id === id);
+    if (!plant) {
+      throw new NotFoundException('Plant not found');
+    }
+    return plant;
   }
 
-  @Post()
-  addPlant(@Body() body: any) {
+  @Post('/add')
+  addPlant(@Body() body: Plant): void {
+    // TODO: Validate the body before pushing it into the array
+    body.id = this.idCounter++;
     this.plants.push(body);
   }
 
-  @Delete(':id')
-  removePlant(@Param('id') id: any) {
+  @Delete('delete:id')
+  removePlant(@Param('id') id: number): void {
     this.plants = this.plants.filter((item) => item.id !== id);
   }
 }
