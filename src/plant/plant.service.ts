@@ -4,14 +4,18 @@ import { CreatePlantDTO } from './dto/create-plant.dto';
 
 @Injectable()
 export class PlantService {
+  plants: Plant[] = [];
+  idCounter = 1;
+
   create(createPlantDTO: CreatePlantDTO) {
-    return 'This action adds a new plant';
+    return this.plants;
   }
   findAll() {
-    return 'This action returns all plants';
+    return this.plants;
   }
   findOne(id: number) {
-    return 'this action returns a #${id} plant';
+    const plant = this.plants.find((item) => item.id == id);
+    return plant;
   }
   update(id: number, updatePlantDTO: CreatePlantDTO) {
     return 'This action updates a #${id} plant';

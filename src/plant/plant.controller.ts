@@ -10,15 +10,18 @@ import {
 } from '@nestjs/common';
 import { Plant } from './entities/plant.entity';
 import { CreatePlantDTO } from './dto/create-plant.dto';
+import { PlantService } from './plant.service';
 
 @Controller({ path: 'plant' })
 export class PlantController {
+  constructor(private readonly service: PlantService) {}
+
   plants: Plant[] = [];
   idCounter = 1;
 
   @Get()
   findPlants(): Plant[] {
-    return this.plants;
+    return this.service.findAll();
   }
 
   @Get(':id')
@@ -31,7 +34,7 @@ export class PlantController {
     return plant;
   }
 
-  @Post('/add')
+  @Post('/add') //replace per CreatePlantDTO
   addPlant(@Body() body: Plant): void {
     // TODO: Validate the body before pushing it into the array
     body.id = this.idCounter++;
