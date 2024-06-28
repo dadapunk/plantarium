@@ -19,8 +19,8 @@ export class PlantService {
     return this.plantRepository.save(plant);
   }
 
-  findAll(): Plant[] {
-    return this.plants;
+  async findAll(): Promise<Plant[]> {
+    return this.plantRepository.find();
   }
 
   findOne(id: number): Plant {

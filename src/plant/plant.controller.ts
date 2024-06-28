@@ -18,7 +18,7 @@ export class PlantController {
   constructor(private readonly service: PlantService) {}
 
   @Get()
-  findPlants(): Plant[] {
+  async findPlants(): Promise<Plant[]> {
     return this.service.findAll();
   }
 
