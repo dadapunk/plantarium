@@ -11,9 +11,6 @@ export class PlantService {
     private plantRepository: Repository<Plant>,
   ) {}
 
-  plants: Plant[] = [];
-  idCounter = 1;
-
   async create(createPlantDTO: CreatePlantDTO): Promise<Plant> {
     const plant = this.plantRepository.create(createPlantDTO);
     return this.plantRepository.save(plant);
