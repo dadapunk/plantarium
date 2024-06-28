@@ -9,7 +9,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: '/database/plantarium.sqlite',
+      database: '../database/plantarium.sqlite',
       autoLoadEntities: true,
       synchronize: true,
     }),
