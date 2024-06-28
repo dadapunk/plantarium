@@ -1,19 +1,22 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-Entity();
+@Entity()
 export class Plant {
-  @Column()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
   @Column()
-  description: string;
+  age: number;
 
   @Column()
-  imageUrl: string;
+  species: string;
 
   @Column()
-  stock: number;
+  family: string;
+
+  @Column()
+  leafShape: string;
 }
