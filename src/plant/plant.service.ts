@@ -23,28 +23,24 @@ export class PlantService {
     return this.plantRepository.find();
   }
 
-  findOne(id: number): Plant {
-    const plant = this.plants.find((item) => item.id === id);
+  async findOne(id: number): Promise<Plant> {
+    return this.plantRepository.findOne({ where: { id } });
+  }
+
+  async update(id: number, updatePlantDTO: CreatePlantDTO): Promise<Plant> {
+    const plant = await this.plantRepository.findOne({ where: { id } });
     if (!plant) {
       throw new NotFoundException(`Plant with ID ${id} not found`);
     }
-    return plant;
+    const updatedPlant = this.plantRepository.merge(plant, updatePlantDTO);
+    return this.plantRepository.save(updatedPlant);
   }
 
-  update(id: number, updatePlantDTO: CreatePlantDTO): Plant {
-    const plantIndex = this.plants.findIndex((item) => item.id === id);
-    if (plantIndex === -1) {
+  async remove(id: number): Promise<void> {
+    const plant = await this.plantRepository.findOne({ where: { id } });
+    if (!plant) {
       throw new NotFoundException(`Plant with ID ${id} not found`);
     }
-    this.plants[plantIndex] = { ...this.plants[plantIndex], ...updatePlantDTO };
-    return this.plants[plantIndex];
-  }
-
-  remove(id: number): void {
-    const plantIndex = this.plants.findIndex((item) => item.id === id);
-    if (plantIndex === -1) {
-      throw new NotFoundException(`Plant with ID ${id} not found`);
-    }
-    this.plants.splice(plantIndex, 1);
+    await this.plantRepository.remove(plant);
   }
 }
