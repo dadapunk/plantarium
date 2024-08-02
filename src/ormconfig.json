@@ -1,0 +1,9 @@
+{
+  "type": "sqlite",
+  "database": "./database/plantarium.sqlite",
+  "entities": ["src/**/*.entity.ts"],
+  "migrations": ["src/migration/*.ts"],
+  "cli": {
+    "migrationsDir": "src/migration"
+  }
+}

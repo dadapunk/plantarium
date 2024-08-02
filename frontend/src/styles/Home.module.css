@@ -1,0 +1,33 @@
+/* Remove the body selector */
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem; /* Reduced padding */
+  min-height: 100vh;
+}
+.description p {
+  padding: 1rem; /* Adjusted padding */
+}
+.center {
+  padding: 4rem 0; /* Adjusted padding */
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table,
+.table th,
+.table td {
+  border: 1px solid #ddd; /* Added borders */
+}
+.table th,
+.table td {
+  padding: 8px; /* Added padding */
+  text-align: left;
+}
+.card {
+  background: rgba(255, 255, 255, 0.9); /* Lightened card background */
+  border: 1px solid #ccc; /* Added a light border */
+}
