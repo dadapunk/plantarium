@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Container,
 } from '@mui/material';
 import { Plant } from '../pages/api/hello';
 import AddPlantForm from './AddPlantForm';
@@ -18,10 +19,10 @@ interface PlantTableProps {
 
 const PlantTable = ({ data, onAddPlant }: PlantTableProps) => {
   return (
-    <>
+    <Container maxWidth="md" style={{ marginTop: '16px' }}>
       <AddPlantForm onAddPlant={onAddPlant} />
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} style={{ marginTop: '16px' }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -41,7 +42,7 @@ const PlantTable = ({ data, onAddPlant }: PlantTableProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </Container>
   );
 };
 export default PlantTable;
