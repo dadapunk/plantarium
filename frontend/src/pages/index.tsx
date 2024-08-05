@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import PlantTable from "@/components/PlantTable";
-import { Plant } from "./api/hello";
+import { useState, useEffect } from 'react';
+import PlantTable from '@/components/PlantTable';
+import { Plant } from './api/hello';
 
 function Profile() {
   const [data, setData] = useState<Plant[]>([]);
@@ -8,7 +8,7 @@ function Profile() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:3002/plant")
+    fetch('http://localhost:3002/plant')
       .then((response) => response.json())
       .then((data) => {
         setData(data);
@@ -24,7 +24,14 @@ function Profile() {
   if (error) return <p>Error: {error}</p>;
   if (!data.length) return <p>No profile data</p>;
 
-  return <PlantTable data={data} />;
+  return (
+    <PlantTable
+      data={data}
+      onAddPlant={function (plant: Plant): void {
+        throw new Error('Function not implemented.');
+      }}
+    />
+  );
 }
 
 export default Profile;
