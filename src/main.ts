@@ -10,7 +10,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:3001', // Adjust this to your frontend's URL
+    origin: '*', // Adjust this to your frontend's URL
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
@@ -24,7 +24,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3002);
-  Logger.log('Application is running on: http://localhost:3002');
 }
 
 bootstrap();
