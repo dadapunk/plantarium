@@ -12,6 +12,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiPermapeopleService } from '../api-permapeople/api-permapeople.service';
 import { Injectable } from '@nestjs/common';
 import { SearchPlantsDTO } from './dto/search-plant.dto';
+import { ExternalPlantDTO } from 'src/plant/dto/external-plant.dto';
 
 @ApiTags('API PermaPeople')
 @Controller('external')
@@ -59,7 +60,9 @@ export class ApiPermaPeopleController {
     description: 'Return the plant with the given ID.',
   })
   @ApiResponse({ status: 404, description: 'Plant not found.' })
-  async findPlantById(@Param('id', ParseIntPipe) id: number): Promise<any> {
+  async findPlantById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ExternalPlantDTO> {
     const plant = await this.permaPeopleService.getPlantById(id);
     if (!plant) {
       throw new NotFoundException({
