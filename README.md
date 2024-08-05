@@ -4,9 +4,10 @@ Plantarium
 
 #### Features:
 
+- Access to a plants database. (Permapeople API)
+
 ##### ToDo
 
-- Access to a plants database. (trefle probably)
 - Create custom Plants with them custom planting schedules
 - Create a garden.
 - Journal of your progress
