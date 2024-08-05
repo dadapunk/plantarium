@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiPermapeopleService } from '../api-permapeople/api-permapeople.service';
-import { Injectable } from '@nestjs/common';
 import { SearchPlantsDTO } from './dto/search-plant.dto';
 import { ExternalPlantDTO } from 'src/plant/dto/external-plant.dto';
 
