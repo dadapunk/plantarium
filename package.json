@@ -1,5 +1,5 @@
 {
-  "name": "Plantarium",
+  "name": "plantarium",
   "version": "0.0.0",
   "private": true,
   "description": "",
@@ -19,6 +19,8 @@
   ],
   "packageManager": "npm@10.2.4",
   "devDependencies": {
-    "turbo": "^2.0.11"
+    "turbo": "^2.0.11",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/math": "workspace:*"
   }
 }
