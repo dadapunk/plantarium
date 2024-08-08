@@ -19,8 +19,9 @@
   ],
   "packageManager": "npm@10.2.4",
   "devDependencies": {
-    "turbo": "^2.0.11",
+    "@repo/math": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/math": "workspace:*"
+    "@repo/eslint-config": "workspace:*",
+    "turbo": "^2.0.11"
   }
 }
