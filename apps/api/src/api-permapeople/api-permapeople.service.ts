@@ -64,15 +64,23 @@ export class ApiPermapeopleService {
   }
   async getPlantById(id: number): Promise<ExternalPlantDTO> {
     const headers = this.createHeaders();
+    const url = `${this.permaPeopleUrl}/plants/${id}`;
     try {
       const response = await firstValueFrom(
-        this.httpService.get(this.permaPeopleUrl + `/plants/${id}`, {
-          headers,
-        }),
+        this.httpService.get(url, { headers }),
       );
       return response.data as ExternalPlantDTO;
     } catch (error) {
-      this.logger.error('Error fetching external plants', error);
+      this.logger.error(
+        `Error fetching external plants from URL: ${url}`,
+        error,
+      );
+      if (error.response) {
+        this.logger.error(`Response status: ${error.response.status}`);
+        this.logger.error(
+          `Response data: ${JSON.stringify(error.response.data)}`,
+        );
+      }
       throw error;
     }
   }
