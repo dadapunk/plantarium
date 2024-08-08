@@ -5,7 +5,7 @@
 # app/api
 /apps/api/dist
 /packages/api/dist
-/packages/math/dist/
+/packages/math/dist
 
 # Logs
 logs
