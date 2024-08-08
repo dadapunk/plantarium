@@ -2,8 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateGardenNoteDTO } from './dto/create-garden-note.dto';
-import { GardenNote } from './entities/garden-note.entity';
+import { CreateGardenNoteDTO } from '@repo/api/garden-note/dto/create-garden-note.dto';
+import { GardenNote } from '@repo/api/garden-note/entity/garden-note.entity';
 import { promises as fs } from 'fs';
 import { join, basename } from 'path';
 import * as chokidar from 'chokidar';

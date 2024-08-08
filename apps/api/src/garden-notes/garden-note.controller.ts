@@ -1,8 +1,16 @@
 // src/garden-notes/garden-note.controller.ts
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
-import { CreateGardenNoteDTO } from './dto/create-garden-note.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
+import { CreateGardenNoteDTO } from '@repo/api/garden-note/dto/create-garden-note.dto';
 import { GardenNoteService } from './garden-note.service';
-import { GardenNote } from './entities/garden-note.entity';
+import { GardenNote } from '@repo/api/garden-note/entity/garden-note.entity';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('garden-notes')
@@ -11,7 +19,9 @@ export class GardenNoteController {
   constructor(private readonly service: GardenNoteService) {}
 
   @Post()
-  async create(@Body() createGardenNoteDTO: CreateGardenNoteDTO): Promise<GardenNote> {
+  async create(
+    @Body() createGardenNoteDTO: CreateGardenNoteDTO,
+  ): Promise<GardenNote> {
     return this.service.create(createGardenNoteDTO);
   }
 
@@ -31,7 +41,10 @@ export class GardenNoteController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateGardenNoteDTO: CreateGardenNoteDTO): Promise<GardenNote> {
+  async update(
+    @Param('id') id: string,
+    @Body() updateGardenNoteDTO: CreateGardenNoteDTO,
+  ): Promise<GardenNote> {
     return this.service.update(+id, updateGardenNoteDTO);
   }
 }
