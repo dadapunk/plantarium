@@ -60,3 +60,5 @@ node_modules
 
 # Turbo
 .turbo
+package-lock.json
+packages/math/dist/
