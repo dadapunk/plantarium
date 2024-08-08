@@ -4,6 +4,8 @@
 /build
 # app/api
 /apps/api/dist
+/packages/api/dist
+/packages/math/dist/
 
 # Logs
 logs
@@ -60,5 +62,4 @@ node_modules
 
 # Turbo
 .turbo
-package-lock.json
-packages/math/dist/
+
