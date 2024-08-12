@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,9 +8,9 @@ import {
   TableRow,
   Paper,
   Container,
-} from '@mui/material';
-import { Plant } from '../pages/api/hello';
-import AddPlantForm from './AddPlantForm';
+} from "@mui/material";
+import { Plant } from "../pages/api/hello";
+import AddPlantForm from "./AddPlantForm";
 
 interface PlantTableProps {
   data: Plant[];
@@ -19,10 +19,10 @@ interface PlantTableProps {
 
 const PlantTable = ({ data, onAddPlant }: PlantTableProps) => {
   return (
-    <Container maxWidth="md" style={{ marginTop: '16px' }}>
+    <Container maxWidth="md" style={{ marginTop: "16px" }}>
       <AddPlantForm onAddPlant={onAddPlant} />
 
-      <TableContainer component={Paper} style={{ marginTop: '16px' }}>
+      <TableContainer component={Paper} style={{ marginTop: "16px" }}>
         <Table>
           <TableHead>
             <TableRow>

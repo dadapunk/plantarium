@@ -1,5 +1,5 @@
 // a garden note entity
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class GardenNote {
   @PrimaryGeneratedColumn()

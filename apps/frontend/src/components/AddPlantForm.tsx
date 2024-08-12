@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { TextField, Button, Paper } from '@mui/material';
-import { Plant } from '../pages/api/hello';
+import React, { useState } from "react";
+import { TextField, Button, Paper } from "@mui/material";
+import { Plant } from "../pages/api/hello";
 
 interface AddPlantFormProps {
   onAddPlant: (plant: Plant) => void;
@@ -8,9 +8,9 @@ interface AddPlantFormProps {
 
 const AddPlantForm = ({ onAddPlant }: AddPlantFormProps) => {
   const [newPlant, setNewPlant] = useState<Partial<Plant>>({
-    name: '',
-    species: '',
-    family: '',
+    name: "",
+    species: "",
+    family: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,12 +21,12 @@ const AddPlantForm = ({ onAddPlant }: AddPlantFormProps) => {
   const handleAddPlant = () => {
     if (newPlant.name && newPlant.species && newPlant.family) {
       onAddPlant(newPlant as Plant);
-      setNewPlant({ name: '', species: '', family: '' });
+      setNewPlant({ name: "", species: "", family: "" });
     }
   };
 
   return (
-    <Paper style={{ padding: '16px', marginTop: '16px' }}>
+    <Paper style={{ padding: "16px", marginTop: "16px" }}>
       <h3>Add a New Plant</h3>
       <TextField
         label="Name"
@@ -56,7 +56,7 @@ const AddPlantForm = ({ onAddPlant }: AddPlantFormProps) => {
         variant="contained"
         color="primary"
         onClick={handleAddPlant}
-        style={{ marginTop: '16px' }}
+        style={{ marginTop: "16px" }}
       >
         Add Plant
       </Button>

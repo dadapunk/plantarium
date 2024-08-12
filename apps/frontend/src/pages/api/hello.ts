@@ -33,7 +33,7 @@ const mockPlants: Plant[] = [
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Plant[] | { error: string }>
+  res: NextApiResponse<Plant[] | { error: string }>,
 ) {
   try {
     res.status(200).json(mockPlants);
