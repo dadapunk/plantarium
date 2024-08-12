@@ -9,7 +9,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
-    '@repo/eslint-config/next.js',
+    '@repo/eslint-config/nest.js',
   ],
   root: true,
   env: {
