@@ -63,3 +63,5 @@ node_modules
 # Turbo
 .turbo
 
+jest
+plantarium-api@0.0.1
