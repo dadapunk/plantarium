@@ -126,11 +126,7 @@ export class PlantController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePlantDTO: CreatePlantDTO,
   ): Promise<Plant> {
-    return await this.plantService.addPlantToPlot(
-      id,
-      updatePlantDTO.plotId,
-      updatePlantDTO,
-    );
+    return await this.plantService.addPlantToPlot(id, updatePlantDTO.plotId);
   }
   @Post('import/:id')
   @ApiOperation({ summary: 'Import a plant from the external API' })
