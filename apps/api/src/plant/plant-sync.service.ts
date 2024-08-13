@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SyncedPlantDTO } from './dto/synced-plant.dto';
 import { ApiPermapeopleService } from '../api-permapeople/api-permapeople.service';
-import { CreatePlantDTO } from './dto/create-plant.dto';
 import { PlantService } from './plant.service';
 
 @Injectable()
