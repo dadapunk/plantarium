@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npm run build --watch",
     "build": "tsc -b -v",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\""
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "echo \"No tests available\""
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

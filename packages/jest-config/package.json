@@ -6,6 +6,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "test": "echo \"No tests available\""
+  },
   "devDependencies": {
     "jest": "^29.5.0",
     "next": "^14.1.1"

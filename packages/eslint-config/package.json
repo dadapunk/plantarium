@@ -21,5 +21,8 @@
     "prettier": "^3.3.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "test": "echo \"No tests available\""
   }
 }
