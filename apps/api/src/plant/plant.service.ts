@@ -53,11 +53,7 @@ export class PlantService {
   }
   // Adds a plant to a specific plot and saves it to the database.
   // Throws a NotFoundException if the specified plot does not exist.
-  async addPlantToPlot(
-    id: number,
-    plotId: number,
-    updatePlantDTO: CreatePlantDTO,
-  ): Promise<Plant> {
+  async addPlantToPlot(id: number, plotId: number): Promise<Plant> {
     const plant = await this.plantRepository.findOne({ where: { id } });
     if (!plant) {
       throw new NotFoundException(`Plant with ID ${id} not found`);
