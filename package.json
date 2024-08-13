@@ -19,9 +19,10 @@
   ],
   "packageManager": "npm@10.2.4",
   "devDependencies": {
+    "@repo/eslint-config": "*",
     "@repo/math": "*",
     "@repo/typescript-config": "*",
-    "@repo/eslint-config": "*",
+    "husky": "^9.1.4",
     "turbo": "^2.0.11"
   }
 }
