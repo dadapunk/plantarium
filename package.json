@@ -24,5 +24,8 @@
     "@repo/typescript-config": "*",
     "husky": "^9.1.4",
     "turbo": "^2.0.11"
+  },
+  "dependencies": {
+    "@mui/icons-material": "^5.16.7"
   }
 }
