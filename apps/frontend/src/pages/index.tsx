@@ -1,4 +1,3 @@
-import { add } from "@repo/math/add";
 import { useState, useEffect } from "react";
 import PlantTable from "@/components/PlantTable";
 import { Plant } from "./api/hello";
@@ -27,9 +26,6 @@ function Profile() {
 
   return (
     <>
-      <div>
-        <p>{add(1, 2)}</p>
-      </div>
       <PlantTable
         data={data}
         onAddPlant={function (plant: Plant): void {
