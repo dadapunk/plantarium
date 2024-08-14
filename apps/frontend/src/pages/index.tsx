@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import PlantTable from "@/components/PlantTable";
+import Navbar from "@/components/Navbar";
 import { Plant } from "./api/hello";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 function Profile() {
   const [data, setData] = useState<Plant[]>([]);
@@ -25,14 +27,24 @@ function Profile() {
   if (!data.length) return <p>No profile data</p>;
 
   return (
-    <>
-      <PlantTable
-        data={data}
-        onAddPlant={function (plant: Plant): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
-    </>
+    <Router>
+      <Navbar />
+      <Switch>
+        <Route path="/plots">{/* Add your Plots component here */}</Route>
+        <Route path="/plants">
+          <PlantTable
+            data={data}
+            onAddPlant={function (plant: Plant): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
+        </Route>
+        <Route path="/garden-notes">
+          {/* Add your Garden Notes component here */}
+        </Route>
+        <Route path="/calendar">{/* Add your Calendar component here */}</Route>
+      </Switch>
+    </Router>
   );
 }
 

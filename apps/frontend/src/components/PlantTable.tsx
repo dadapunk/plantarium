@@ -1,3 +1,4 @@
+// apps/frontend/src/components/PlantTable.tsx
 import React, { useState } from "react";
 import {
   Table,
@@ -8,6 +9,7 @@ import {
   TableRow,
   Paper,
   Container,
+  Typography,
 } from "@mui/material";
 import { Plant } from "../pages/api/hello";
 import AddPlantForm from "./AddPlantForm";
@@ -18,10 +20,18 @@ interface PlantTableProps {
 }
 
 const PlantTable = ({ data, onAddPlant }: PlantTableProps) => {
+  const [plants, setPlants] = useState<Plant[]>(data);
+
+  const handleAddPlant = (newPlant: Plant) => {
+    setPlants((prevPlants) => [...prevPlants, newPlant]);
+  };
+
   return (
     <Container maxWidth="md" style={{ marginTop: "16px" }}>
-      <AddPlantForm onAddPlant={onAddPlant} />
-
+      <AddPlantForm onAddPlant={handleAddPlant} />
+      <Typography variant="h6" style={{ marginTop: "16px" }}>
+        These are the local plants in your database
+      </Typography>
       <TableContainer component={Paper} style={{ marginTop: "16px" }}>
         <Table>
           <TableHead>
@@ -32,7 +42,7 @@ const PlantTable = ({ data, onAddPlant }: PlantTableProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((plant) => (
+            {plants.map((plant) => (
               <TableRow key={plant.id}>
                 <TableCell>{plant.name}</TableCell>
                 <TableCell>{plant.species}</TableCell>
@@ -45,4 +55,5 @@ const PlantTable = ({ data, onAddPlant }: PlantTableProps) => {
     </Container>
   );
 };
+
 export default PlantTable;
