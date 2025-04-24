@@ -5,211 +5,211 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 ## 1. Flutter Project Setup & Environment Configuration
 
 ### 1.1 Flutter Project Initialization
-- [ ] Create new Flutter project with appropriate naming conventions
-- [ ] Configure Flutter for cross-platform support (Windows, macOS, Linux)
-- [ ] Set up platform-specific configuration files
-- [ ] Configure assets directory structure for images, fonts, etc.
+- [ ] 1.1.1 Create new Flutter project with appropriate naming conventions
+- [ ] 1.1.2 Configure Flutter for cross-platform support (Windows, macOS, Linux)
+- [ ] 1.1.3 Set up platform-specific configuration files
+- [ ] 1.1.4 Configure assets directory structure for images, fonts, etc.
 
 ### 1.2 Development Environment Setup
-- [ ] Configure editor/IDE with appropriate plugins for Flutter/Dart
-- [ ] Set up linting rules and code formatting standards
-- [ ] Install required Flutter packages and dependencies
-- [ ] Configure dev, staging, and production environments
+- [ ] 1.2.1 Configure editor/IDE with appropriate plugins for Flutter/Dart
+- [ ] 1.2.2 Set up linting rules and code formatting standards
+- [ ] 1.2.3 Install required Flutter packages and dependencies
+- [ ] 1.2.4 Configure dev, staging, and production environments
 
 ### 1.3 Version Control Integration
-- [x] Set up branch strategy for frontend code
-- [ ] Configure CI/CD pipeline for Flutter builds
-- [ ] Set up automated testing for the Flutter frontend
-- [ ] Configure build and deployment automation
+- [x] 1.3.1 Set up branch strategy for frontend code
+- [ ] 1.3.2 Configure CI/CD pipeline for Flutter builds
+- [ ] 1.3.3 Set up automated testing for the Flutter frontend
+- [ ] 1.3.4 Configure build and deployment automation
 
 ### 1.4 Project Documentation
-- [x] Create frontend README with setup instructions
-- [ ] Document coding standards and conventions
-- [ ] Document frontend-backend integration approach
-- [ ] Set up changelog process for frontend
+- [x] 1.4.1 Create frontend README with setup instructions
+- [ ] 1.4.2 Document coding standards and conventions
+- [ ] 1.4.3 Document frontend-backend integration approach
+- [ ] 1.4.4 Set up changelog process for frontend
 
 ## 2. Backend Integration Architecture
 
 ### 2.1 API Client Layer
-- [ ] Create HTTP client wrapper for NestJS API calls
-- [ ] Implement authentication handling mechanisms
-- [ ] Build response parsing and error handling
-- [ ] Create DTO models matching backend entities
-- [ ] Implement retry and timeout strategies
+- [ ] 2.1.1 Create HTTP client wrapper for NestJS API calls
+- [ ] 2.1.2 Implement authentication handling mechanisms
+- [ ] 2.1.3 Build response parsing and error handling
+- [ ] 2.1.4 Create DTO models matching backend entities
+- [ ] 2.1.5 Implement retry and timeout strategies
 
 ### 2.2 Local Storage Implementation
-- [x] Set up SQLite database (implemented in NestJS backend)
-- [ ] Create storage service for offline data
-- [ ] Implement data synchronization mechanisms
-- [ ] Build cache invalidation strategies
+- [x] 2.2.1 Set up SQLite database (implemented in NestJS backend)
+- [ ] 2.2.2 Create storage service for offline data
+- [ ] 2.2.3 Implement data synchronization mechanisms
+- [ ] 2.2.4 Build cache invalidation strategies
 
 ### 2.3 Backend Service Interfaces
-- [x] Create garden service endpoints (Plot controller/service exists)
-- [x] Implement plant data service endpoints (Plant controller/service exists)
-- [x] Implement Permapeople API integration (ApiPermapeopleService exists)
-- [ ] Create weather data service client
-- [ ] Implement mock services for development
+- [x] 2.3.1 Create garden service endpoints (Plot controller/service exists)
+- [x] 2.3.2 Implement plant data service endpoints (Plant controller/service exists)
+- [x] 2.3.3 Implement Permapeople API integration (ApiPermapeopleService exists)
+- [ ] 2.3.4 Create weather data service client
+- [ ] 2.3.5 Implement mock services for development
 
 ### 2.4 State Management
-- [ ] Evaluate and select state management approach (Provider, Bloc, Riverpod, etc.)
-- [ ] Set up state management architecture
-- [ ] Create base state classes/structures
-- [ ] Implement sample state flows to validate approach
-- [ ] Design offline/online state handling
+- [ ] 2.4.1 Evaluate and select state management approach (Provider, Bloc, Riverpod, etc.)
+- [ ] 2.4.2 Set up state management architecture
+- [ ] 2.4.3 Create base state classes/structures
+- [ ] 2.4.4 Implement sample state flows to validate approach
+- [ ] 2.4.5 Design offline/online state handling
 
 ### 2.5 Dependency Injection
-- [x] Set up dependency injection system (NestJS DI is implemented)
-- [ ] Configure service locator pattern for Flutter
-- [ ] Implement repository registration
-- [ ] Create factory methods for services
+- [x] 2.5.1 Set up dependency injection system (NestJS DI is implemented)
+- [ ] 2.5.2 Configure service locator pattern for Flutter
+- [ ] 2.5.3 Implement repository registration
+- [ ] 2.5.4 Create factory methods for services
 
 ### 2.6 Logging & Analytics
-- [ ] Implement logging system
-- [ ] Configure different log levels
-- [ ] Set up crash reporting
-- [ ] Implement analytics tracking (optional)
+- [ ] 2.6.1 Implement logging system
+- [ ] 2.6.2 Configure different log levels
+- [ ] 2.6.3 Set up crash reporting
+- [ ] 2.6.4 Implement analytics tracking (optional)
 
 ## 3. UI Framework & Navigation
 
 ### 3.1 Design System
-- [ ] Create color palette definitions
-- [ ] Define typography scale and text styles
-- [ ] Design spacing system and layout grid
-- [ ] Create reusable component design specifications
+- [ ] 3.1.1 Create color palette definitions
+- [ ] 3.1.2 Define typography scale and text styles
+- [ ] 3.1.3 Design spacing system and layout grid
+- [ ] 3.1.4 Create reusable component design specifications
 
 ### 3.2 Theme Implementation
-- [ ] Implement light theme
-- [ ] Implement dark theme
-- [ ] Create theme switching mechanism
-- [ ] Build theme extension for custom properties
+- [ ] 3.2.1 Implement light theme
+- [ ] 3.2.2 Implement dark theme
+- [ ] 3.2.3 Create theme switching mechanism
+- [ ] 3.2.4 Build theme extension for custom properties
 
 ### 3.3 Core UI Components
-- [ ] Design and implement button variants
-- [ ] Create form input components
-- [ ] Build card and container components
-- [ ] Implement dialog and modal components
-- [ ] Create loading indicators and progress components
+- [ ] 3.3.1 Design and implement button variants
+- [ ] 3.3.2 Create form input components
+- [ ] 3.3.3 Build card and container components
+- [ ] 3.3.4 Implement dialog and modal components
+- [ ] 3.3.5 Create loading indicators and progress components
 
 ### 3.4 Navigation System
-- [ ] Design app navigation structure
-- [ ] Implement navigation service
-- [ ] Create route definitions
-- [ ] Set up navigation guards/middleware
-- [ ] Implement deep linking support (optional)
-- [ ] Build bottom navigation or drawer navigation
-- [ ] Create transition animations between screens
+- [ ] 3.4.1 Design app navigation structure
+- [ ] 3.4.2 Implement navigation service
+- [ ] 3.4.3 Create route definitions
+- [ ] 3.4.4 Set up navigation guards/middleware
+- [ ] 3.4.5 Implement deep linking support (optional)
+- [ ] 3.4.6 Build bottom navigation or drawer navigation
+- [ ] 3.4.7 Create transition animations between screens
 
 ### 3.5 Layouts & Responsive Design
-- [ ] Implement responsive layout framework
-- [ ] Create adaptive layouts for different screen sizes
-- [ ] Build grid system for content organization
-- [ ] Implement safe area handling
+- [ ] 3.5.1 Implement responsive layout framework
+- [ ] 3.5.2 Create adaptive layouts for different screen sizes
+- [ ] 3.5.3 Build grid system for content organization
+- [ ] 3.5.4 Implement safe area handling
 
 ## 4. Core Data Models & Repositories
 
 ### 4.1 Frontend Data Models
-- [ ] Create model classes that mirror backend entities
-- [ ] Implement serialization/deserialization helpers
-- [ ] Design validation mechanisms
-- [ ] Build model converters for API responses
+- [ ] 4.1.1 Create model classes that mirror backend entities
+- [ ] 4.1.2 Implement serialization/deserialization helpers
+- [ ] 4.1.3 Design validation mechanisms
+- [ ] 4.1.4 Build model converters for API responses
 
 ### 4.2 Garden Models
-- [x] Define Garden Area model (Plot entity exists in backend)
-- [x] Define Garden Bed properties (length, width, location in Plot entity)
-- [ ] Create Position model for layout coordinates
-- [ ] Design Size model for dimensions
+- [x] 4.2.1 Define Garden Area model (Plot entity exists in backend)
+- [x] 4.2.2 Define Garden Bed properties (length, width, location in Plot entity)
+- [ ] 4.2.3 Create Position model for layout coordinates
+- [ ] 4.2.4 Design Size model for dimensions
 
 ### 4.3 Plant Models
-- [x] Define Plant model structure (Plant entity exists in backend)
-- [x] Define Plant properties (name, species, family in Plant entity)
-- [x] Define Plant-Garden relationship (Plant-Plot relationship exists)
-- [ ] Design PlantingRequirements model
-- [ ] Implement GrowingConditions model
+- [x] 4.3.1 Define Plant model structure (Plant entity exists in backend)
+- [x] 4.3.2 Define Plant properties (name, species, family in Plant entity)
+- [x] 4.3.3 Define Plant-Garden relationship (Plant-Plot relationship exists)
+- [ ] 4.3.4 Design PlantingRequirements model
+- [ ] 4.3.5 Implement GrowingConditions model
 
 ### 4.4 User Preference Models
-- [ ] Create UserSettings model
-- [ ] Implement LocationSettings model
-- [ ] Design NotificationPreferences model
+- [ ] 4.4.1 Create UserSettings model
+- [ ] 4.4.2 Implement LocationSettings model
+- [ ] 4.4.3 Design NotificationPreferences model
 
 ### 4.5 Repository Layer
-- [x] Define repository patterns (NestJS services implement repository pattern)
-- [ ] Implement garden repository (with API client)
-- [ ] Build plant repository (with API client)
-- [ ] Create settings repository (with API client)
-- [ ] Design repository caching mechanism
+- [x] 4.5.1 Define repository patterns (NestJS services implement repository pattern)
+- [ ] 4.5.2 Implement garden repository (with API client)
+- [ ] 4.5.3 Build plant repository (with API client)
+- [ ] 4.5.4 Create settings repository (with API client)
+- [ ] 4.5.5 Design repository caching mechanism
 
 ## 5. Testing Framework
 
 ### 5.1 Unit Testing Setup
-- [x] Configure backend test environment (NestJS tests exist)
-- [ ] Set up Flutter mocking framework
-- [ ] Create test helpers and utilities
-- [ ] Design test data factories
+- [x] 5.1.1 Configure backend test environment (NestJS tests exist)
+- [ ] 5.1.2 Set up Flutter mocking framework
+- [ ] 5.1.3 Create test helpers and utilities
+- [ ] 5.1.4 Design test data factories
 
 ### 5.2 Model Tests
-- [ ] Write tests for model serialization
-- [ ] Implement validation tests
-- [ ] Create model relationship tests
+- [ ] 5.2.1 Write tests for model serialization
+- [ ] 5.2.2 Implement validation tests
+- [ ] 5.2.3 Create model relationship tests
 
 ### 5.3 Repository Tests
-- [ ] Implement API client tests
-- [ ] Create repository operation tests
-- [ ] Design caching and synchronization tests
+- [ ] 5.3.1 Implement API client tests
+- [ ] 5.3.2 Create repository operation tests
+- [ ] 5.3.3 Design caching and synchronization tests
 
 ### 5.4 Widget Tests
-- [ ] Set up widget testing framework
-- [ ] Create tests for core UI components
-- [ ] Implement screen widget tests
-- [ ] Build form validation tests
+- [ ] 5.4.1 Set up widget testing framework
+- [ ] 5.4.2 Create tests for core UI components
+- [ ] 5.4.3 Implement screen widget tests
+- [ ] 5.4.4 Build form validation tests
 
 ### 5.5 Integration Tests
-- [ ] Set up integration test framework
-- [ ] Create frontend flow tests
-- [ ] Implement mock API tests
-- [ ] Build end-to-end tests with backend (optional)
+- [ ] 5.5.1 Set up integration test framework
+- [ ] 5.5.2 Create frontend flow tests
+- [ ] 5.5.3 Implement mock API tests
+- [ ] 5.5.4 Build end-to-end tests with backend (optional)
 
 ## 6. Initial App Structure
 
 ### 6.1 App Entry Point
-- [ ] Create main application class
-- [ ] Implement startup sequence
-- [ ] Set up dependency initialization
-- [ ] Create splash screen
-- [ ] Implement authentication flow
+- [ ] 6.1.1 Create main application class
+- [ ] 6.1.2 Implement startup sequence
+- [ ] 6.1.3 Set up dependency initialization
+- [ ] 6.1.4 Create splash screen
+- [ ] 6.1.5 Implement authentication flow
 
 ### 6.2 Basic Screens
-- [ ] Create home screen skeleton
-- [ ] Implement settings screen
-- [ ] Build about/info screen
-- [ ] Design empty states for main features
+- [ ] 6.2.1 Create home screen skeleton
+- [ ] 6.2.2 Implement settings screen
+- [ ] 6.2.3 Build about/info screen
+- [ ] 6.2.4 Design empty states for main features
 
 ### 6.3 Sample Flows
-- [ ] Implement basic navigation flow
-- [ ] Create settings toggle sample
-- [ ] Build theme switching demonstration
-- [ ] Implement API data fetching example
-- [ ] Build offline mode demonstration
+- [ ] 6.3.1 Implement basic navigation flow
+- [ ] 6.3.2 Create settings toggle sample
+- [ ] 6.3.3 Build theme switching demonstration
+- [ ] 6.3.4 Implement API data fetching example
+- [ ] 6.3.5 Build offline mode demonstration
 
 ## 7. Documentation & Completion
 
 ### 7.1 Internal Documentation
-- [ ] Document architecture decisions
-- [ ] Create class and method documentation
-- [ ] Document API integration approach
-- [ ] Create service interface documentation
+- [ ] 7.1.1 Document architecture decisions
+- [ ] 7.1.2 Create class and method documentation
+- [ ] 7.1.3 Document API integration approach
+- [ ] 7.1.4 Create service interface documentation
 
 ### 7.2 Phase Review
-- [ ] Conduct code review of all implemented components
-- [ ] Perform architecture review
-- [ ] Test all basic functionality
-- [ ] Validate against phase requirements
-- [ ] Test integration with NestJS backend
+- [ ] 7.2.1 Conduct code review of all implemented components
+- [ ] 7.2.2 Perform architecture review
+- [ ] 7.2.3 Test all basic functionality
+- [ ] 7.2.4 Validate against phase requirements
+- [ ] 7.2.5 Test integration with NestJS backend
 
 ### 7.3 Phase Handoff
-- [ ] Prepare phase completion report
-- [ ] Document known issues and technical debt
-- [ ] Create task list for phase 2 refinements
-- [ ] Update project roadmap
+- [ ] 7.3.1 Prepare phase completion report
+- [ ] 7.3.2 Document known issues and technical debt
+- [ ] 7.3.3 Create task list for phase 2 refinements
+- [ ] 7.3.4 Update project roadmap
 
 ## Acceptance Criteria for Phase 1
 
