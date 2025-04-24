@@ -24,7 +24,7 @@ Plantarium is a desktop application designed to help home gardeners and small-sc
 - Receive timely gardening reminders
 - Implement companion planting and crop rotation strategies
 
-Built with Electron.js, React, and PostgreSQL, Plantarium runs on Windows, macOS, and Linux.
+Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
 
 ## Features
 
@@ -59,8 +59,8 @@ Built with Electron.js, React, and PostgreSQL, Plantarium runs on Windows, macOS
 ## Installation
 
 ### Prerequisites
-- Node.js (v16 or later)
-- PostgreSQL (v12 or later)
+- Flutter SDK (latest stable version)
+- Dart SDK (comes with Flutter)
 - Git
 
 ### Steps
@@ -72,28 +72,18 @@ Built with Electron.js, React, and PostgreSQL, Plantarium runs on Windows, macOS
 
 2. Install dependencies:
    ```bash
-   npm install
+   flutter pub get
    ```
 
-3. Set up PostgreSQL database (see Database Setup)
-
-4. Configure environment variables (create .env file):
+3. Configure environment variables (create .env file):
    ```env
    PERMAPEOPLE_API_KEY=your_api_key
    OPENWEATHER_API_KEY=your_api_key
-   DATABASE_URL=postgres://user:password@localhost:5432/plantarium
    ```
 
-5. Run the application:
+4. Run the application:
    ```bash
-   npm start
-   ```
-
-### Database Setup
-1. Create a new PostgreSQL database named `plantarium`
-2. Run migrations:
-   ```bash
-   npm run migrate
+   flutter run -d windows  # or macos, linux
    ```
 
 ## Usage
@@ -117,32 +107,33 @@ Built with Electron.js, React, and PostgreSQL, Plantarium runs on Windows, macOS
 ## Development
 
 ### Tech Stack
-- Frontend: React.js with KonvaJS for canvas rendering
-- Backend: Node.js with NestJS
-- Database: PostgreSQL
-- Desktop: Electron.js
+- Framework: Flutter
+- Database: SQLite
+- APIs: Permapeople (plants), OpenWeather (weather)
 
 ### Documentation
 - [Software Specification](software_specification.md) - Detailed technical requirements and specifications
 
 ### Scripts
 ```bash
-npm start    # Start development server
-npm run build # Package the application
-npm test     # Run tests
-npm run lint # Run linter
+flutter run         # Run development version
+flutter build       # Build application
+flutter test        # Run tests
+flutter analyze     # Run linter
 ```
 
 ### Folder Structure
 ```
 plantarium/
-├── src/
-│   ├── main/          # Electron main process
-│   ├── renderer/      # React frontend
-│   ├── shared/        # Shared code between processes
-│   └── server/        # NestJS backend
-├── migrations/        # Database migrations
-└── assets/            # Static assets
+├── lib/
+│   ├── main.dart         # Entry point
+│   ├── models/           # Data models
+│   ├── screens/          # UI screens
+│   ├── widgets/          # Reusable widgets
+│   ├── services/         # API & database services
+│   └── utils/            # Helper functions
+├── assets/               # Static assets
+└── test/                 # Tests
 ```
 
 ## Contributing
