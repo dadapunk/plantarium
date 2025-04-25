@@ -256,83 +256,105 @@ class ErrorHandler {
 
 ## Offline Support
 
-### Local Storage
+### Caching Strategy
+The application implements a lightweight caching system using SharedPreferences to:
+- Reduce unnecessary API calls to the local NestJS server
+- Provide temporary offline access to recently fetched data
+- Improve app performance
+
 ```dart
-// Local storage using SQLite
-@Collection()
-class PlotModel {
-  Id id = Isar.autoIncrement;
-  String remoteId;
-  String name;
-  double area;
-  DateTime lastSync;
-  bool needsSync;
+// API Cache Service
+class ApiCacheService {
+  final SharedPreferences _prefs;
+  static const String _cachePrefix = 'api_cache_';
+  static const Duration _defaultExpiration = Duration(minutes: 30);
 
-  PlotModel({
-    required this.remoteId,
-    required this.name,
-    required this.area,
-    required this.lastSync,
-    this.needsSync = false,
-  });
-}
+  Future<void> cacheApiResponse<T>({
+    required String endpoint,
+    required Map<String, dynamic> data,
+    Duration? expiration,
+  }) async {
+    final expirationTime = DateTime.now()
+        .add(expiration ?? _defaultExpiration)
+        .millisecondsSinceEpoch;
+        
+    final cacheData = {
+      'data': data,
+      'expiration': expirationTime,
+    };
 
-class LocalStorage {
-  final Isar _isar;
-
-  LocalStorage(this._isar);
-
-  Future<void> savePlot(PlotModel plot) async {
-    await _isar.writeTxn(() async {
-      await _isar.plotModels.put(plot);
-    });
+    await _prefs.setString(
+      _getCacheKey(endpoint),
+      json.encode(cacheData),
+    );
   }
 
-  Future<List<PlotModel>> getPlots() async {
-    return await _isar.plotModels.where().findAll();
-  }
+  Future<Map<String, dynamic>?> getCachedResponse(String endpoint) async {
+    final cacheKey = _getCacheKey(endpoint);
+    final cachedData = _prefs.getString(cacheKey);
 
-  Stream<List<PlotModel>> watchPlots() {
-    return _isar.plotModels.where().watch(fireImmediately: true);
+    if (cachedData == null) return null;
+
+    final cache = json.decode(cachedData) as Map<String, dynamic>;
+    final expiration = cache['expiration'] as int;
+
+    if (DateTime.now().millisecondsSinceEpoch > expiration) {
+      await _prefs.remove(cacheKey);
+      return null;
+    }
+
+    return cache['data'] as Map<String, dynamic>;
   }
 }
 ```
 
-### Data Synchronization
+### Cache Usage
+The cache is integrated with the API client to automatically:
+- Store successful API responses
+- Return cached data when available and not expired
+- Clear expired cache entries
+- Allow manual cache invalidation when needed
+
 ```dart
-class SyncService {
-  final ApiClient _apiClient;
-  final LocalStorage _localStorage;
-  final ConnectivityService _connectivity;
-
-  SyncService(this._apiClient, this._localStorage, this._connectivity) {
-    _setupConnectivityListener();
-  }
-
-  void _setupConnectivityListener() {
-    _connectivity.onConnectivityChanged.listen((connected) {
-      if (connected) {
-        syncPendingChanges();
-      }
-    });
-  }
-
-  Future<void> syncPendingChanges() async {
-    final pendingPlots = await _localStorage.getPendingPlots();
-    for (final plot in pendingPlots) {
-      try {
-        final updatedPlot = await _apiClient.updatePlot(
-          plot.remoteId,
-          plot.toApiModel(),
-        );
-        await _localStorage.markAsSynced(plot.id, updatedPlot);
-      } catch (e) {
-        // Handle sync error
-      }
+// Example usage in API client
+Future<ApiResponse<T>> get<T>(
+  String path, {
+  bool useCache = true,
+  Duration? cacheExpiration,
+}) async {
+  if (useCache) {
+    final cachedData = await _cacheService.getCachedResponse(path);
+    if (cachedData != null) {
+      return ApiResponse<T>.fromJson(cachedData);
     }
   }
+
+  final response = await _dio.get(path);
+  final data = _normalizeResponseData(response.data);
+  
+  if (useCache) {
+    await _cacheService.cacheApiResponse(
+      endpoint: path,
+      data: data,
+      expiration: cacheExpiration,
+    );
+  }
+
+  return ApiResponse<T>.fromJson(data);
 }
 ```
+
+### Cache Configuration
+- Default cache expiration: 30 minutes
+- Configurable per-request expiration
+- Automatic cache cleanup
+- Memory-efficient storage using SharedPreferences
+
+### Benefits
+- Improved performance through reduced API calls
+- Temporary offline access to recently viewed data
+- No database conflicts with the NestJS backend
+- Simple and maintainable implementation
 
 ## State Management
 

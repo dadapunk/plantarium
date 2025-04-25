@@ -38,9 +38,9 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 
 ### 2.2 Local Storage Implementation
 - [x] 2.2.1 Set up SQLite database (implemented in NestJS backend)
-- [ ] 2.2.2 Create storage service for offline data
-- [ ] 2.2.3 Implement data synchronization mechanisms
-- [ ] 2.2.4 Build cache invalidation strategies
+- [x] 2.2.2 Implement API response caching using SharedPreferences
+- [ ] 2.2.3 Configure cache expiration and cleanup
+- [ ] 2.2.4 Implement cache invalidation strategies
 
 ### 2.3 Backend Service Interfaces
 - [x] 2.3.1 Create garden service endpoints (Plot controller/service exists)
