@@ -10,6 +10,7 @@ This document outlines the integration strategy between the Flutter frontend and
 5. [Offline Support](#offline-support)
 6. [State Management](#state-management)
 7. [Testing Strategy](#testing-strategy)
+8. [Environment Configuration](#environment-configuration)
 
 ## Architecture Overview
 
@@ -21,53 +22,112 @@ The NestJS backend provides the following core services:
 - Weather Data Service (to be implemented)
 
 ### Frontend Integration Points
-The Flutter frontend will interact with these services through:
-- HTTP API Client
+The Flutter frontend interacts with these services through:
+- HTTP API Client (using Dio)
 - WebSocket connections (for real-time updates)
-- Local storage for offline support
-- State management for data synchronization
+- Local storage (using SQLite)
+- State management (using Riverpod)
 
 ## API Communication
 
 ### HTTP Client
 ```dart
-// Example API client structure
-class ApiClient {
-  final Dio _dio;
-  final String _baseUrl;
+// API client using Dio and Retrofit
+@RestApi()
+abstract class ApiClient {
+  factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 
-  ApiClient({
-    required String baseUrl,
-  }) : _baseUrl = baseUrl,
-       _dio = Dio(BaseOptions(
-         baseUrl: baseUrl,
-       ));
+  @GET('/plots')
+  Future<List<Plot>> getPlots();
 
-  // Garden endpoints
-  Future<List<Plot>> getPlots() async {
-    final response = await _dio.get('/plots');
-    return (response.data as List).map((json) => Plot.fromJson(json)).toList();
-  }
+  @GET('/plots/{id}')
+  Future<Plot> getPlot(@Path('id') String id);
+
+  @POST('/plots')
+  Future<Plot> createPlot(@Body() Plot plot);
+
+  @PUT('/plots/{id}')
+  Future<Plot> updatePlot(
+    @Path('id') String id,
+    @Body() Plot plot,
+  );
+
+  @DELETE('/plots/{id}')
+  Future<void> deletePlot(@Path('id') String id);
 
   // Plant endpoints
-  Future<List<Plant>> getPlants() async {
-    final response = await _dio.get('/plants');
-    return (response.data as List).map((json) => Plant.fromJson(json)).toList();
-  }
+  @GET('/plants')
+  Future<List<Plant>> getPlants();
+
+  @GET('/plants/{id}')
+  Future<Plant> getPlant(@Path('id') String id);
 }
+
+// API client provider
+final apiClientProvider = Provider<ApiClient>((ref) {
+  final dio = ref.watch(dioProvider);
+  final config = ref.watch(configProvider);
+  
+  return ApiClient(dio, baseUrl: config.apiBaseUrl);
+});
+
+// Dio configuration
+final dioProvider = Provider<Dio>((ref) {
+  final config = ref.watch(configProvider);
+  final dio = Dio(BaseOptions(
+    baseUrl: config.apiBaseUrl,
+    connectTimeout: config.timeoutDuration,
+    receiveTimeout: config.timeoutDuration,
+  ));
+
+  if (config.enableLogging) {
+    dio.interceptors.add(LogInterceptor(
+      requestBody: true,
+      responseBody: true,
+    ));
+  }
+
+  return dio;
+});
 ```
 
 ### WebSocket Integration
 ```dart
-// Example WebSocket client
-class WebSocketClient {
+class WebSocketService {
   final WebSocketChannel _channel;
+  final void Function(dynamic)? onError;
+  final void Function()? onDone;
 
-  WebSocketClient(String url) : _channel = WebSocketChannel.connect(Uri.parse(url));
+  WebSocketService({
+    required String url,
+    this.onError,
+    this.onDone,
+  }) : _channel = WebSocketChannel.connect(Uri.parse(url)) {
+    _channel.stream.listen(
+      _handleMessage,
+      onError: onError,
+      onDone: onDone,
+    );
+  }
 
-  Stream<dynamic> get updates => _channel.stream;
+  void _handleMessage(dynamic message) {
+    // Handle different message types
+    final data = jsonDecode(message as String);
+    switch (data['type']) {
+      case 'plot_update':
+        _handlePlotUpdate(data['payload']);
+        break;
+      case 'plant_update':
+        _handlePlantUpdate(data['payload']);
+        break;
+    }
+  }
 
-  void sendMessage(dynamic message) {
+  void sendMessage(String type, dynamic payload) {
+    final message = jsonEncode({
+      'type': type,
+      'payload': payload,
+    });
     _channel.sink.add(message);
   }
 
@@ -75,73 +135,121 @@ class WebSocketClient {
     _channel.sink.close();
   }
 }
+
+// WebSocket service provider
+final webSocketServiceProvider = Provider<WebSocketService>((ref) {
+  final config = ref.watch(configProvider);
+  return WebSocketService(
+    url: config.wsUrl,
+    onError: (error) => ref.read(errorHandlerProvider).handleError(error),
+  );
+});
 ```
 
 ## Data Flow
 
 ### Request Flow
-1. UI triggers action
-2. State management handles the action
-3. Repository makes API call
+1. UI action triggers a state change in Riverpod
+2. State notifier handles the action
+3. Repository layer processes the request
 4. API client sends request to backend
 5. Backend processes request
 6. Response flows back through the chain
 
 ### Response Flow
-1. Backend sends response
-2. API client receives response
-3. Repository processes response
-4. State management updates state
-5. UI reflects changes
+```dart
+// Example of data flow with Riverpod
+final plotsProvider = StateNotifierProvider<PlotsNotifier, AsyncValue<List<Plot>>>((ref) {
+  final repository = ref.watch(plotRepositoryProvider);
+  return PlotsNotifier(repository);
+});
+
+class PlotsNotifier extends StateNotifier<AsyncValue<List<Plot>>> {
+  final PlotRepository _repository;
+
+  PlotsNotifier(this._repository) : super(const AsyncValue.loading()) {
+    loadPlots();
+  }
+
+  Future<void> loadPlots() async {
+    state = const AsyncValue.loading();
+    try {
+      final plots = await _repository.getPlots();
+      state = AsyncValue.data(plots);
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> addPlot(Plot plot) async {
+    try {
+      final newPlot = await _repository.createPlot(plot);
+      state.whenData((plots) {
+        state = AsyncValue.data([...plots, newPlot]);
+      });
+    } catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+}
+```
 
 ## Error Handling
 
 ### Error Types
-1. **Network Errors**
-   - Connection timeout
-   - No internet connection
-   - Server unavailable
-
-2. **API Errors**
-   - Invalid request
-   - Resource not found
-   - Server error
-
-3. **Data Validation Errors**
-   - Invalid input
-   - Missing required fields
-   - Type mismatch
-
-### Error Handling Strategy
 ```dart
-// Example error handling
-class ApiError implements Exception {
+// Base exception for all API errors
+abstract class ApiException implements Exception {
   final String message;
-  final int? statusCode;
-  final dynamic data;
+  final dynamic error;
 
-  ApiError(this.message, {this.statusCode, this.data});
-
-  @override
-  String toString() => 'ApiError: $message (Status: $statusCode)';
+  const ApiException(this.message, [this.error]);
 }
 
+// Network-related errors
+class NetworkException extends ApiException {
+  final int? statusCode;
+
+  const NetworkException(
+    String message, {
+    this.statusCode,
+    dynamic error,
+  }) : super(message, error);
+}
+
+// Data validation errors
+class ValidationException extends ApiException {
+  final Map<String, List<String>> errors;
+
+  const ValidationException(
+    String message,
+    this.errors,
+  ) : super(message);
+}
+
+// Error handler service
 class ErrorHandler {
-  static ApiError handleError(dynamic error) {
-    if (error is DioError) {
-      switch (error.type) {
-        case DioErrorType.connectionTimeout:
-          return ApiError('Connection timeout');
-        case DioErrorType.badResponse:
-          return ApiError(
-            error.response?.data['message'] ?? 'Bad response',
-            statusCode: error.response?.statusCode,
-            data: error.response?.data,
-          );
-        // Handle other error types
-      }
+  final BuildContext context;
+
+  ErrorHandler(this.context);
+
+  void handleError(dynamic error) {
+    if (error is NetworkException) {
+      _showNetworkError(error);
+    } else if (error is ValidationException) {
+      _showValidationError(error);
+    } else {
+      _showGenericError(error);
     }
-    return ApiError('Unknown error occurred');
+  }
+
+  void _showNetworkError(NetworkException error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Network Error: ${error.message}'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 }
 ```
@@ -150,71 +258,111 @@ class ErrorHandler {
 
 ### Local Storage
 ```dart
-// Example local storage
+// Local storage using SQLite
+@Collection()
+class PlotModel {
+  Id id = Isar.autoIncrement;
+  String remoteId;
+  String name;
+  double area;
+  DateTime lastSync;
+  bool needsSync;
+
+  PlotModel({
+    required this.remoteId,
+    required this.name,
+    required this.area,
+    required this.lastSync,
+    this.needsSync = false,
+  });
+}
+
 class LocalStorage {
   final Isar _isar;
 
   LocalStorage(this._isar);
 
-  Future<void> savePlot(Plot plot) async {
+  Future<void> savePlot(PlotModel plot) async {
     await _isar.writeTxn(() async {
-      await _isar.plots.put(plot);
+      await _isar.plotModels.put(plot);
     });
   }
 
-  Future<List<Plot>> getPlots() async {
-    return await _isar.plots.where().findAll();
+  Future<List<PlotModel>> getPlots() async {
+    return await _isar.plotModels.where().findAll();
+  }
+
+  Stream<List<PlotModel>> watchPlots() {
+    return _isar.plotModels.where().watch(fireImmediately: true);
   }
 }
 ```
 
 ### Data Synchronization
-1. Store changes locally
-2. Queue sync operations
-3. Sync when online
-4. Handle conflicts
-5. Update UI accordingly
-
-## State Management
-
-### Repository Pattern
 ```dart
-// Example repository
-class PlotRepository {
+class SyncService {
   final ApiClient _apiClient;
   final LocalStorage _localStorage;
+  final ConnectivityService _connectivity;
 
-  PlotRepository(this._apiClient, this._localStorage);
+  SyncService(this._apiClient, this._localStorage, this._connectivity) {
+    _setupConnectivityListener();
+  }
 
-  Future<List<Plot>> getPlots() async {
-    try {
-      final plots = await _apiClient.getPlots();
-      await _localStorage.savePlots(plots);
-      return plots;
-    } catch (e) {
-      return await _localStorage.getPlots();
+  void _setupConnectivityListener() {
+    _connectivity.onConnectivityChanged.listen((connected) {
+      if (connected) {
+        syncPendingChanges();
+      }
+    });
+  }
+
+  Future<void> syncPendingChanges() async {
+    final pendingPlots = await _localStorage.getPendingPlots();
+    for (final plot in pendingPlots) {
+      try {
+        final updatedPlot = await _apiClient.updatePlot(
+          plot.remoteId,
+          plot.toApiModel(),
+        );
+        await _localStorage.markAsSynced(plot.id, updatedPlot);
+      } catch (e) {
+        // Handle sync error
+      }
     }
   }
 }
 ```
 
-### State Management with Bloc
+## State Management
+
+### Repository Pattern
 ```dart
-// Example Bloc
-class PlotBloc extends Bloc<PlotEvent, PlotState> {
-  final PlotRepository _repository;
+class PlotRepository {
+  final ApiClient _apiClient;
+  final LocalStorage _localStorage;
+  final ConnectivityService _connectivity;
 
-  PlotBloc(this._repository) : super(PlotInitial()) {
-    on<LoadPlots>(_onLoadPlots);
-  }
+  PlotRepository(
+    this._apiClient,
+    this._localStorage,
+    this._connectivity,
+  );
 
-  Future<void> _onLoadPlots(LoadPlots event, Emitter<PlotState> emit) async {
-    emit(PlotLoading());
+  Future<List<Plot>> getPlots() async {
     try {
-      final plots = await _repository.getPlots();
-      emit(PlotLoaded(plots));
+      if (await _connectivity.isConnected) {
+        final plots = await _apiClient.getPlots();
+        await _localStorage.savePlots(
+          plots.map((p) => p.toLocalModel()).toList(),
+        );
+        return plots;
+      }
+      final localPlots = await _localStorage.getPlots();
+      return localPlots.map((p) => p.toApiModel()).toList();
     } catch (e) {
-      emit(PlotError(e.toString()));
+      final localPlots = await _localStorage.getPlots();
+      return localPlots.map((p) => p.toApiModel()).toList();
     }
   }
 }
@@ -223,47 +371,170 @@ class PlotBloc extends Bloc<PlotEvent, PlotState> {
 ## Testing Strategy
 
 ### Unit Tests
-- Test API client
-- Test repositories
-- Test state management
-- Test data models
+```dart
+void main() {
+  group('PlotRepository', () {
+    late PlotRepository repository;
+    late MockApiClient mockApiClient;
+    late MockLocalStorage mockLocalStorage;
+    late MockConnectivityService mockConnectivity;
+
+    setUp(() {
+      mockApiClient = MockApiClient();
+      mockLocalStorage = MockLocalStorage();
+      mockConnectivity = MockConnectivityService();
+      repository = PlotRepository(
+        mockApiClient,
+        mockLocalStorage,
+        mockConnectivity,
+      );
+    });
+
+    test('getPlots returns remote data when online', () async {
+      when(() => mockConnectivity.isConnected).thenAnswer((_) async => true);
+      when(() => mockApiClient.getPlots()).thenAnswer(
+        (_) async => [Plot(id: '1', name: 'Test Plot')],
+      );
+
+      final result = await repository.getPlots();
+
+      expect(result.length, equals(1));
+      verify(() => mockApiClient.getPlots()).called(1);
+    });
+  });
+}
+```
 
 ### Integration Tests
-- Test API integration
-- Test offline functionality
-- Test data synchronization
-- Test error handling
+```dart
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-### E2E Tests
-- Test complete user flows
-- Test data persistence
-- Test error scenarios
+  group('Plot Management Flow', () {
+    testWidgets('Create and sync plot when online', (tester) async {
+      await tester.pumpWidget(const ProviderScope(child: PlantariumApp()));
+
+      // Test plot creation
+      await tester.tap(find.byType(AddPlotButton));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'New Test Plot',
+      );
+      await tester.tap(find.text('Create'));
+      await tester.pumpAndSettle();
+
+      // Verify plot was created and synced
+      expect(find.text('New Test Plot'), findsOneWidget);
+      expect(find.byIcon(Icons.cloud_done), findsOneWidget);
+    });
+  });
+}
+```
+
+## Environment Configuration
+
+### Environment Setup
+```dart
+enum Environment {
+  development,
+  staging,
+  production,
+}
+
+class AppConfig {
+  final Environment environment;
+  final String apiBaseUrl;
+  final String wsUrl;
+  final bool enableLogging;
+  final Duration timeoutDuration;
+
+  const AppConfig({
+    required this.environment,
+    required this.apiBaseUrl,
+    required this.wsUrl,
+    required this.enableLogging,
+    required this.timeoutDuration,
+  });
+
+  factory AppConfig.fromEnvironment() {
+    final env = Environment.values.firstWhere(
+      (e) => e.name == const String.fromEnvironment(
+        'ENVIRONMENT',
+        defaultValue: 'development',
+      ),
+      orElse: () => Environment.development,
+    );
+
+    switch (env) {
+      case Environment.development:
+        return AppConfig(
+          environment: env,
+          apiBaseUrl: 'http://localhost:3000',
+          wsUrl: 'ws://localhost:3000',
+          enableLogging: true,
+          timeoutDuration: const Duration(seconds: 30),
+        );
+      case Environment.production:
+        return AppConfig(
+          environment: env,
+          apiBaseUrl: 'https://api.plantarium.app',
+          wsUrl: 'wss://api.plantarium.app',
+          enableLogging: false,
+          timeoutDuration: const Duration(seconds: 20),
+        );
+      // Add other environments as needed
+    }
+  }
+}
+
+// Configuration provider
+final configProvider = Provider<AppConfig>((ref) {
+  return AppConfig.fromEnvironment();
+});
+```
+
+### Build Configuration
+The application can be built for different environments using the following commands:
+
+```bash
+# Development build
+flutter build <platform> --dart-define=ENVIRONMENT=development
+
+# Staging build
+flutter build <platform> --dart-define=ENVIRONMENT=staging
+
+# Production build
+flutter build <platform> --dart-define=ENVIRONMENT=production
+```
 
 ## Best Practices
 
 1. **API Versioning**
-   - Use versioned API endpoints
-   - Handle version migration
+   - Use versioned API endpoints (e.g., `/api/v1/plots`)
+   - Handle version migration gracefully
    - Support backward compatibility
 
-2. **Caching**
-   - Implement proper caching strategies
-   - Handle cache invalidation
-   - Use appropriate cache duration
+2. **Caching Strategy**
+   - Cache API responses appropriately
+   - Implement cache invalidation
+   - Use appropriate cache duration per endpoint
 
 3. **Security**
-   - HTTPS communication
-   - Input validation
-   - Error message sanitization
+   - Use HTTPS for all API calls
+   - Implement proper error handling
+   - Sanitize data before display
+   - Use secure storage for sensitive data
 
 4. **Performance**
+   - Implement request batching where appropriate
+   - Use pagination for large datasets
    - Optimize network requests
-   - Implement request batching
-   - Use appropriate compression
-   - Handle large datasets efficiently
+   - Cache resources efficiently
 
 5. **Monitoring**
+   - Log important events
    - Track API performance
    - Monitor error rates
-   - Log important events
-   - Track user behavior 
+   - Implement analytics as needed 
