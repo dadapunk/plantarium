@@ -8,12 +8,12 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 - [x] 1.1.1 Create new Flutter project with appropriate naming conventions
 - [x] 1.1.2 Configure Flutter for cross-platform support (Windows, macOS, Linux)
 - [x] 1.1.3 Set up platform-specific configuration files
-- [ ] 1.1.4 Configure assets directory structure for images, fonts, etc.
+- [x] 1.1.4 Configure assets directory structure for images, fonts, etc.
 
 ### 1.2 Development Environment Setup
-- [ ] 1.2.1 Configure editor/IDE with appropriate plugins for Flutter/Dart
-- [ ] 1.2.2 Set up linting rules and code formatting standards
-- [ ] 1.2.3 Install required Flutter packages and dependencies
+- [x] 1.2.1 Configure editor/IDE with appropriate plugins for Flutter/Dart
+- [x] 1.2.2 Set up linting rules and code formatting standards
+- [x] 1.2.3 Install required Flutter packages and dependencies
 - [ ] 1.2.4 Configure dev, staging, and production environments
 
 ### 1.3 Version Control Integration
