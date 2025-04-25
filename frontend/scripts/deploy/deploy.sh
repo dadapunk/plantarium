@@ -7,16 +7,17 @@
 set -e
 
 # Default values
-ENV="dev"
+ENV="development"
 PLATFORM="web"
 VERSION=$(date +%Y%m%d_%H:%M:%S)
 BUILD_DIR="frontend/build/$ENV"
 DEPLOY_DIR="frontend/deploy/$ENV/$VERSION"
 VERBOSE=false
 SKIP_BUILD=false
+ARTIFACTS_DIR=""
 
 # Parse command line arguments
-while [ "$1" != "" ]; do
+while [[ $# -gt 0 ]]; do
     case $1 in
         --env=*)
             ENV="${1#*=}"
@@ -33,6 +34,9 @@ while [ "$1" != "" ]; do
         --skip-build)
             SKIP_BUILD=true
             ;;
+        --artifacts=*)
+            ARTIFACTS_DIR="${1#*=}"
+            ;;
         *)
             echo "Unknown parameter: $1"
             exit 1
@@ -42,14 +46,20 @@ while [ "$1" != "" ]; do
 done
 
 # Validate environment
-if [ "$ENV" != "dev" ] && [ "$ENV" != "prod" ]; then
-    echo "Invalid environment. Use 'dev' or 'prod'"
+if [[ "$ENV" != "development" && "$ENV" != "staging" && "$ENV" != "production" ]]; then
+    echo "Invalid environment. Must be one of: development, staging, production"
     exit 1
 fi
 
 # Validate platform
 if [ "$PLATFORM" != "web" ] && [ "$PLATFORM" != "android" ] && [ "$PLATFORM" != "ios" ] && [ "$PLATFORM" != "windows" ] && [ "$PLATFORM" != "linux" ] && [ "$PLATFORM" != "macos" ]; then
     echo "Invalid platform. Use 'web', 'android', 'ios', 'windows', 'linux', or 'macos'"
+    exit 1
+fi
+
+# Validate artifacts directory
+if [ -z "$ARTIFACTS_DIR" ]; then
+    echo "Artifacts directory must be specified with --artifacts="
     exit 1
 fi
 
@@ -166,6 +176,37 @@ deploy_desktop() {
     cd -
 }
 
+# Function to deploy artifacts
+deploy_artifacts() {
+    local env=$1
+    local artifacts_dir=$2
+    
+    echo "Deploying to $env environment..."
+    
+    # Create version file
+    echo "version: $(date +%Y%m%d_%H%M%S)" > "$artifacts_dir/version.txt"
+    
+    case $env in
+        "development")
+            # Development deployment steps
+            echo "Deploying to development server..."
+            # Add deployment commands here
+            ;;
+            
+        "staging")
+            # Staging deployment steps
+            echo "Deploying to staging server..."
+            # Add deployment commands here
+            ;;
+            
+        "production")
+            # Production deployment steps
+            echo "Deploying to production server..."
+            # Add deployment commands here
+            ;;
+    esac
+}
+
 # Run build if needed
 run_build
 
@@ -214,4 +255,7 @@ done
 
 echo "Deployment completed successfully!"
 echo "Deployment artifacts are located in: $DEPLOY_DIR"
-echo "Deployment report generated: $DEPLOY_DIR/DEPLOYMENT_REPORT.md" 
+echo "Deployment report generated: $DEPLOY_DIR/DEPLOYMENT_REPORT.md"
+
+# Execute deployment
+deploy_artifacts "$ENV" "$ARTIFACTS_DIR" 

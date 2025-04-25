@@ -11,75 +11,88 @@ This document outlines the coding standards and best practices for the Plantariu
 6. [Documentation](#documentation)
 7. [Performance](#performance)
 8. [Security](#security)
+9. [Git Workflow](#git-workflow)
+10. [CI/CD Practices](#ci-cd-practices)
+11. [Environment Management](#environment-management)
 
 ## Project Structure
 
 ### Directory Organization
 ```
 lib/
-├── core/
-│   ├── constants/
-│   ├── errors/
-│   ├── network/
-│   ├── theme/
-│   └── utils/
-├── features/
-│   ├── garden/
-│   │   ├── data/
+├── core/                 # Core functionality and utilities
+│   ├── constants/        # Application-wide constants
+│   ├── errors/          # Error handling and custom exceptions
+│   ├── network/         # Network related code (API client, interceptors)
+│   ├── theme/           # Theme configuration
+│   └── utils/           # Utility functions and extensions
+├── features/            # Feature modules
+│   ├── garden/          # Garden management feature
+│   │   ├── data/        # Data layer
 │   │   │   ├── datasources/
-│   │   │   ├── models/
+│   │   │   ├── models/  # Data models and DTOs
 │   │   │   └── repositories/
-│   │   ├── domain/
+│   │   ├── domain/      # Business logic layer
 │   │   │   ├── entities/
 │   │   │   ├── repositories/
 │   │   │   └── usecases/
-│   │   └── presentation/
-│   │       ├── bloc/
-│   │       ├── pages/
-│   │       └── widgets/
-│   └── plant/
+│   │   └── presentation/ # UI layer
+│   │       ├── bloc/    # State management
+│   │       ├── pages/   # Screen widgets
+│   │       └── widgets/ # Reusable widgets
+│   └── plant/           # Plant management feature
 │       ├── data/
 │       ├── domain/
 │       └── presentation/
-├── shared/
-│   ├── widgets/
-│   └── services/
-└── main.dart
+├── shared/              # Shared components
+│   ├── widgets/         # Common widgets
+│   └── services/        # Shared services
+└── main.dart            # Application entry point
 ```
 
+### File Organization
+Each feature module should follow the Clean Architecture pattern:
+- **Data Layer**: API integration, local storage, and data models
+- **Domain Layer**: Business logic and use cases
+- **Presentation Layer**: UI components and state management
+
 ### Naming Conventions
-- **Files**: Use snake_case for file names
-  - `garden_list_page.dart`
-  - `plant_details_widget.dart`
-  - `plot_repository_impl.dart`
+- **Files**: Use snake_case
+  - Feature pages: `garden_list_page.dart`
+  - Widgets: `plant_card_widget.dart`
+  - Models: `garden_model.dart`
+  - BLoCs: `garden_bloc.dart`
 
-- **Directories**: Use snake_case for directory names
-  - `data_sources`
-  - `use_cases`
-  - `presentation`
-
-- **Classes**: Use PascalCase for class names
-  - `GardenListPage`
-  - `PlantDetailsWidget`
-  - `PlotRepositoryImpl`
+- **Classes**: Use PascalCase
+  - Pages: `GardenListPage`
+  - Widgets: `PlantCardWidget`
+  - Models: `GardenModel`
+  - BLoCs: `GardenBloc`
 
 - **Variables and Methods**: Use camelCase
-  - `final gardenList`
-  - `void updatePlot()`
+  - Variables: `final gardenList`
+  - Methods: `void updatePlot()`
+  - Private members: `final _repository`
+
+- **Constants**: Use SCREAMING_SNAKE_CASE
+  ```dart
+  const String API_BASE_URL = 'https://api.plantarium.app';
+  const int MAX_RETRY_ATTEMPTS = 3;
+  ```
 
 ## Code Style
 
 ### General Rules
 1. Use Dart 3.7.0 features and syntax
 2. Follow Flutter's official style guide
-3. Use meaningful names for variables and methods
-4. Keep methods short and focused (max 20 lines)
-5. Use comments to explain complex logic
-6. Avoid magic numbers and strings
+3. Use meaningful names that describe purpose
+4. Keep methods focused and under 20 lines
+5. Use early returns to reduce nesting
+6. Avoid abbreviations unless widely known
 
 ### Formatting
 ```dart
-// Good
+// GOOD
 class GardenService {
   final PlotRepository _repository;
   final LocalStorage _storage;
@@ -100,120 +113,146 @@ class GardenService {
   }
 }
 
-// Bad
+// BAD - Poor formatting and readability
 class GardenService{final PlotRepository _repository;final LocalStorage _storage;
 GardenService({required PlotRepository repository,required LocalStorage storage,}):_repository=repository,_storage=storage;
 Future<void> updatePlot(Plot plot) async{try{await _repository.updatePlot(plot);await _storage.savePlot(plot);}catch(e){throw GardenError('Failed to update plot: $e');}}}
 ```
 
+### Comments and Documentation
+```dart
+/// A service that manages garden-related operations.
+///
+/// This service coordinates between the repository and local storage
+/// to ensure data consistency for garden operations.
+class GardenService {
+  // Private repository instance for data operations
+  final PlotRepository _repository;
+  
+  /// Updates a plot in both remote and local storage.
+  ///
+  /// Throws a [GardenError] if the update fails.
+  /// Parameters:
+  ///   - plot: The [Plot] to update
+  Future<void> updatePlot(Plot plot) async {
+    // Implementation
+  }
+}
+```
+
 ## State Management
 
-### Bloc Pattern
+### Riverpod Usage
 ```dart
-// Events
-abstract class PlotEvent {}
-class LoadPlots extends PlotEvent {}
-class UpdatePlot extends PlotEvent {
-  final Plot plot;
-  UpdatePlot(this.plot);
-}
+// Provider definition
+final gardenProvider = StateNotifierProvider<GardenNotifier, GardenState>((ref) {
+  final repository = ref.watch(gardenRepositoryProvider);
+  return GardenNotifier(repository);
+});
 
-// States
-abstract class PlotState {}
-class PlotInitial extends PlotState {}
-class PlotLoading extends PlotState {}
-class PlotLoaded extends PlotState {
-  final List<Plot> plots;
-  PlotLoaded(this.plots);
-}
-class PlotError extends PlotState {
-  final String message;
-  PlotError(this.message);
-}
+// State notifier
+class GardenNotifier extends StateNotifier<GardenState> {
+  final GardenRepository _repository;
 
-// Bloc
-class PlotBloc extends Bloc<PlotEvent, PlotState> {
-  final PlotRepository _repository;
+  GardenNotifier(this._repository) : super(const GardenState.initial());
 
-  PlotBloc(this._repository) : super(PlotInitial()) {
-    on<LoadPlots>(_onLoadPlots);
-    on<UpdatePlot>(_onUpdatePlot);
-  }
-
-  Future<void> _onLoadPlots(LoadPlots event, Emitter<PlotState> emit) async {
-    emit(PlotLoading());
+  Future<void> loadGardens() async {
+    state = const GardenState.loading();
     try {
-      final plots = await _repository.getPlots();
-      emit(PlotLoaded(plots));
+      final gardens = await _repository.getGardens();
+      state = GardenState.loaded(gardens);
     } catch (e) {
-      emit(PlotError(e.toString()));
+      state = GardenState.error(e.toString());
     }
   }
 }
-```
 
-## Error Handling
-
-### Custom Exceptions
-```dart
-class GardenError implements Exception {
-  final String message;
-  final dynamic error;
-
-  GardenError(this.message, [this.error]);
-
+// Usage in widget
+class GardenList extends ConsumerWidget {
   @override
-  String toString() => 'GardenError: $message${error != null ? '\n$error' : ''}';
-}
-```
-
-### Error Handling in UI
-```dart
-class GardenListPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PlotBloc, PlotState>(
-      builder: (context, state) {
-        if (state is PlotLoading) {
-          return const CircularProgressIndicator();
-        }
-        if (state is PlotError) {
-          return ErrorWidget(message: state.message);
-        }
-        if (state is PlotLoaded) {
-          return PlotList(plots: state.plots);
-        }
-        return const SizedBox.shrink();
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gardenState = ref.watch(gardenProvider);
+    
+    return gardenState.when(
+      initial: () => const SizedBox.shrink(),
+      loading: () => const CircularProgressIndicator(),
+      loaded: (gardens) => ListView.builder(
+        itemCount: gardens.length,
+        itemBuilder: (context, index) => GardenCard(garden: gardens[index]),
+      ),
+      error: (message) => ErrorDisplay(message: message),
     );
   }
 }
 ```
+
+### State Organization
+- Use freezed for immutable state classes
+- Keep state classes simple and focused
+- Use sealed classes for state variants
+- Handle loading and error states consistently
+
+## Error Handling
+
+### Exception Hierarchy
+```dart
+/// Base exception class for the application
+abstract class AppException implements Exception {
+  final String message;
+  final dynamic error;
+
+  const AppException(this.message, [this.error]);
+}
+
+/// Network-related exceptions
+class NetworkException extends AppException {
+  final int? statusCode;
+
+  const NetworkException(
+    String message, {
+    this.statusCode,
+    dynamic error,
+  }) : super(message, error);
+}
+
+/// Data-related exceptions
+class DataException extends AppException {
+  const DataException(String message, [dynamic error]) : super(message, error);
+}
+```
+
+### Error Handling Strategy
+1. Use typed exceptions for different error cases
+2. Handle errors at appropriate levels
+3. Provide user-friendly error messages
+4. Log errors appropriately
+5. Implement proper error recovery
 
 ## Testing
 
 ### Unit Tests
 ```dart
 void main() {
-  group('PlotRepository', () {
-    late PlotRepository repository;
+  group('GardenRepository', () {
+    late GardenRepository repository;
     late MockApiClient mockApiClient;
     late MockLocalStorage mockLocalStorage;
 
     setUp(() {
       mockApiClient = MockApiClient();
       mockLocalStorage = MockLocalStorage();
-      repository = PlotRepository(mockApiClient, mockLocalStorage);
+      repository = GardenRepository(mockApiClient, mockLocalStorage);
     });
 
-    test('getPlots returns list of plots', () async {
-      final plots = [Plot(id: 1, name: 'Test Plot')];
-      when(mockApiClient.getPlots()).thenAnswer((_) async => plots);
+    test('getGardens returns cached data when offline', () async {
+      when(mockApiClient.getGardens()).thenThrow(NetworkException('Offline'));
+      when(mockLocalStorage.getGardens())
+          .thenAnswer((_) async => [Garden(id: '1', name: 'Test')]);
 
-      final result = await repository.getPlots();
+      final result = await repository.getGardens();
 
-      expect(result, equals(plots));
-      verify(mockApiClient.getPlots()).called(1);
+      expect(result.length, equals(1));
+      verify(mockLocalStorage.getGardens()).called(1);
     });
   });
 }
@@ -222,88 +261,92 @@ void main() {
 ### Widget Tests
 ```dart
 void main() {
-  group('GardenListPage', () {
-    late MockPlotBloc mockPlotBloc;
-
-    setUp(() {
-      mockPlotBloc = MockPlotBloc();
-    });
-
-    testWidgets('shows loading indicator when loading', (tester) async {
-      when(mockPlotBloc.state).thenReturn(PlotLoading());
+  group('GardenList', () {
+    testWidgets('shows error message on failure', (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          gardenProvider.overrideWith(
+            (ref) => GardenNotifier(MockRepository())..loadGardens(),
+          ),
+        ],
+      );
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider.value(
-            value: mockPlotBloc,
-            child: const GardenListPage(),
-          ),
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(home: GardenList()),
         ),
       );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(ErrorDisplay), findsOneWidget);
     });
   });
 }
 ```
 
-## Documentation
-
-### Code Comments
+### Integration Tests
 ```dart
-/// A service that handles garden-related operations.
-///
-/// This service provides methods for managing garden plots,
-/// including creating, updating, and retrieving plot data.
-/// It coordinates between the repository and local storage
-/// to ensure data consistency.
-class GardenService {
-  /// Updates an existing plot in the garden.
-  ///
-  /// Throws a [GardenError] if the update fails.
-  /// The error message will contain details about the failure.
-  Future<void> updatePlot(Plot plot) async {
-    // Implementation
-  }
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  group('End-to-end test', () {
+    testWidgets('Create and view garden flow', (tester) async {
+      await tester.pumpWidget(const PlantariumApp());
+
+      // Test user flow
+      await tester.tap(find.byIcon(Icons.add));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).first,
+        'Test Garden',
+      );
+      await tester.tap(find.text('Create'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test Garden'), findsOneWidget);
+    });
+  });
 }
 ```
-
-### Documentation Files
-- Keep README.md up to date
-- Document API changes
-- Update architecture decisions
-- Maintain changelog
 
 ## Performance
 
 ### Best Practices
-1. Use const constructors
-2. Implement proper widget keys
-3. Optimize rebuilds
-4. Use appropriate widgets
-5. Implement proper caching
-6. Handle large lists efficiently
+1. Use const constructors where possible
+2. Implement proper list view optimization
+3. Cache network resources appropriately
+4. Minimize rebuilds using selective updates
+5. Use appropriate image formats and sizes
 
 ### Memory Management
 ```dart
-class GardenListPage extends StatefulWidget {
-  @override
-  _GardenListPageState createState() => _GardenListPageState();
-}
+class _GardenListState extends State<GardenList> {
+  late final ScrollController _scrollController;
 
-class _GardenListPageState extends State<GardenListPage> {
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
   @override
   void dispose() {
-    // Clean up resources
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: plots.length,
+      controller: _scrollController,
+      itemCount: widget.gardens.length,
       itemBuilder: (context, index) {
-        return PlotListItem(plot: plots[index]);
+        final garden = widget.gardens[index];
+        return GardenCard(
+          key: ValueKey(garden.id),
+          garden: garden,
+        );
       },
     );
   }
@@ -313,29 +356,117 @@ class _GardenListPageState extends State<GardenListPage> {
 ## Security
 
 ### Best Practices
-1. Use HTTPS for all API calls
-2. Validate all user input
-3. Sanitize error messages
-4. Implement proper error handling
-5. Use secure storage for sensitive data
-6. Follow Flutter security guidelines
+1. Use HTTPS for all network calls
+2. Implement proper input validation
+3. Sanitize data before display
+4. Use secure storage for sensitive data
+5. Follow platform security guidelines
 
 ### Input Validation
 ```dart
-class Plot {
-  final String name;
-  final double area;
+class GardenForm {
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Garden name is required';
+    }
+    if (value.length < 3) {
+      return 'Name must be at least 3 characters';
+    }
+    if (value.length > 50) {
+      return 'Name must be less than 50 characters';
+    }
+    return null;
+  }
 
-  Plot({
-    required this.name,
-    required this.area,
-  }) {
-    if (name.isEmpty) {
-      throw ArgumentError('Plot name cannot be empty');
+  String? validateArea(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Area is required';
     }
-    if (area <= 0) {
-      throw ArgumentError('Plot area must be positive');
+    final number = double.tryParse(value);
+    if (number == null) {
+      return 'Please enter a valid number';
     }
+    if (number <= 0) {
+      return 'Area must be greater than 0';
+    }
+    return null;
   }
 }
-``` 
+```
+
+## Git Workflow
+
+### Branch Naming
+- Feature branches: `feature/add-garden-form`
+- Bug fixes: `fix/garden-list-crash`
+- Releases: `release/1.0.0`
+- Hotfixes: `hotfix/critical-auth-fix`
+
+### Commit Messages
+```
+feat(garden): add garden creation form
+^    ^        ^
+|    |        |
+|    |        +-> Summary in present tense
+|    +----------> Scope
++---------------> Type: feat, fix, docs, style, refactor, test, chore
+```
+
+### Pull Request Guidelines
+1. Keep PRs focused and small
+2. Include clear descriptions
+3. Add relevant tests
+4. Update documentation
+5. Link related issues
+
+## CI/CD Practices
+
+### Build Process
+- Use environment-specific configurations
+- Run tests before builds
+- Generate build artifacts
+- Create deployment packages
+
+### Deployment Strategy
+- Use staged deployments (dev → staging → prod)
+- Implement feature flags
+- Monitor deployment health
+- Plan rollback procedures
+
+## Environment Management
+
+### Configuration
+```dart
+/// Environment-specific configuration
+class AppConfig {
+  final String apiBaseUrl;
+  final bool enableLogging;
+  final Duration timeoutDuration;
+
+  const AppConfig({
+    required this.apiBaseUrl,
+    required this.enableLogging,
+    required this.timeoutDuration,
+  });
+
+  /// Development configuration
+  factory AppConfig.development() => const AppConfig(
+        apiBaseUrl: 'http://localhost:3000',
+        enableLogging: true,
+        timeoutDuration: Duration(seconds: 30),
+      );
+
+  /// Production configuration
+  factory AppConfig.production() => const AppConfig(
+        apiBaseUrl: 'https://api.plantarium.app',
+        enableLogging: false,
+        timeoutDuration: Duration(seconds: 20),
+      );
+}
+```
+
+### Environment Setup
+1. Use `.env` files for environment variables
+2. Keep sensitive data out of version control
+3. Document environment setup requirements
+4. Provide example configuration files 

@@ -1,15 +1,43 @@
 import 'package:flutter/material.dart';
-import 'config/app_config.dart';
-import 'config/env_config.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:plantarium/core/config/app_config.dart';
 
 void main() {
   // Initialize environment configuration
-  final env = const String.fromEnvironment('ENVIRONMENT', defaultValue: 'dev');
-  AppConfig.initialize(
-    env == 'prod' ? Environment.prod : Environment.dev,
+  final String envName = const String.fromEnvironment(
+    'ENVIRONMENT',
+    defaultValue: 'development',
   );
 
-  runApp(const MyApp());
+  final env = Environment.values.firstWhere(
+    (e) => e.name == envName,
+    orElse: () => Environment.development,
+  );
+
+  AppConfig.init(env);
+
+  // Run the app with Riverpod
+  runApp(
+    const ProviderScope(
+      child: PlantariumApp(),
+    ),
+  );
+}
+
+class PlantariumApp extends StatelessWidget {
+  const PlantariumApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Plantarium',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'Plantarium Home Page'),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
