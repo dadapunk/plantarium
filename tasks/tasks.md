@@ -5,8 +5,8 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 ## 1. Flutter Project Setup & Environment Configuration
 
 ### 1.1 Flutter Project Initialization
-- [ ] 1.1.1 Create new Flutter project with appropriate naming conventions
-- [ ] 1.1.2 Configure Flutter for cross-platform support (Windows, macOS, Linux)
+- [x] 1.1.1 Create new Flutter project with appropriate naming conventions
+- [x] 1.1.2 Configure Flutter for cross-platform support (Windows, macOS, Linux)
 - [ ] 1.1.3 Set up platform-specific configuration files
 - [ ] 1.1.4 Configure assets directory structure for images, fonts, etc.
 

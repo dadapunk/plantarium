@@ -1,0 +1,65 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Implementation Priorities & Current Status
+
+This rule outlines the development priorities for the Plantarium project, helping guide implementation efforts.
+
+## Development Phases Strategy
+The full development strategy is outlined in [development_phases.md](mdc:development_phases.md), which breaks the project into 7 phases:
+1. Foundation & Core Architecture
+2. Garden Layout System
+3. Plant Database & API Integration
+4. Climate & Scheduling System
+5. Advanced Gardening Features
+6. Polishing & Optimization
+7. Beta Testing & Launch
+
+## Current Phase: 1 - Frontend Development Focus
+The current development phase focuses on establishing the Flutter frontend foundation to connect with the existing NestJS backend.
+
+## Key Implementation Areas
+
+### Backend Integration
+- API client for NestJS backend communication
+- Local storage with SQLite
+- State management architecture
+- Data synchronization mechanisms
+
+### UI Framework
+- Design system and theming
+- Navigation architecture
+- Responsive layout framework
+- Core UI components
+
+### Core Functionality
+- Garden layout canvas implementation
+- Plant database integration
+- Climate-adapted planting schedules
+- Notification system
+
+## Progress Tracking
+Detailed progress tracking is maintained in [tasks/tasks.md](mdc:tasks/tasks.md) following this format:
+- [ ] Incomplete task
+- [x] Completed task
+
+Tasks marked as [x] in the tasks document are typically already implemented in the NestJS backend.
+
+## Priority Guidelines
+1. First establish the core architecture and connectivity
+2. Then implement basic UI components and navigation
+3. Focus on data models and repositories
+4. Finally implement specific garden planning features
+
+## Known Documentation Gaps
+Areas requiring additional clarification are documented in [documentation_gaps.md](mdc:documentation_gaps.md) and should be addressed before implementing related features.
+
+## Testing Requirements
+All new implementations require corresponding tests:
+- Unit tests for models and business logic
+- Widget tests for UI components
+- Integration tests for API connectivity
+
+

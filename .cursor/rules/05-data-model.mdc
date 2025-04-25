@@ -1,0 +1,51 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Data Models & Database Schema
+
+Plantarium uses SQLite for local data storage. This rule outlines the key data models and relationships.
+
+## Core Entities
+
+### Garden Areas
+- Represents distinct gardening areas (e.g., "Backyard", "Front Yard")
+- Properties: id, name, description, location data
+
+### Garden Beds
+- Represents planting beds within garden areas
+- Properties: id, garden_area_id, name, shape data (coordinates), dimensions, soil type
+- Relationships: Belongs to a Garden Area, contains Plants
+
+### Plants
+- Plant data from Permapeople API or user-created
+- Properties: id, name, family, planting instructions, growth habits, spacing requirements, days to maturity
+- Additional data: companion planting data, water/sun needs
+- May have a cached flag to indicate origin (API vs. custom)
+
+### Plantings
+- Represents instances of plants placed in garden beds
+- Properties: id, plant_id, bed_id, position data, planting date, expected harvest date
+- Stores historical data for crop rotation tracking
+- Relationships: Belongs to a Plant and a Garden Bed
+
+### Tasks
+- Garden tasks and reminders
+- Properties: id, type, description, due date, associated plant/bed IDs
+- Types include: planting, fertilizing, harvesting, watering, custom
+
+### User Settings
+- User preferences and configuration
+- Properties: location data (for weather), notification preferences, UI settings
+
+## Database Relationships
+- Garden Areas contain multiple Garden Beds
+- Garden Beds contain multiple Plantings
+- Plants have multiple Plantings (instances)
+- Tasks can be associated with specific Plants, Plantings, or Beds
+
+## Data Persistence Strategy
+- Automatic saving of garden layouts and changes
+- Caching of API data for offline use
+- Backup and restore capabilities

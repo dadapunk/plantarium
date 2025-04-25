@@ -1,0 +1,40 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# External API Integrations
+
+Plantarium integrates with external APIs to provide plant data and weather information.
+
+## Permapeople API
+- **Purpose**: Retrieves comprehensive plant information
+- **Implementation**: Located in `backend/src/api-permapeople/`
+- **Data Retrieved**:
+  - Plant growth requirements (sun, water, soil)
+  - Planting dates and growing seasons
+  - Companion planting information
+  - Plant family categorization for crop rotation
+  - General cultivation best practices
+- **Caching Strategy**: 
+  - Local caching of frequently accessed plant data
+  - Periodic updates of plant database
+  - Fallbacks for offline usage
+
+## OpenWeather API
+- **Purpose**: Provides local weather data for garden planning
+- **Data Retrieved**:
+  - Current weather conditions
+  - Short-term forecasts (7-day)
+  - Frost warnings and predictions
+  - Temperature trends for planting decisions
+- **Integration Points**:
+  - Planting schedule adjustments based on weather conditions
+  - Frost alerts and warnings
+  - Watering recommendations based on precipitation
+  - Season extension guidance
+
+## API Security
+- Secure storage of API keys
+- Rate limiting to prevent excessive API usage
+- Graceful handling of API unavailability

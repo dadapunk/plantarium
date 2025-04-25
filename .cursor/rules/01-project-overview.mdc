@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Plantarium Project Overview
+
+Plantarium is a cross-platform desktop application built with Flutter for home gardeners to plan, manage, and optimize their crop cultivation. This rule provides an overview of the project structure and key components.
+
+## Key Features
+- Garden layout design and visualization
+- Plant database integration with Permapeople API
+- Climate-adapted planting schedules and calendar
+- Notifications and alerts system
+- Companion planting guidance
+- Crop rotation tracking
+- Weather integration via OpenWeather API
+
+## Core Architecture
+- **Frontend**: Flutter application (desktop-focused)
+- **Backend**: NestJS API server
+- **Database**: SQLite for local data storage
+- **External APIs**: Permapeople (plants), OpenWeather (weather)
+
+## Key Files
+- [software_specification.md](mdc:software_specification.md) - Detailed project specifications
+- [development_phases.md](mdc:development_phases.md) - Development phases and roadmap
+- [tasks/tasks.md](mdc:tasks/tasks.md) - Development task tracking and progress
+- [documentation_gaps.md](mdc:documentation_gaps.md) - Areas requiring clarification or additional detail
+- [frontend/lib/main.dart](mdc:frontend/lib/main.dart) - Flutter app entry point
+- [backend/src/main.ts](mdc:backend/src/main.ts) - NestJS server entry point
+
+
+
+

@@ -1,0 +1,34 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Backend Architecture
+
+The Plantarium backend is a NestJS application that serves as the API layer between the frontend and external data sources.
+
+## Core Modules
+- **Plant Module** (`backend/src/plant/`): Manages plant data, integrates with Permapeople API
+- **Plot Module** (`backend/src/plot/`): Handles garden layouts, beds, and plant placement
+- **API Integration** (`backend/src/api-permapeople/`): Interfaces with the Permapeople plant database API
+- **Garden Notes** (`backend/src/garden-notes/`): Manages user notes and observations
+
+## Database Integration
+The backend uses SQLite for local data persistence, storing:
+- User garden layouts
+- Plant data cache from Permapeople API
+- Planting history for crop rotation
+- User calendar and task data
+- Custom plants added by users
+
+## API Endpoints
+The backend provides REST API endpoints for:
+- CRUD operations on garden layouts and beds
+- Plant information retrieval and caching
+- User tasks and calendar events
+- Weather data integration from OpenWeather
+
+## Authentication & Data Security
+- Local data storage with SQLite
+- Secure storage of API keys for external services
+- Protection of user garden data

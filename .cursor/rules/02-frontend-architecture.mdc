@@ -1,0 +1,33 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Frontend Architecture
+
+The Plantarium frontend is a Flutter desktop application that provides an intuitive interface for garden planning and management.
+
+## Structure
+- Flutter app (`frontend/lib/`) - Primary desktop application
+- Web components (`frontend/src/`) - Supporting web components
+
+## Key Modules
+- **Garden Layout & Visualization**: Interactive canvas for designing garden beds and placing plants
+- **Plant Management**: Interface for browsing, searching, and managing plants from the Permapeople API
+- **Calendar & Scheduling**: Visualization of planting schedules and garden tasks
+- **Notifications**: System for displaying alerts and reminders
+- **Weather Integration**: Displays and integrates weather data for planning
+
+## State Management
+The application uses state management to handle:
+- User preferences and settings
+- Garden layouts and designs
+- Plant database and user plant library
+- Task scheduling and calendar events
+
+## Features Implementation
+- Canvas-based garden layout editor
+- Drag and drop interface for plant placement
+- Climate-aware planting schedule generation
+- Visual indicators for companion planting compatibility
+- Crop rotation history tracking and visualization

@@ -1,0 +1,58 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Development Workflow & Best Practices
+
+This rule outlines the recommended development workflow and coding practices for the Plantarium project.
+
+## Project Setup
+- Frontend: Flutter setup in `frontend/` directory
+- Backend: NestJS setup in `backend/` directory
+- Development packages should be installed via `npm` (backend) and `pub get` (Flutter)
+
+## Development Tasks & Progress Tracking
+- Development tasks are tracked in [tasks/tasks.md](mdc:tasks/tasks.md)
+- Use the task numbering system (e.g., 1.1.1) when referring to specific tasks in commits or PRs
+- Mark tasks as completed with [x] when finished
+- Note that tasks already marked as completed [x] are implemented in the NestJS backend
+
+## Documentation Gaps & Clarifications
+- Areas requiring additional detail or clarification are tracked in [documentation_gaps.md](mdc:documentation_gaps.md)
+- When addressing a documentation gap, reference it explicitly in commits or PRs
+- Update the documentation_gaps.md file when clarifications are resolved
+
+## Code Standards
+- Use TypeScript for both backend and frontend web components
+- Follow Flutter/Dart best practices for the desktop application
+- Maintain consistent code formatting with provided linting rules
+- Write comprehensive comments for complex logic
+
+## Feature Development Workflow
+1. Reference the [software_specification.md](mdc:software_specification.md) for feature requirements
+2. Create unit tests before implementation when possible
+3. Implement backend endpoints before frontend consumer code
+4. Ensure cross-platform compatibility (Windows, macOS, Linux)
+5. Test features with offline capability in mind
+
+## External API Integration Guidelines
+- All API keys should be stored securely, never in code
+- Implement proper error handling for API failures
+- Cache responses appropriately to minimize API calls
+- Provide fallback behavior for offline operation
+
+## Testing Requirements
+- Unit tests for core business logic
+- Integration tests for API endpoints
+- UI tests for critical user flows
+- Cross-platform testing on all supported operating systems
+
+## Performance Considerations
+- Optimize Flutter canvas operations for smooth layout editing
+- Implement efficient database queries
+- Use lazy loading for large datasets
+- Cache API responses appropriately
+
+
+
