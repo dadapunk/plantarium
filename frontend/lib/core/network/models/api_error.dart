@@ -23,10 +23,11 @@ class ApiError implements Exception {
 
     if (data is Map<String, dynamic>) {
       return ApiError(
-        message: data['message'] ?? e.message ?? 'An error occurred',
+        message:
+            (data['message'] as String?) ?? e.message ?? 'An error occurred',
         statusCode: response?.statusCode,
-        errorCode: data['error_code'],
-        errorDetails: data['error_details'],
+        errorCode: data['error_code'] as String?,
+        errorDetails: data['error_details'] as Map<String, dynamic>?,
         dioException: e,
       );
     }

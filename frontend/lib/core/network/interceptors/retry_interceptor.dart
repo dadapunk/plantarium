@@ -39,9 +39,21 @@ class RetryInterceptor extends Interceptor {
     final delay = Duration(milliseconds: 1000 * (1 << retryCount));
     await Future.delayed(delay);
 
+    // Create a new Dio instance for the retry
+    final dio =
+        Dio()
+          ..options = BaseOptions(
+            baseUrl: options.baseUrl,
+            headers: options.headers,
+            contentType: options.contentType,
+            responseType: options.responseType,
+            connectTimeout: options.connectTimeout,
+            receiveTimeout: options.receiveTimeout,
+          );
+
     // Retry the request
     try {
-      final response = await err.requestOptions.dio.fetch(options);
+      final response = await dio.fetch(options);
       handler.resolve(response);
     } catch (e) {
       handler.next(err);

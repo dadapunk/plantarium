@@ -32,10 +32,9 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 
 ### 2.1 API Client Layer
 - [x] 2.1.1 Create HTTP client wrapper for NestJS API calls
-- [ ] 2.1.2 Implement authentication handling mechanisms
-- [ ] 2.1.3 Build response parsing and error handling
-- [ ] 2.1.4 Create DTO models matching backend entities
-- [ ] 2.1.5 Implement retry and timeout strategies
+- [x] 2.1.2 Build response parsing and error handling
+- [x] 2.1.3 Create DTO models matching backend entities
+- [x] 2.1.4 Implement retry and timeout strategies
 
 ### 2.2 Local Storage Implementation
 - [x] 2.2.1 Set up SQLite database (implemented in NestJS backend)
@@ -175,7 +174,6 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 - [ ] 6.1.2 Implement startup sequence
 - [ ] 6.1.3 Set up dependency initialization
 - [ ] 6.1.4 Create splash screen
-- [ ] 6.1.5 Implement authentication flow
 
 ### 6.2 Basic Screens
 - [ ] 6.2.1 Create home screen skeleton

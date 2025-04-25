@@ -19,15 +19,17 @@ class ApiClient {
     required this.baseUrl,
     int timeout = 30,
     bool enableLogging = false,
-  }) : _dio = Dio(BaseOptions(
-          baseUrl: baseUrl,
-          connectTimeout: Duration(seconds: timeout),
-          receiveTimeout: Duration(seconds: timeout),
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        )) {
+  }) : _dio = Dio(
+         BaseOptions(
+           baseUrl: baseUrl,
+           connectTimeout: Duration(seconds: timeout),
+           receiveTimeout: Duration(seconds: timeout),
+           headers: {
+             'Content-Type': 'application/json',
+             'Accept': 'application/json',
+           },
+         ),
+       ) {
     _setupInterceptors(enableLogging);
   }
 
@@ -39,6 +41,14 @@ class ApiClient {
     ]);
   }
 
+  /// Converts dynamic response data to a Map<String, dynamic>.
+  Map<String, dynamic> _normalizeResponseData(dynamic data) {
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    return {'success': true, 'message': 'Success', 'data': data};
+  }
+
   /// Sends a GET request to the specified [path].
   ///
   /// [queryParameters] are added to the URL as query parameters.
@@ -47,6 +57,7 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
+    T Function(Object? json)? fromJson,
   }) async {
     try {
       final response = await _dio.get(
@@ -54,7 +65,11 @@ class ApiClient {
         queryParameters: queryParameters,
         options: options,
       );
-      return ApiResponse<T>.fromJson(response.data);
+      final normalizedData = _normalizeResponseData(response.data);
+      return ApiResponse<T>.fromJson(
+        normalizedData,
+        fromJson ?? (json) => json as T,
+      );
     } on DioException catch (e) {
       throw ApiError.fromDioException(e);
     }
@@ -68,14 +83,15 @@ class ApiClient {
     String path, {
     dynamic data,
     Options? options,
+    T Function(Object? json)? fromJson,
   }) async {
     try {
-      final response = await _dio.post(
-        path,
-        data: data,
-        options: options,
+      final response = await _dio.post(path, data: data, options: options);
+      final normalizedData = _normalizeResponseData(response.data);
+      return ApiResponse<T>.fromJson(
+        normalizedData,
+        fromJson ?? (json) => json as T,
       );
-      return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiError.fromDioException(e);
     }
@@ -89,14 +105,15 @@ class ApiClient {
     String path, {
     dynamic data,
     Options? options,
+    T Function(Object? json)? fromJson,
   }) async {
     try {
-      final response = await _dio.put(
-        path,
-        data: data,
-        options: options,
+      final response = await _dio.put(path, data: data, options: options);
+      final normalizedData = _normalizeResponseData(response.data);
+      return ApiResponse<T>.fromJson(
+        normalizedData,
+        fromJson ?? (json) => json as T,
       );
-      return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiError.fromDioException(e);
     }
@@ -108,13 +125,15 @@ class ApiClient {
   Future<ApiResponse<T>> delete<T>(
     String path, {
     Options? options,
+    T Function(Object? json)? fromJson,
   }) async {
     try {
-      final response = await _dio.delete(
-        path,
-        options: options,
+      final response = await _dio.delete(path, options: options);
+      final normalizedData = _normalizeResponseData(response.data);
+      return ApiResponse<T>.fromJson(
+        normalizedData,
+        fromJson ?? (json) => json as T,
       );
-      return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiError.fromDioException(e);
     }
@@ -128,14 +147,15 @@ class ApiClient {
     String path, {
     dynamic data,
     Options? options,
+    T Function(Object? json)? fromJson,
   }) async {
     try {
-      final response = await _dio.patch(
-        path,
-        data: data,
-        options: options,
+      final response = await _dio.patch(path, data: data, options: options);
+      final normalizedData = _normalizeResponseData(response.data);
+      return ApiResponse<T>.fromJson(
+        normalizedData,
+        fromJson ?? (json) => json as T,
       );
-      return ApiResponse<T>.fromJson(response.data);
     } on DioException catch (e) {
       throw ApiError.fromDioException(e);
     }
