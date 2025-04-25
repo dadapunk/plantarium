@@ -19,7 +19,7 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 ### 1.3 Version Control Integration
 - [x] 1.3.1 Set up branch strategy for frontend code
 - [x] 1.3.2 Configure CI/CD pipeline for Flutter builds
-- [ ] 1.3.3 Set up automated testing for the Flutter frontend
+- [x] 1.3.3 Set up automated testing for the Flutter frontend
 - [ ] 1.3.4 Configure build and deployment automation
 
 ### 1.4 Project Documentation
