@@ -31,7 +31,7 @@ This document provides a detailed breakdown of tasks for Phase 1 of the Plantari
 ## 2. Backend Integration Architecture
 
 ### 2.1 API Client Layer
-- [ ] 2.1.1 Create HTTP client wrapper for NestJS API calls
+- [x] 2.1.1 Create HTTP client wrapper for NestJS API calls
 - [ ] 2.1.2 Implement authentication handling mechanisms
 - [ ] 2.1.3 Build response parsing and error handling
 - [ ] 2.1.4 Create DTO models matching backend entities
