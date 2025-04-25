@@ -164,13 +164,13 @@
       "languageVersion": "3.3"
     },
     {
-      "name": "frontend",
+      "name": "plantarium",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.6"
     }
   ],
-  "generated": "2025-04-24T21:04:50.865844Z",
+  "generated": "2025-04-25T14:42:01.227823Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///C:/flutter/src/flutter",
