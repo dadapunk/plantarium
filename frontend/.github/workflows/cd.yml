@@ -1,0 +1,97 @@
+name: Flutter CD
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: macos-latest  # Changed to macOS runner to support all platforms
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        channel: 'stable'
+    
+    - name: Install dependencies
+      run: flutter pub get
+      working-directory: frontend
+
+    - name: Install Linux dependencies
+      run: |
+        brew install ninja pkg-config
+    
+    - name: Build macOS
+      run: flutter build macos --release --dart-define=ENVIRONMENT=prod
+      working-directory: frontend
+    
+    - name: Build Windows
+      run: flutter build windows --release --dart-define=ENVIRONMENT=prod
+      working-directory: frontend
+    
+    - name: Build Linux
+      run: flutter build linux --release --dart-define=ENVIRONMENT=prod
+      working-directory: frontend
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    
+    - name: Create DMG for macOS
+      run: |
+        cd frontend/build/macos/Build/Products/Release
+        mkdir -p dmg_root
+        cp -r plantarium.app dmg_root/
+        hdiutil create -volname "Plantarium" -srcfolder dmg_root -ov -format UDZO plantarium-macos.dmg
+    
+    - name: Zip Windows Build
+      run: |
+        cd frontend/build/windows/x64/runner/Release
+        zip -r windows-release.zip ./*
+    
+    - name: Zip Linux Build
+      run: |
+        cd frontend/build/linux/x64/release/bundle
+        zip -r linux-release.zip ./*
+    
+    - name: Upload macOS Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: frontend/build/macos/Build/Products/Release/plantarium-macos.dmg
+        asset_name: plantarium-macos.dmg
+        asset_content_type: application/x-apple-diskimage
+    
+    - name: Upload Windows Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: frontend/build/windows/x64/runner/Release/windows-release.zip
+        asset_name: plantarium-windows.zip
+        asset_content_type: application/zip
+    
+    - name: Upload Linux Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: frontend/build/linux/x64/release/bundle/linux-release.zip
+        asset_name: plantarium-linux.zip
+        asset_content_type: application/zip 

@@ -1,0 +1,82 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  build:
+    runs-on: macos-latest  # Changed to macOS runner to support all platforms
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        channel: 'stable'
+    
+    - name: Install dependencies
+      run: flutter pub get
+      working-directory: frontend
+    
+    - name: Verify formatting
+      run: dart format --output=none --set-exit-if-changed .
+      working-directory: frontend
+    
+    - name: Analyze project source
+      run: flutter analyze
+      working-directory: frontend
+    
+    - name: Run tests
+      run: flutter test --coverage
+      working-directory: frontend
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: frontend/coverage/lcov.info
+        
+    - name: Install Linux dependencies
+      if: github.ref == 'refs/heads/main'
+      run: |
+        brew install ninja pkg-config
+        
+    - name: Build macOS
+      if: github.ref == 'refs/heads/main'
+      run: flutter build macos --release
+      working-directory: frontend
+        
+    - name: Build Windows
+      if: github.ref == 'refs/heads/main'
+      run: flutter build windows --release
+      working-directory: frontend
+      
+    - name: Build Linux
+      if: github.ref == 'refs/heads/main'
+      run: flutter build linux --release
+      working-directory: frontend
+      
+    - name: Upload macOS Build
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-build
+        path: frontend/build/macos/Build/Products/Release/plantarium.app
+        
+    - name: Upload Windows Build
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-build
+        path: frontend/build/windows/x64/runner/Release/
+        
+    - name: Upload Linux Build
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux-build
+        path: frontend/build/linux/x64/release/bundle/ 
