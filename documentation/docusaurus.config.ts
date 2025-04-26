@@ -2,6 +2,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import { securityConfig, optimizationConfig, analyticsConfig } from './config';
+import monitoringConfig from './config/monitoring.config.js';
 
 const config: Config = {
   title: 'Plantarium Documentation',
@@ -18,10 +19,34 @@ const config: Config = {
   organizationName: 'plantarium',  // GitHub organization or username
   projectName: 'plantarium',       // GitHub repository name
 
-  // Security and optimization configurations
-  security: securityConfig,
+  // Security, optimization, and monitoring configurations
+  security: {
+    ...securityConfig,
+    headers: {
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; font-src 'self'; object-src 'none'; media-src 'self'; frame-src 'none'",
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+      'X-Frame-Options': 'DENY',
+      'X-Content-Type-Options': 'nosniff',
+      'X-XSS-Protection': '1; mode=block',
+      'Referrer-Policy': 'strict-origin-when-cross-origin'
+    },
+    rateLimiting: {
+      enabled: true,
+      windowMs: 900000,
+      max: 100
+    },
+    validation: {
+      enabled: true,
+      sanitize: {
+        html: true,
+        sql: true,
+        xss: true
+      }
+    }
+  },
   optimization: optimizationConfig,
   analytics: analyticsConfig,
+  monitoring: monitoringConfig,
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
