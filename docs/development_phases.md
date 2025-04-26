@@ -42,6 +42,7 @@ This document outlines the strategic approach to developing the Plantarium appli
 - Implement the garden layout design functionality
 - Create the visual canvas for garden planning
 - Enable basic garden management features
+- Implement Garden Notes system for activity tracking
 
 ### Key Tasks
 1. **Garden Canvas Implementation**
@@ -64,11 +65,18 @@ This document outlines the strategic approach to developing the Plantarium appli
    - Implement manual plant entry system
    - Create plant search and filtering
 
+5. **Garden Notes System**
+   - Implement dual-storage system (SQLite + Markdown)
+   - Create note creation and editing interface
+   - Develop file system synchronization
+   - Add basic note linking to plants and beds
+
 ### Deliverables
 - Functional garden layout designer
 - Garden management system
 - Basic plant placement functionality
 - Garden persistence in SQLite database
+- Garden Notes system with markdown support
 
 ## Phase 3: Plant Database & API Integration
 
@@ -76,6 +84,7 @@ This document outlines the strategic approach to developing the Plantarium appli
 - Integrate with external plant data sources
 - Implement comprehensive plant management
 - Create caching mechanisms for offline use
+- Enhance Garden Notes with plant integration
 
 ### Key Tasks
 1. **Permapeople API Integration**
@@ -98,11 +107,18 @@ This document outlines the strategic approach to developing the Plantarium appli
    - Implement filtering and sorting
    - Create plant detail views
 
+5. **Garden Notes Enhancement**
+   - Link notes to plant database entries
+   - Implement note tagging system
+   - Add weather data integration
+   - Develop advanced search capabilities
+
 ### Deliverables
 - Fully integrated plant database
 - Offline functionality for plant data
 - Custom plant management
 - Comprehensive plant details views
+- Enhanced Garden Notes with plant integration
 
 ## Phase 4: Climate & Scheduling System
 
@@ -144,6 +160,7 @@ This document outlines the strategic approach to developing the Plantarium appli
 - Implement companion planting guidance
 - Create crop rotation tracking
 - Add advanced gardening tools
+- Enhance Garden Notes with advanced features
 
 ### Key Tasks
 1. **Companion Planting System**
@@ -166,11 +183,18 @@ This document outlines the strategic approach to developing the Plantarium appli
    - Create weather-based recommendations
    - Develop extreme weather alerts
 
+5. **Garden Notes Advanced Features**
+   - Implement version control integration
+   - Add media support (images, progress photos)
+   - Create export/import functionality
+   - Develop collaboration features
+
 ### Deliverables
 - Companion planting guidance system
 - Crop rotation tracking and warnings
 - Garden analytics and reporting
 - Advanced weather integration
+- Enhanced Garden Notes with advanced features
 
 ## Phase 6: Polishing & Optimization
 

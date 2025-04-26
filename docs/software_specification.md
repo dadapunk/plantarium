@@ -70,14 +70,36 @@ Users seeking a digital alternative or supplement to paper-based garden planning
 - Fetches current conditions and forecasts (temperature, precipitation, frost probability).
 - Used primarily for frost warnings and potentially adjusting planting date suggestions or generating watering advice.
 
+### 3.8 Garden Notes System:
+- Implement a dual-storage system for garden notes:
+  - SQLite database for fast querying and app integration
+  - Markdown files for user accessibility and external editing
+- Core Features:
+  - Create, edit, and delete garden notes
+  - Link notes to specific plants, beds, or general observations
+  - Support for markdown formatting
+  - Automatic synchronization between database and files
+  - Real-time file system monitoring for external edits
+- Advanced Features:
+  - Tagging system for note organization
+  - Weather data integration
+  - Media attachments (images, progress photos)
+  - Version control integration
+  - Export/import functionality
+- Integration Points:
+  - Link notes to calendar events
+  - Include in plant and bed detail views
+  - Search across all notes
+  - Generate reports from note data
+
 ## 4. Non-Functional Requirements
 
 - **Platform Compatibility**: Must run natively on Windows, macOS, and Linux via Flutter's desktop support.
 - **Performance**: Smooth and responsive UI, especially the Flutter canvas for layout rendering. Asynchronous operations for API calls and background tasks to prevent UI freezes. Efficient data handling.
 - **Usability**: High priority on an intuitive, visually clear, and easy-to-navigate interface. Minimal learning curve for the target audience.
 - **Reliability**: Stable operation with minimal crashes. Graceful handling of errors (e.g., network down, API unavailable) with informative messages to the user. Robust data saving.
-- **Data Persistence**: User data (layouts, plant lists, settings, history) must be stored locally and reliably using SQLite. Ensure data integrity and provide backup/restore options if feasible.
-- **Offline Functionality**: Core features (viewing/editing layouts, viewing cached data/schedules) must work without an internet connection. Features requiring live data (weather forecast, new plant searches) should be disabled gracefully when offline.
+- **Data Persistence**: User data (layouts, plant lists, settings, history, garden notes) must be stored locally and reliably using SQLite and markdown files. Ensure data integrity and provide backup/restore options if feasible.
+- **Offline Functionality**: Core features (viewing/editing layouts, viewing cached data/schedules, garden notes) must work without an internet connection. Features requiring live data (weather forecast, new plant searches) should be disabled gracefully when offline.
 - **Security**: Protect user data. Securely store API keys (OpenWeather, Permapeople) – avoid embedding directly in code. Ensure secure connection when accessing external APIs and secure access to the local SQLite database.
 
 ## 5. Technical Specifications

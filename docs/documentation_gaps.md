@@ -35,6 +35,27 @@ This document outlines areas in the current Plantarium specification that would 
 - How will users restore their data if needed?
 - Will there be an automatic backup function?
 
+### 15. Garden Notes Implementation Details
+- How will the dual-storage system handle conflicts between file and database changes?
+- What is the strategy for handling large numbers of notes (performance considerations)?
+- How will the markdown file structure be versioned or backed up?
+- What happens if the file system becomes corrupted?
+- How will the app handle external markdown editor modifications while the app is running?
+- What is the maximum file size for notes?
+- How will media attachments be handled in the dual-storage system?
+
+### 16. Garden Notes Security Considerations
+- How will sensitive information in notes be protected?
+- What is the backup strategy for the markdown files?
+- How will file system permissions be managed across different operating systems?
+- What happens to notes when the app is uninstalled?
+
+### 17. Garden Notes Integration Points
+- How will notes be linked to other features (plants, beds, weather)?
+- What is the strategy for maintaining referential integrity when linked entities are deleted?
+- How will notes be included in search results across the application?
+- How will notes be integrated with the calendar and notification system?
+
 ## Technical Concerns
 
 ### 6. SQLite Implementation Details
