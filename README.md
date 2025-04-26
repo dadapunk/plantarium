@@ -112,42 +112,10 @@ Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
 - APIs: Permapeople (plants), OpenWeather (weather)
 
 ### Documentation
+- [📚 Full Documentation](https://dadapunk.github.io/plantarium/) - Complete documentation with guides, API reference, and examples
 - [Software Specification](software_specification.md) - Detailed technical requirements and specifications
+- [Contributing Guide](CONTRIBUTING.md) - Guidelines for contributing to the project
+- [Development Guide](DEVELOPMENT.md) - Setup and development instructions
 
 ### Scripts
-```bash
-flutter run         # Run development version
-flutter build       # Build application
-flutter test        # Run tests
-flutter analyze     # Run linter
 ```
-
-### Folder Structure
-```
-plantarium/
-├── lib/
-│   ├── main.dart         # Entry point
-│   ├── models/           # Data models
-│   ├── screens/          # UI screens
-│   ├── widgets/          # Reusable widgets
-│   ├── services/         # API & database services
-│   └── utils/            # Helper functions
-├── assets/               # Static assets
-└── test/                 # Tests
-```
-
-## Contributing
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add some feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
-
-Please ensure your code follows our coding standards and includes appropriate tests.
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-Happy Gardening! 🌻
