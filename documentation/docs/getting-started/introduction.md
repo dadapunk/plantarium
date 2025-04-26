@@ -2,47 +2,76 @@
 sidebar_position: 1
 ---
 
-# Introduction to Plantarium
+# Welcome to Plantarium 🌱
 
-Welcome to Plantarium, your digital garden companion! This documentation will guide you through everything you need to know about using and contributing to Plantarium.
+Your Digital Garden Companion
 
-## What is Plantarium?
+<div style={{textAlign: 'center'}}>
+  <img src="/img/plantarium-hero.png" alt="Plantarium Hero Image" style={{maxWidth: '600px', margin: '2rem auto'}} />
+</div>
 
-Plantarium is a comprehensive digital gardening application that helps you plan, manage, and track your garden. Whether you're a beginner or an experienced gardener, Plantarium provides the tools you need to create and maintain your perfect garden.
+## Transform Your Gardening Experience
 
-## Key Features
+Plantarium is more than just a gardening app – it's your personal digital garden companion. Whether you're a beginner or an experienced gardener, our platform helps you create, manage, and nurture your perfect garden with confidence and ease.
 
-- **Garden Layout System**: Design and visualize your garden layout
-- **Plant Database**: Access comprehensive plant information
-- **Garden Notes**: Keep detailed notes about your garden
-- **Climate & Weather Integration**: Get location-specific gardening advice
-- **Companion Planting**: Plan compatible plant combinations
-- **Crop Rotation**: Manage your crop rotation schedule
-- **Calendar & Scheduling**: Track planting and maintenance tasks
+### Why Choose Plantarium?
 
-## Getting Started
+- 🌿 **Smart Garden Planning**: Design your garden with precision using our intuitive layout system
+- 📚 **Comprehensive Plant Database**: Access detailed information about thousands of plants
+- 📝 **Digital Garden Journal**: Keep track of your gardening journey with our notes system
+- 🌤️ **Weather-Aware Gardening**: Get personalized advice based on your local climate
+- 🤝 **Companion Planting Guide**: Discover which plants thrive together
+- 🔄 **Crop Rotation Manager**: Plan and track your crop rotation schedule
+- 📅 **Smart Calendar**: Never miss important gardening tasks
 
-To get started with Plantarium:
+## Quick Start
 
-1. [Install Plantarium](./installation)
-2. [Take the Quick Start Guide](./quickstart)
-3. [Learn about the Architecture](./architecture)
+Get started with Plantarium in three simple steps:
 
-## Documentation Structure
+1. **[Install Plantarium](./installation)**: Set up your digital garden companion
+2. **[Quick Start Guide](./quickstart)**: Learn the basics in minutes
+3. **[Explore Features](./core-features)**: Discover everything Plantarium can do
 
-This documentation is organized into several main sections:
+## Documentation Overview
 
-- **Getting Started**: Basic setup and introduction
-- **Core Features**: Detailed guides for each feature
-- **Technical Documentation**: API references and technical details
-- **Development Guide**: Information for developers
-- **Contributing**: How to contribute to the project
-- **Project Information**: Roadmap, releases, and community
+Our documentation is designed to help you make the most of Plantarium:
 
-## Need Help?
+### For Gardeners
+- [Getting Started](./getting-started)
+- [Core Features](./core-features)
+- [Garden Planning](./core-features/garden-layout)
+- [Plant Database](./core-features/plant-database)
 
-If you need help or have questions:
+### For Developers
+- [Technical Documentation](./technical)
+- [API Reference](./technical/api-reference)
+- [Development Guide](./development)
 
-- Check our [FAQ](../project-info/faq)
-- Join our [Discord community](https://discord.gg/[your-discord-invite])
-- Open an [issue on GitHub](https://github.com/[your-github-username]/plantarium/issues) 
+### For Contributors
+- [Contribution Guidelines](../contributing/contribution_guidelines)
+- [Documentation Style Guide](../contributing/documentation_style_guide)
+- [Code of Conduct](../contributing/code-of-conduct)
+
+## Community & Support
+
+Join our growing community of gardeners and developers:
+
+- 💬 [Discord Community](https://discord.gg/plantarium)
+- 📝 [GitHub Discussions](https://github.com/plantarium/plantarium/discussions)
+- 🐛 [Report Issues](https://github.com/plantarium/plantarium/issues)
+- 📢 [Feature Requests](https://github.com/plantarium/plantarium/discussions/categories/feature-requests)
+
+## Stay Updated
+
+- 📅 [Roadmap](../project-info/roadmap)
+- 📦 [Releases](../project-info/releases)
+- 📰 [Blog](/blog)
+
+---
+
+<div style={{textAlign: 'center', marginTop: '2rem'}}>
+  <p>Ready to start your gardening journey?</p>
+  <a href="./installation" className="button button--primary button--lg">
+    Get Started with Plantarium
+  </a>
+</div> 
