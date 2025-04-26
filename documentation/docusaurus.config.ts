@@ -1,25 +1,27 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import { securityConfig, optimizationConfig, analyticsConfig } from './config';
 
 const config: Config = {
   title: 'Plantarium Documentation',
-  tagline: 'Plants are cool',
+  tagline: 'Your Digital Garden Companion',
   favicon: 'img/favicon.ico',
 
-  // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  // GitHub Pages deployment config
+  url: 'https://github.com',  // GitHub Pages URL
+  baseUrl: '/plantarium/',    // Repository name
+  trailingSlash: false,       // Remove trailing slashes from URLs
+  deploymentBranch: 'gh-pages', // Branch for GitHub Pages
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  // Organization and project information
+  organizationName: 'plantarium',  // GitHub organization or username
+  projectName: 'plantarium',       // GitHub repository name
 
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  // Security and optimization configurations
+  security: securityConfig,
+  optimization: optimizationConfig,
+  analytics: analyticsConfig,
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -35,17 +37,16 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/plantarium/plantarium/tree/main/documentation/',
+          versions: {
+            current: {
+              label: 'Next 🚧',
+            },
+          },
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/plantarium/plantarium/tree/main/documentation/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -55,24 +56,39 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/plantarium-social-card.jpg',
     navbar: {
-      title: 'My Site',
+      title: 'Plantarium',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Plantarium Logo',
         src: 'img/logo.svg',
+        srcDark: 'img/logo-dark.svg',
       },
+      style: 'dark',
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          sidebarId: 'docsSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Documentation',
         },
-        { to: '/blog', label: 'Blog', position: 'left' },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          to: '/docs/getting-started',
+          label: 'Getting Started',
+          position: 'left',
+        },
+        {
+          to: '/docs/core-features',
+          label: 'Features',
+          position: 'left',
+        },
+        {
+          to: '/docs/technical',
+          label: 'Technical',
+          position: 'left',
+        },
+        {
+          href: 'https://github.com/[your-github-username]/plantarium',
           label: 'GitHub',
           position: 'right',
         },
@@ -85,8 +101,16 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Getting Started',
+              to: '/docs/getting-started',
+            },
+            {
+              label: 'Core Features',
+              to: '/docs/core-features',
+            },
+            {
+              label: 'Technical Docs',
+              to: '/docs/technical',
             },
           ],
         },
@@ -94,16 +118,16 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'GitHub',
+              href: 'https://github.com/plantarium/plantarium',
             },
             {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              href: 'https://discord.gg/plantarium',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://twitter.com/plantarium',
             },
           ],
         },
@@ -116,12 +140,12 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/plantarium/plantarium',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Plantarium. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
