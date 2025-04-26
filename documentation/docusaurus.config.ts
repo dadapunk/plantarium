@@ -10,43 +10,45 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // GitHub Pages deployment config
-  url: 'https://github.com',  // GitHub Pages URL
+  url: 'https://dadapunk.github.io',  // GitHub Pages URL
   baseUrl: '/plantarium/',    // Repository name
   trailingSlash: false,       // Remove trailing slashes from URLs
   deploymentBranch: 'gh-pages', // Branch for GitHub Pages
 
   // Organization and project information
-  organizationName: 'plantarium',  // GitHub organization or username
+  organizationName: 'dadapunk',  // GitHub organization or username
   projectName: 'plantarium',       // GitHub repository name
 
-  // Security, optimization, and monitoring configurations
-  security: {
-    ...securityConfig,
-    headers: {
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; font-src 'self'; object-src 'none'; media-src 'self'; frame-src 'none'",
-      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-      'X-Frame-Options': 'DENY',
-      'X-Content-Type-Options': 'nosniff',
-      'X-XSS-Protection': '1; mode=block',
-      'Referrer-Policy': 'strict-origin-when-cross-origin'
-    },
-    rateLimiting: {
-      enabled: true,
-      windowMs: 900000,
-      max: 100
-    },
-    validation: {
-      enabled: true,
-      sanitize: {
-        html: true,
-        sql: true,
-        xss: true
+  // Custom fields for security, optimization, and monitoring
+  customFields: {
+    security: {
+      ...securityConfig,
+      headers: {
+        'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; font-src 'self'; object-src 'none'; media-src 'self'; frame-src 'none'",
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+        'X-Frame-Options': 'DENY',
+        'X-Content-Type-Options': 'nosniff',
+        'X-XSS-Protection': '1; mode=block',
+        'Referrer-Policy': 'strict-origin-when-cross-origin'
+      },
+      rateLimiting: {
+        enabled: true,
+        windowMs: 900000,
+        max: 100
+      },
+      validation: {
+        enabled: true,
+        sanitize: {
+          html: true,
+          sql: true,
+          xss: true
+        }
       }
-    }
+    },
+    optimization: optimizationConfig,
+    analytics: analyticsConfig,
+    monitoring: monitoringConfig
   },
-  optimization: optimizationConfig,
-  analytics: analyticsConfig,
-  monitoring: monitoringConfig,
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -62,7 +64,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/plantarium/plantarium/tree/main/documentation/',
+          editUrl: 'https://github.com/dadapunk/plantarium/tree/main/documentation/',
           versions: {
             current: {
               label: 'Next 🚧',
@@ -71,7 +73,7 @@ const config: Config = {
         },
         blog: {
           showReadingTime: true,
-          editUrl: 'https://github.com/plantarium/plantarium/tree/main/documentation/',
+          editUrl: 'https://github.com/dadapunk/plantarium/tree/main/documentation/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -113,7 +115,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://github.com/[your-github-username]/plantarium',
+          href: 'https://github.com/dadapunk/plantarium',
           label: 'GitHub',
           position: 'right',
         },
@@ -144,7 +146,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/plantarium/plantarium',
+              href: 'https://github.com/dadapunk/plantarium',
             },
             {
               label: 'Discord',
@@ -165,7 +167,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/plantarium/plantarium',
+              href: 'https://github.com/dadapunk/plantarium',
             },
           ],
         },

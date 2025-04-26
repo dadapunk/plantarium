@@ -130,7 +130,7 @@ Now that you're up and running, explore these advanced features:
 
 - Check our [FAQ](../project-info/faq)
 - Join our [Discord community](https://discord.gg/plantarium)
-- Visit our [GitHub Discussions](https://github.com/plantarium/plantarium/discussions)
+- Visit our [GitHub Discussions](https://github.com/dadapunk/plantarium/discussions)
 
 ---
 

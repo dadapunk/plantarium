@@ -23,13 +23,13 @@ This guide will help you install Plantarium on your preferred platform. Choose y
 ## Desktop Installation
 
 ### Windows
-1. Download the Windows installer from our [releases page](https://github.com/plantarium/plantarium/releases)
+1. Download the Windows installer from our [releases page](https://github.com/dadapunk/plantarium/releases)
 2. Run the installer (Plantarium-Setup.exe)
 3. Follow the installation wizard
 4. Launch Plantarium from the Start menu
 
 ### macOS
-1. Download the macOS package from our [releases page](https://github.com/plantarium/plantarium/releases)
+1. Download the macOS package from our [releases page](https://github.com/dadapunk/plantarium/releases)
 2. Open the downloaded .dmg file
 3. Drag Plantarium to your Applications folder
 4. Launch Plantarium from your Applications folder
@@ -112,7 +112,7 @@ After installation, follow these steps to set up Plantarium:
 If you encounter any issues:
 
 1. Check our [FAQ](../project-info/faq)
-2. Visit our [GitHub Issues](https://github.com/plantarium/plantarium/issues)
+2. Visit our [GitHub Issues](https://github.com/dadapunk/plantarium/issues)
 3. Join our [Discord Support](https://discord.gg/plantarium)
 4. Email support@plantarium.com
 
@@ -123,7 +123,7 @@ If you encounter any issues:
 - Mobile: Updates are handled by app stores
 
 ### Manual Updates
-1. Visit our [releases page](https://github.com/plantarium/plantarium/releases)
+1. Visit our [releases page](https://github.com/dadapunk/plantarium/releases)
 2. Download the latest version
 3. Follow installation instructions
 

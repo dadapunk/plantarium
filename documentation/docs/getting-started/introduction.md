@@ -57,9 +57,9 @@ Our documentation is designed to help you make the most of Plantarium:
 Join our growing community of gardeners and developers:
 
 - 💬 [Discord Community](https://discord.gg/plantarium)
-- 📝 [GitHub Discussions](https://github.com/plantarium/plantarium/discussions)
-- 🐛 [Report Issues](https://github.com/plantarium/plantarium/issues)
-- 📢 [Feature Requests](https://github.com/plantarium/plantarium/discussions/categories/feature-requests)
+- 📝 [GitHub Discussions](https://github.com/dadapunk/plantarium/discussions)
+- 🐛 [Report Issues](https://github.com/dadapunk/plantarium/issues)
+- 📢 [Feature Requests](https://github.com/dadapunk/plantarium/discussions/categories/feature-requests)
 
 ## Stay Updated
 

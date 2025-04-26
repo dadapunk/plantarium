@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# {Feature Name}
+# \{Feature Name\}
 
-{One-paragraph description of the feature and its purpose}
+\{One-paragraph description of the feature and its purpose\}
 
 ## Overview
 
-### What is {Feature Name}?
+### What is \{Feature Name\}?
 - Brief explanation of the feature
 - Key capabilities
 - Main benefits
@@ -33,24 +33,24 @@ final example = FeatureExample();
 
 ## Core Functionality
 
-### {Sub-feature 1}
+### \{Sub-feature 1\}
 - Description
 - Usage examples
 - Best practices
 
-### {Sub-feature 2}
+### \{Sub-feature 2\}
 - Description
 - Usage examples
 - Best practices
 
 ## Advanced Features
 
-### {Advanced Feature 1}
+### \{Advanced Feature 1\}
 - Detailed explanation
 - Code examples
 - Use cases
 
-### {Advanced Feature 2}
+### \{Advanced Feature 2\}
 - Detailed explanation
 - Code examples
 - Use cases
@@ -155,8 +155,8 @@ void advancedExample() {
 
 ---
 
-<div style={{textAlign: 'center', marginTop: '2rem'}}>
-  <p>Need more help with {Feature Name}?</p>
+<div className="text-center mt-8">
+  <p>Need more help with \{Feature Name\}?</p>
   <a href="../support" className="button button--primary button--lg">
     Get Support
   </a>
