@@ -2,6 +2,30 @@
 
 This document provides a detailed breakdown of tasks for Phase 1 of the Plantarium frontend development process. This phase focuses on establishing the Flutter frontend that will connect to the existing NestJS backend.
 
+## 0. Garden Notes MVP (Priority)
+
+### 0.1 Garden Notes Core Implementation
+- [x] 0.1.1 Create GardenNote model in Flutter
+- [x] 0.1.2 Implement garden notes service client
+- [x] 0.1.3 Create basic garden notes list screen
+- [x] 0.1.4 Implement note creation/editing screen
+- [x] 0.1.5 Add basic state management for garden notes
+- [x] 0.1.6 Implement simple caching for offline access
+- [x] 0.1.7 Add basic error handling
+
+### 0.2 Garden Notes UI/UX
+- [x] 0.2.1 Design garden notes list view
+- [x] 0.2.2 Create note editor interface
+- [x] 0.2.3 Implement markdown preview
+- [ ] 0.2.4 Add basic search functionality
+- [ ] 0.2.5 Create note filtering by date/tags
+
+### 0.3 Garden Notes Testing
+- [ ] 0.3.1 Write unit tests for GardenNote model
+- [ ] 0.3.2 Test garden notes service client
+- [ ] 0.3.3 Create widget tests for garden notes screens
+- [ ] 0.3.4 Implement basic integration tests
+
 ## 1. Flutter Project Setup & Environment Configuration
 
 ### 1.1 Flutter Project Initialization

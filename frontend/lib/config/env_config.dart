@@ -1,21 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 /// Environment types for the application
-enum Environment {
-  dev,
-  prod,
-}
+enum Environment { dev, prod }
 
 /// Configuration class for environment-specific settings
 class EnvConfig {
-  final Environment environment;
-  final String apiBaseUrl;
-  final String weatherApiKey;
-  final bool enableLogging;
-  final bool useMockServices;
-  final Duration timeoutDuration;
-  final int maxRetryAttempts;
-
   const EnvConfig._({
     required this.environment,
     required this.apiBaseUrl,
@@ -28,29 +17,38 @@ class EnvConfig {
 
   /// Development environment configuration
   factory EnvConfig.development() => const EnvConfig._(
-        environment: Environment.dev,
-        apiBaseUrl: 'http://localhost:3000',
-        weatherApiKey:
-            String.fromEnvironment('WEATHER_API_KEY', defaultValue: 'dev_key'),
-        enableLogging: true,
-        useMockServices: true,
-        timeoutDuration: Duration(seconds: 30),
-        maxRetryAttempts: 3,
-      );
+    environment: Environment.dev,
+    apiBaseUrl: 'http://localhost:3002',
+    weatherApiKey: String.fromEnvironment(
+      'WEATHER_API_KEY',
+      defaultValue: 'dev_key',
+    ),
+    enableLogging: true,
+    useMockServices: true,
+    timeoutDuration: Duration(seconds: 30),
+    maxRetryAttempts: 3,
+  );
 
   /// Production environment configuration
   factory EnvConfig.production() => const EnvConfig._(
-        environment: Environment.prod,
-        apiBaseUrl: 'https://api.plantarium.app',
-        weatherApiKey: String.fromEnvironment('WEATHER_API_KEY'),
-        enableLogging: false,
-        useMockServices: false,
-        timeoutDuration: Duration(seconds: 30),
-        maxRetryAttempts: 3,
-      );
+    environment: Environment.prod,
+    apiBaseUrl: 'https://api.plantarium.app',
+    weatherApiKey: String.fromEnvironment('WEATHER_API_KEY'),
+    enableLogging: false,
+    useMockServices: false,
+    timeoutDuration: Duration(seconds: 30),
+    maxRetryAttempts: 3,
+  );
+  final Environment environment;
+  final String apiBaseUrl;
+  final String weatherApiKey;
+  final bool enableLogging;
+  final bool useMockServices;
+  final Duration timeoutDuration;
+  final int maxRetryAttempts;
 
   /// Get configuration based on the current environment
-  static EnvConfig getConfig(Environment env) {
+  static EnvConfig getConfig(final Environment env) {
     switch (env) {
       case Environment.dev:
         return EnvConfig.development();
@@ -66,8 +64,7 @@ class EnvConfig {
   bool get isProd => environment == Environment.prod;
 
   @override
-  String toString() {
-    return '''
+  String toString() => '''
     Environment: ${environment.name}
     API Base URL: $apiBaseUrl
     Logging Enabled: $enableLogging
@@ -75,5 +72,4 @@ class EnvConfig {
     Timeout Duration: $timeoutDuration
     Max Retry Attempts: $maxRetryAttempts
     ''';
-  }
 }

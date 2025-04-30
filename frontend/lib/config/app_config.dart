@@ -1,13 +1,12 @@
-import 'env_config.dart';
+import 'package:plantarium/config/env_config.dart';
 
 /// Global application configuration
 class AppConfig {
   static late EnvConfig _config;
 
   /// Initialize the application configuration
-  static void initialize(Environment env) {
+  static void initialize(final Environment env) {
     _config = EnvConfig.getConfig(env);
-    assert(_config != null, 'Environment configuration must be initialized');
   }
 
   /// Get the current environment configuration

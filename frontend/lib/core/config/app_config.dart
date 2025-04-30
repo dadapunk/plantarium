@@ -1,20 +1,10 @@
 import 'package:flutter/foundation.dart';
 
 /// Enum representing different environment types
-enum Environment {
-  development,
-  staging,
-  production,
-}
+enum Environment { development, staging, production }
 
 /// Configuration class for environment-specific settings
 class AppConfig {
-  final Environment environment;
-  final String apiBaseUrl;
-  final bool enableLogging;
-  final Duration timeoutDuration;
-  final int maxRetries;
-
   const AppConfig._({
     required this.environment,
     required this.apiBaseUrl,
@@ -22,18 +12,23 @@ class AppConfig {
     required this.timeoutDuration,
     required this.maxRetries,
   });
+  final Environment environment;
+  final String apiBaseUrl;
+  final bool enableLogging;
+  final Duration timeoutDuration;
+  final int maxRetries;
 
   /// Development environment configuration
-  static final development = AppConfig._(
+  static const development = AppConfig._(
     environment: Environment.development,
-    apiBaseUrl: 'http://localhost:3000',
+    apiBaseUrl: 'http://localhost:3002',
     enableLogging: true,
     timeoutDuration: const Duration(seconds: 30),
     maxRetries: 3,
   );
 
   /// Staging environment configuration
-  static final staging = AppConfig._(
+  static const staging = AppConfig._(
     environment: Environment.staging,
     apiBaseUrl: 'https://staging-api.plantarium.app',
     enableLogging: true,
@@ -42,7 +37,7 @@ class AppConfig {
   );
 
   /// Production environment configuration
-  static final production = AppConfig._(
+  static const production = AppConfig._(
     environment: Environment.production,
     apiBaseUrl: 'https://api.plantarium.app',
     enableLogging: false,
@@ -54,7 +49,7 @@ class AppConfig {
   static late final AppConfig current;
 
   /// Initialize the configuration for the specified environment
-  static void init(Environment env) {
+  static void init(final Environment env) {
     current = switch (env) {
       Environment.development => development,
       Environment.staging => staging,
