@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:plantarium/core/models/garden/garden_note.dto.dart';
+import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
 import 'package:plantarium/core/services/garden_note.service.dart';
 import 'package:plantarium/core/network/models/api_error.dart';
+import 'package:flutter/foundation.dart';
 
 class GardenNoteEditScreen extends StatefulWidget {
   final GardenNoteService gardenNoteService;
@@ -35,8 +36,21 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
   @override
   void initState() {
     super.initState();
+
+    // Simply load the content as is, without modification
     _titleController = TextEditingController(text: widget.note?.title ?? '');
     _noteController = TextEditingController(text: widget.note?.note ?? '');
+
+    // Debug logging for initial content
+    if (kDebugMode && widget.note != null) {
+      print('INIT: Loading note with ID: ${widget.note!.id}');
+      print('INIT: Title: "${widget.note!.title}"');
+      print(
+        'INIT: Content starts with: "${widget.note!.note.substring(0, widget.note!.note.length > 50 ? 50 : widget.note!.note.length)}..."',
+      );
+      print('INIT: Content length: ${widget.note!.note.length} characters');
+    }
+
     _tabController = TabController(length: 2, vsync: this);
 
     // Listen for changes to enable auto-save
@@ -84,7 +98,19 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     });
 
     try {
-      // Only update existing notes with auto-save
+      // Debug logging
+      if (kDebugMode) {
+        print('AUTO-SAVE: Saving note with ID: ${widget.note!.id}');
+        print('AUTO-SAVE: Title: "${_titleController.text}"');
+        print(
+          'AUTO-SAVE: Content starts with: "${_noteController.text.substring(0, _noteController.text.length > 50 ? 50 : _noteController.text.length)}..."',
+        );
+        print(
+          'AUTO-SAVE: Content length: ${_noteController.text.length} characters',
+        );
+      }
+
+      // Only update existing notes with auto-save - send the content as is
       final updatedNote = GardenNoteDTO(
         id: widget.note!.id,
         title: _titleController.text,
@@ -128,7 +154,21 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
 
     try {
       if (widget.note != null) {
-        // Update existing note while preserving ID
+        // Debug logging
+        if (kDebugMode) {
+          print(
+            'EDIT SCREEN: Updating existing note with ID: ${widget.note!.id}',
+          );
+          print('EDIT SCREEN: Title: "${_titleController.text}"');
+          print(
+            'EDIT SCREEN: Content starts with: "${_noteController.text.substring(0, _noteController.text.length > 50 ? 50 : _noteController.text.length)}..."',
+          );
+          print(
+            'EDIT SCREEN: Content length: ${_noteController.text.length} characters',
+          );
+        }
+
+        // Update existing note while preserving ID - send the content as is
         final updatedNote = GardenNoteDTO(
           id: widget.note!.id,
           title: _titleController.text,
@@ -144,7 +184,19 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
           updatedNote,
         );
       } else {
-        // Create new note
+        // Debug logging
+        if (kDebugMode) {
+          print('EDIT SCREEN: Creating new note');
+          print('EDIT SCREEN: Title: "${_titleController.text}"');
+          print(
+            'EDIT SCREEN: Content starts with: "${_noteController.text.substring(0, _noteController.text.length > 50 ? 50 : _noteController.text.length)}..."',
+          );
+          print(
+            'EDIT SCREEN: Content length: ${_noteController.text.length} characters',
+          );
+        }
+
+        // Create new note - send the content as is without adding a header
         final newNote = GardenNoteDTO.create(
           title: _titleController.text,
           note: _noteController.text,

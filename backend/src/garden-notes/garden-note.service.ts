@@ -125,7 +125,7 @@ export class GardenNoteService {
             await fs.mkdir(dirPath, { recursive: true });
           }
           
-          const mdContent = `# ${note.title}\n\n${note.note}`;
+          const mdContent = note.note;
           await fs.writeFile(filePath, mdContent);
           this.logger.log(`Created file for note "${note.title}" at: ${filePath}`);
         }
@@ -175,7 +175,7 @@ export class GardenNoteService {
         await fs.mkdir(notesDir, { recursive: true });
       }
       
-      const mdContent = `# ${savedGardenNote.title}\n\n${savedGardenNote.note}`;
+      const mdContent = savedGardenNote.note;
       await fs.writeFile(filePath, mdContent);
       this.logger.log(`Successfully wrote markdown file for note: "${savedGardenNote.title}"`);
     } catch (error) {
@@ -330,7 +330,7 @@ export class GardenNoteService {
       }
       
       // Write the new/updated file
-      const mdContent = `# ${newTitle}\n\n${updatedNote.note}`;
+      const mdContent = updatedNote.note;
       await fs.writeFile(newFilePath, mdContent);
       this.logger.log(`Wrote updated markdown file: ${newFilePath}`);
     } catch (error) {

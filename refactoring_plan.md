@@ -6,15 +6,18 @@ This document outlines a comprehensive plan to refactor the Plantarium applicati
 
 ### 1.1 Feature Module Restructuring
 
-- [ ] 1.1.1 Move `/core/models/garden/garden_note.dto.dart` to `/features/garden_notes/data/models/garden_note.dto.dart`
-- [ ] 1.1.2 Create `/features/garden_notes/data/datasources/garden_notes_api.datasource.dart` and `garden_notes_local.datasource.dart`
-- [ ] 1.1.3 Implement `/features/garden_notes/domain/entities/garden_note.entity.dart` separating entity from DTO
-- [ ] 1.1.4 Define `/features/garden_notes/domain/repositories/garden_notes.repository.dart` interface
-- [ ] 1.1.5 Create repository implementation in `/features/garden_notes/data/repositories/garden_notes.repository_impl.dart`
+- [x] 1.1.1 Move `/core/models/garden/garden_note.dto.dart` to `/features/garden_notes/data/models/garden_note.dto.dart`
+- [x] 1.1.2 Create `/features/garden_notes/data/datasources/garden_notes_api.datasource.dart` and `garden_notes_local.datasource.dart`
+- [x] 1.1.3 Implement `/features/garden_notes/domain/entities/garden_note.entity.dart` separating entity from DTO
+- [x] 1.1.4 Define `/features/garden_notes/domain/repositories/garden_notes.repository.dart` interface
+- [x] 1.1.5 Create repository implementation in `/features/garden_notes/data/repositories/garden_notes.repository_impl.dart`
+- [x] 1.1.6 Frontend fix for duplicate markdown headers in garden notes (backend issue - see note)
+
+> **Note on Task 1.1.6**: The backend adds a title header to markdown files which causes duplicate headers when notes are updated. The permanent fix would be to modify the backend (in `garden-note.service.ts`) to stop adding the headers. For now, we've updated the frontend to handle the content as-is without modifying it.
 
 ### 1.2 Core Module Organization
 
-- [ ] 1.2.1 Establish `/core/network/api_client.dart` interface with base API functionality
+- [x] 1.2.1 Establish `/core/network/api_client.dart` interface with base API functionality
 - [ ] 1.2.2 Implement Retrofit-based API client and generator configurations
 - [ ] 1.2.3 Create HTTP interceptors for logging, authentication, and error handling
 - [ ] 1.2.4 Set up base exception hierarchy in `/core/errors/app_exception.dart`

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:plantarium/core/models/garden/garden_note.dto.dart';
+import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
 import 'package:plantarium/core/services/garden_note.service.dart';
 import 'package:plantarium/core/services/garden_note_cache.service.dart';
 import 'package:plantarium/core/network/models/api_error.dart';

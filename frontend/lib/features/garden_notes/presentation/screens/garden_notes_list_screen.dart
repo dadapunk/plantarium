@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:plantarium/core/models/garden/garden_note.dto.dart';
+import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
 import 'package:plantarium/core/services/garden_note.service.dart';
 import 'package:plantarium/features/garden_notes/presentation/providers/garden_notes_provider.dart';
 import 'package:plantarium/features/garden_notes/presentation/screens/garden_note_edit_screen.dart';

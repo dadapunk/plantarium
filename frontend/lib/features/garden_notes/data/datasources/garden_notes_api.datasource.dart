@@ -2,21 +2,41 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
 
-class GardenNoteService {
+/// Abstract class defining the API datasource interface for Garden Notes
+abstract class GardenNotesApiDatasource {
+  /// Get all garden notes from the API
+  Future<List<GardenNoteDTO>> getAllNotes();
+
+  /// Get a single garden note by ID
+  Future<GardenNoteDTO> getNoteById(int id);
+
+  /// Create a new garden note
+  Future<GardenNoteDTO> createNote(GardenNoteDTO note);
+
+  /// Update an existing garden note
+  Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note);
+
+  /// Delete a garden note
+  Future<void> deleteNote(int id);
+}
+
+/// Implementation of the Garden Notes API datasource
+class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
   final Dio _dio;
   final String _baseUrl;
 
-  GardenNoteService({required Dio dio, required String baseUrl})
+  /// Create a new instance of the API datasource
+  GardenNotesApiDatasourceImpl({required Dio dio, required String baseUrl})
     : _dio = dio,
       _baseUrl = baseUrl;
 
   void _log(String message) {
     if (kDebugMode) {
-      print('GardenNoteService: $message');
+      print('GardenNotesApiDatasource: $message');
     }
   }
 
-  // Get all garden notes
+  @override
   Future<List<GardenNoteDTO>> getAllNotes() async {
     _log('Fetching all garden notes from $_baseUrl/garden-notes');
     try {
@@ -41,7 +61,7 @@ class GardenNoteService {
     }
   }
 
-  // Get a single garden note by ID
+  @override
   Future<GardenNoteDTO> getNoteById(int id) async {
     _log('Fetching garden note with ID: $id');
     try {
@@ -63,7 +83,7 @@ class GardenNoteService {
     }
   }
 
-  // Create a new garden note
+  @override
   Future<GardenNoteDTO> createNote(GardenNoteDTO note) async {
     _log('Creating new garden note with title: "${note.title}"');
     _log('Request data: ${note.toJson()}');
@@ -105,16 +125,20 @@ class GardenNoteService {
     }
   }
 
-  // Update an existing garden note
+  @override
   Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note) async {
     _log('Updating garden note with ID: $id');
-    _log('Title: "${note.title}", Content length: ${note.note.length} chars');
+    _log('Title: "${note.title}"');
+    _log(
+      'Content (first 50 chars): "${note.note.substring(0, note.note.length > 50 ? 50 : note.note.length)}..."',
+    );
+    _log('Content length: ${note.note.length} chars');
 
     try {
       // Create a copy with the ID explicitly included
       final noteWithId = note.copyWith();
       final dataToSend = {...noteWithId.toJson(), 'id': id};
-      _log('Full data being sent: $dataToSend');
+      _log('Full data being sent to server: $dataToSend');
 
       _log('Sending PUT request to $_baseUrl/garden-notes/$id');
       final response = await _dio.put(
@@ -123,12 +147,15 @@ class GardenNoteService {
       );
 
       _log('API response status: ${response.statusCode}');
-      _log('Response data: ${response.data}');
+      _log('Response data from server: ${response.data}');
 
       final updatedNote = GardenNoteDTO.fromJson(
         response.data as Map<String, dynamic>,
       );
       _log('Successfully updated note: "${updatedNote.title}" (ID: $id)');
+      _log(
+        'Returned content (first 50 chars): "${updatedNote.note.substring(0, updatedNote.note.length > 50 ? 50 : updatedNote.note.length)}..."',
+      );
 
       return updatedNote;
     } catch (e) {
@@ -152,7 +179,7 @@ class GardenNoteService {
     }
   }
 
-  // Delete a garden note
+  @override
   Future<void> deleteNote(int id) async {
     _log('Deleting garden note with ID: $id');
 

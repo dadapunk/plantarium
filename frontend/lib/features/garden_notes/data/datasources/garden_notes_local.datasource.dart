@@ -2,10 +2,24 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
 
-class GardenNoteCacheService {
+/// Abstract class defining the local datasource interface for Garden Notes
+abstract class GardenNotesLocalDatasource {
+  /// Get all cached garden notes
+  Future<List<GardenNoteDTO>> getCachedNotes();
+
+  /// Cache a list of garden notes
+  Future<void> cacheNotes(List<GardenNoteDTO> notes);
+
+  /// Clear the cache
+  Future<void> clearCache();
+}
+
+/// Implementation of the Garden Notes local datasource
+class GardenNotesLocalDatasourceImpl implements GardenNotesLocalDatasource {
   static Database? _database;
   static const String _tableName = 'garden_notes';
 
+  /// Get the database instance
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
@@ -36,6 +50,7 @@ class GardenNoteCacheService {
     );
   }
 
+  @override
   Future<void> cacheNotes(List<GardenNoteDTO> notes) async {
     final db = await database;
     await db.transaction((txn) async {
@@ -51,6 +66,7 @@ class GardenNoteCacheService {
     });
   }
 
+  @override
   Future<List<GardenNoteDTO>> getCachedNotes() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(_tableName);
@@ -64,6 +80,7 @@ class GardenNoteCacheService {
     });
   }
 
+  @override
   Future<void> clearCache() async {
     final db = await database;
     await db.delete(_tableName);
