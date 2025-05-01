@@ -58,11 +58,16 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     if (!_hasUnsavedChanges) {
       setState(() => _hasUnsavedChanges = true);
     }
-    _autoSave();
+
+    // Only auto-save for existing notes, not for new ones
+    if (widget.note != null) {
+      _autoSave();
+    }
   }
 
   void _autoSave() async {
-    if (!_hasUnsavedChanges || _isSaving) return;
+    // Skip auto-save for new notes
+    if (!_hasUnsavedChanges || _isSaving || widget.note == null) return;
 
     final now = DateTime.now();
     if (_lastAutoSave != null && now.difference(_lastAutoSave!).inSeconds < 5) {
@@ -79,30 +84,18 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     });
 
     try {
-      if (widget.note != null) {
-        // Update existing note while preserving ID
-        final updatedNote = GardenNoteDTO(
-          id: widget.note!.id,
-          title: _titleController.text,
-          note: _noteController.text,
-          date: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-          ),
-        );
-        await widget.gardenNoteService.updateNote(
-          widget.note!.id!,
-          updatedNote,
-        );
-      } else {
-        // Create new note
-        final newNote = GardenNoteDTO.create(
-          title: _titleController.text,
-          note: _noteController.text,
-        );
-        await widget.gardenNoteService.createNote(newNote);
-      }
+      // Only update existing notes with auto-save
+      final updatedNote = GardenNoteDTO(
+        id: widget.note!.id,
+        title: _titleController.text,
+        note: _noteController.text,
+        date: DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+        ),
+      );
+      await widget.gardenNoteService.updateNote(widget.note!.id!, updatedNote);
 
       setState(() {
         _hasUnsavedChanges = false;

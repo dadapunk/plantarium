@@ -44,6 +44,11 @@ class _GardenNotesListContent extends StatelessWidget {
         ],
       ),
       body: _buildBody(context, provider, theme),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _navigateToEditScreen(context, null),
+        tooltip: 'Create new note',
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
