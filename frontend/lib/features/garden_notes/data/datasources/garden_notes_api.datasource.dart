@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:plantarium/core/errors/app_exception.dart';
+import 'package:plantarium/core/network/models/api_response.dart';
+import 'package:plantarium/features/garden_notes/data/datasources/garden_notes_api_client.dart';
 import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
 
 /// Abstract class defining the API datasource interface for Garden Notes
@@ -20,7 +23,143 @@ abstract class GardenNotesApiDatasource {
   Future<void> deleteNote(int id);
 }
 
-/// Implementation of the Garden Notes API datasource
+/// Implementation of the Garden Notes API datasource using Retrofit
+class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
+  final GardenNotesApiClient _apiClient;
+
+  /// Create a new instance of the API datasource with Retrofit
+  RetrofitGardenNotesApiDatasource({required GardenNotesApiClient apiClient})
+    : _apiClient = apiClient;
+
+  /// Factory constructor to create an instance with Dio and baseUrl
+  factory RetrofitGardenNotesApiDatasource.create({
+    required Dio dio,
+    required String baseUrl,
+  }) {
+    final apiClient = GardenNotesApiClient.create(dio: dio, baseUrl: baseUrl);
+    return RetrofitGardenNotesApiDatasource(apiClient: apiClient);
+  }
+
+  void _log(String message) {
+    if (kDebugMode) {
+      print('GardenNotesApiDatasource: $message');
+    }
+  }
+
+  @override
+  Future<List<GardenNoteDTO>> getAllNotes() async {
+    _log('Fetching all garden notes');
+    try {
+      final response = await _apiClient.getAllNotes();
+      if (!response.success || response.data == null) {
+        throw ApiException(
+          message: response.message,
+          errorCode: response.errorCode,
+        );
+      }
+      _log('Successfully fetched ${response.data!.length} garden notes');
+      return response.data!;
+    } catch (e) {
+      _log('Error fetching garden notes: $e');
+      throw ApiException(
+        message: 'Failed to fetch garden notes: $e',
+        errorCode: 'FETCH_NOTES_ERROR',
+      );
+    }
+  }
+
+  @override
+  Future<GardenNoteDTO> getNoteById(int id) async {
+    _log('Fetching garden note with ID: $id');
+    try {
+      final response = await _apiClient.getNoteById(id);
+      if (!response.success || response.data == null) {
+        throw ApiException(
+          message: response.message,
+          errorCode: response.errorCode,
+        );
+      }
+      _log('Successfully fetched note: ${response.data!.title} (ID: $id)');
+      return response.data!;
+    } catch (e) {
+      _log('Error fetching garden note with ID $id: $e');
+      throw ApiException(
+        message: 'Failed to fetch garden note: $e',
+        errorCode: 'FETCH_NOTE_ERROR',
+      );
+    }
+  }
+
+  @override
+  Future<GardenNoteDTO> createNote(GardenNoteDTO note) async {
+    _log('Creating new garden note with title: "${note.title}"');
+    try {
+      final response = await _apiClient.createNote(note);
+      if (!response.success || response.data == null) {
+        throw ApiException(
+          message: response.message,
+          errorCode: response.errorCode,
+        );
+      }
+      _log(
+        'Successfully created note: ${response.data!.title} (ID: ${response.data!.id})',
+      );
+      return response.data!;
+    } catch (e) {
+      _log('Error creating garden note: $e');
+      throw ApiException(
+        message: 'Failed to create garden note: $e',
+        errorCode: 'CREATE_NOTE_ERROR',
+      );
+    }
+  }
+
+  @override
+  Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note) async {
+    _log('Updating garden note with ID: $id');
+    try {
+      final response = await _apiClient.updateNote(id, note);
+      if (!response.success || response.data == null) {
+        throw ApiException(
+          message: response.message,
+          errorCode: response.errorCode,
+        );
+      }
+      _log('Successfully updated note: ${response.data!.title} (ID: $id)');
+      return response.data!;
+    } catch (e) {
+      _log('Error updating garden note with ID $id: $e');
+      throw ApiException(
+        message: 'Failed to update garden note: $e',
+        errorCode: 'UPDATE_NOTE_ERROR',
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteNote(int id) async {
+    _log('Deleting garden note with ID: $id');
+    try {
+      final response = await _apiClient.deleteNote(id);
+      if (!response.success) {
+        throw ApiException(
+          message: response.message,
+          errorCode: response.errorCode,
+        );
+      }
+      _log('Successfully deleted note with ID: $id');
+    } catch (e) {
+      _log('Error deleting garden note with ID $id: $e');
+      throw ApiException(
+        message: 'Failed to delete garden note: $e',
+        errorCode: 'DELETE_NOTE_ERROR',
+      );
+    }
+  }
+}
+
+/// Legacy implementation of the Garden Notes API datasource using Dio directly
+/// This will be deprecated once the Retrofit implementation is fully tested
 class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
   final Dio _dio;
   final String _baseUrl;
@@ -94,15 +233,12 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
         '$_baseUrl/garden-notes',
         data: note.toJson(),
       );
-
-      _log('API response status: ${response.statusCode}');
-      _log('Response data: ${response.data}');
-
       final createdNote = GardenNoteDTO.fromJson(
         response.data as Map<String, dynamic>,
       );
-      _log('Successfully created note with ID: ${createdNote.id}');
-
+      _log(
+        'Successfully created note: ${createdNote.title} (ID: ${createdNote.id})',
+      );
       return createdNote;
     } catch (e) {
       _log('Error creating garden note: $e');
@@ -128,27 +264,14 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
   @override
   Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note) async {
     _log('Updating garden note with ID: $id');
-    _log('Title: "${note.title}"');
-    _log(
-      'Content (first 50 chars): "${note.note.substring(0, note.note.length > 50 ? 50 : note.note.length)}..."',
-    );
-    _log('Content length: ${note.note.length} chars');
+    _log('Update data: ${note.toJson()}');
 
     try {
-      // Create a copy with the ID explicitly included
-      final noteWithId = note.copyWith();
-      final dataToSend = {...noteWithId.toJson(), 'id': id};
-      _log('Full data being sent to server: $dataToSend');
-
       _log('Sending PUT request to $_baseUrl/garden-notes/$id');
       final response = await _dio.put(
         '$_baseUrl/garden-notes/$id',
-        data: dataToSend,
+        data: note.toJson(),
       );
-
-      _log('API response status: ${response.statusCode}');
-      _log('Response data from server: ${response.data}');
-
       final updatedNote = GardenNoteDTO.fromJson(
         response.data as Map<String, dynamic>,
       );

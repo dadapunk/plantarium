@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Enum representing different environment types
 enum Environment { development, staging, production }
@@ -18,45 +19,88 @@ class AppConfig {
   final Duration timeoutDuration;
   final int maxRetries;
 
-  /// Development environment configuration
-  static const development = AppConfig._(
-    environment: Environment.development,
-    apiBaseUrl: 'http://localhost:3002',
-    enableLogging: true,
-    timeoutDuration: const Duration(seconds: 30),
-    maxRetries: 3,
-  );
-
-  /// Staging environment configuration
-  static const staging = AppConfig._(
-    environment: Environment.staging,
-    apiBaseUrl: 'https://staging-api.plantarium.app',
-    enableLogging: true,
-    timeoutDuration: const Duration(seconds: 30),
-    maxRetries: 2,
-  );
-
-  /// Production environment configuration
-  static const production = AppConfig._(
-    environment: Environment.production,
-    apiBaseUrl: 'https://api.plantarium.app',
-    enableLogging: false,
-    timeoutDuration: const Duration(seconds: 20),
-    maxRetries: 1,
-  );
-
   /// Current active configuration
   static late final AppConfig current;
 
   /// Initialize the configuration for the specified environment
-  static void init(final Environment env) {
-    current = switch (env) {
-      Environment.development => development,
-      Environment.staging => staging,
-      Environment.production => production,
-    };
+  static Future<void> init(final Environment env) async {
+    // Load the appropriate .env file from assets
+    final String assetPath = 'assets/env/.env.${env.name}';
+    try {
+      await dotenv.load(fileName: assetPath);
+      debugPrint('Environment loaded from $assetPath');
+    } catch (e) {
+      debugPrint('Failed to load environment file: $e');
+      // Proceed with default values
+    }
+
+    // Create the configuration using values from .env
+    current = AppConfig._(
+      environment: env,
+      apiBaseUrl: _getString(
+        'API_BASE_URL',
+        defaultValue: _getDefaultApiUrl(env),
+      ),
+      enableLogging: _getBool(
+        'ENABLE_LOGGING',
+        defaultValue: env != Environment.production,
+      ),
+      timeoutDuration: Duration(
+        seconds: _getInt(
+          'TIMEOUT_DURATION',
+          defaultValue: _getDefaultTimeout(env),
+        ),
+      ),
+      maxRetries: _getInt('MAX_RETRIES', defaultValue: _getDefaultRetries(env)),
+    );
 
     debugPrint('AppConfig initialized for ${env.name} environment');
+  }
+
+  /// Get string value from environment
+  static String _getString(String key, {required String defaultValue}) {
+    return dotenv.env[key] ?? defaultValue;
+  }
+
+  /// Get boolean value from environment
+  static bool _getBool(String key, {required bool defaultValue}) {
+    final value = dotenv.env[key]?.toLowerCase();
+    if (value == null) return defaultValue;
+    return value == 'true' || value == '1' || value == 'yes';
+  }
+
+  /// Get integer value from environment
+  static int _getInt(String key, {required int defaultValue}) {
+    final value = dotenv.env[key];
+    if (value == null) return defaultValue;
+    return int.tryParse(value) ?? defaultValue;
+  }
+
+  /// Get default API URL based on environment
+  static String _getDefaultApiUrl(Environment env) {
+    return switch (env) {
+      Environment.development => 'http://localhost:3002',
+      Environment.staging => 'https://staging-api.plantarium.app',
+      Environment.production => 'https://api.plantarium.app',
+    };
+  }
+
+  /// Get default timeout based on environment
+  static int _getDefaultTimeout(Environment env) {
+    return switch (env) {
+      Environment.development => 30,
+      Environment.staging => 30,
+      Environment.production => 20,
+    };
+  }
+
+  /// Get default retries based on environment
+  static int _getDefaultRetries(Environment env) {
+    return switch (env) {
+      Environment.development => 3,
+      Environment.staging => 2,
+      Environment.production => 1,
+    };
   }
 
   /// Check if the app is running in development mode

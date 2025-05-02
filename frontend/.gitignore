@@ -189,6 +189,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Environment files
-.env*
-!.env.example
+# Environment Files
+assets/env/.env.*
+!assets/env/.env.example

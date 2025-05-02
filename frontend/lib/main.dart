@@ -31,7 +31,8 @@ void main() async {
     orElse: () => Environment.development,
   );
 
-  AppConfig.init(env);
+  // Initialize configuration asynchronously
+  await AppConfig.init(env);
 
   // Run the app with provider
   runApp(const PlantariumApp());

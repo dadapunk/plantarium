@@ -11,17 +11,15 @@ This document outlines a comprehensive plan to refactor the Plantarium applicati
 - [x] 1.1.3 Implement `/features/garden_notes/domain/entities/garden_note.entity.dart` separating entity from DTO
 - [x] 1.1.4 Define `/features/garden_notes/domain/repositories/garden_notes.repository.dart` interface
 - [x] 1.1.5 Create repository implementation in `/features/garden_notes/data/repositories/garden_notes.repository_impl.dart`
-- [x] 1.1.6 Frontend fix for duplicate markdown headers in garden notes (backend issue - see note)
-
-> **Note on Task 1.1.6**: The backend adds a title header to markdown files which causes duplicate headers when notes are updated. The permanent fix would be to modify the backend (in `garden-note.service.ts`) to stop adding the headers. For now, we've updated the frontend to handle the content as-is without modifying it.
+- [x] 1.1.6 Frontend fix for duplicate markdown headers in garden notes
 
 ### 1.2 Core Module Organization
 
 - [x] 1.2.1 Establish `/core/network/api_client.dart` interface with base API functionality
-- [ ] 1.2.2 Implement Retrofit-based API client and generator configurations
-- [ ] 1.2.3 Create HTTP interceptors for logging, authentication, and error handling
-- [ ] 1.2.4 Set up base exception hierarchy in `/core/errors/app_exception.dart`
-- [ ] 1.2.5 Implement environment-specific configuration using `.env` files
+- [x] 1.2.2 Implement Retrofit-based API client and generator configurations
+- [x] 1.2.3 Create HTTP interceptors for logging, caching, and error handling (authentication not needed)
+- [x] 1.2.4 Set up base exception hierarchy in `/core/errors/app_exception.dart`
+- [x] 1.2.5 Implement environment-specific configuration using `.env` files
 
 ### 1.3 Shared Components
 
@@ -55,8 +53,8 @@ This document outlines a comprehensive plan to refactor the Plantarium applicati
 - [ ] 3.1.1 Define API interfaces with Retrofit annotations
 - [ ] 3.1.2 Implement typed error handling for network failures
 - [ ] 3.1.3 Create request/response interceptors for logging
-- [ ] 3.1.4 Implement token-based authentication if needed
-- [ ] 3.1.5 Set up proper error mapping from HTTP to domain exceptions
+- [ ] 3.1.4 Implement proper error mapping from HTTP to domain exceptions
+- [ ] 3.1.5 Add support for configurable request timeouts and retry policies
 
 ### 3.2 Caching Strategy
 

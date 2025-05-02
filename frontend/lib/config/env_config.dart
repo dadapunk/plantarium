@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:plantarium/config/env_loader.dart';
 
 /// Environment types for the application
 enum Environment { dev, prod }
@@ -16,29 +17,52 @@ class EnvConfig {
   });
 
   /// Development environment configuration
-  factory EnvConfig.development() => const EnvConfig._(
-    environment: Environment.dev,
-    apiBaseUrl: 'http://localhost:3002',
-    weatherApiKey: String.fromEnvironment(
-      'WEATHER_API_KEY',
-      defaultValue: 'dev_key',
-    ),
-    enableLogging: true,
-    useMockServices: true,
-    timeoutDuration: Duration(seconds: 30),
-    maxRetryAttempts: 3,
-  );
+  static Future<EnvConfig> development() async {
+    return EnvConfig._(
+      environment: Environment.dev,
+      apiBaseUrl: EnvLoader.getString(
+        'API_BASE_URL',
+        defaultValue: 'http://localhost:3002',
+      ),
+      weatherApiKey: EnvLoader.getString(
+        'WEATHER_API_KEY',
+        defaultValue: 'dev_key',
+      ),
+      enableLogging: EnvLoader.getBool('ENABLE_LOGGING', defaultValue: true),
+      useMockServices: EnvLoader.getBool(
+        'USE_MOCK_SERVICES',
+        defaultValue: true,
+      ),
+      timeoutDuration: EnvLoader.getDuration(
+        'TIMEOUT_DURATION',
+        defaultSeconds: 30,
+      ),
+      maxRetryAttempts: EnvLoader.getInt('MAX_RETRY_ATTEMPTS', defaultValue: 3),
+    );
+  }
 
   /// Production environment configuration
-  factory EnvConfig.production() => const EnvConfig._(
-    environment: Environment.prod,
-    apiBaseUrl: 'https://api.plantarium.app',
-    weatherApiKey: String.fromEnvironment('WEATHER_API_KEY'),
-    enableLogging: false,
-    useMockServices: false,
-    timeoutDuration: Duration(seconds: 30),
-    maxRetryAttempts: 3,
-  );
+  static Future<EnvConfig> production() async {
+    return EnvConfig._(
+      environment: Environment.prod,
+      apiBaseUrl: EnvLoader.getString(
+        'API_BASE_URL',
+        defaultValue: 'https://api.plantarium.app',
+      ),
+      weatherApiKey: EnvLoader.getString('WEATHER_API_KEY', defaultValue: ''),
+      enableLogging: EnvLoader.getBool('ENABLE_LOGGING', defaultValue: false),
+      useMockServices: EnvLoader.getBool(
+        'USE_MOCK_SERVICES',
+        defaultValue: false,
+      ),
+      timeoutDuration: EnvLoader.getDuration(
+        'TIMEOUT_DURATION',
+        defaultSeconds: 30,
+      ),
+      maxRetryAttempts: EnvLoader.getInt('MAX_RETRY_ATTEMPTS', defaultValue: 3),
+    );
+  }
+
   final Environment environment;
   final String apiBaseUrl;
   final String weatherApiKey;
@@ -48,12 +72,12 @@ class EnvConfig {
   final int maxRetryAttempts;
 
   /// Get configuration based on the current environment
-  static EnvConfig getConfig(final Environment env) {
+  static Future<EnvConfig> getConfig(final Environment env) async {
     switch (env) {
       case Environment.dev:
-        return EnvConfig.development();
+        return await development();
       case Environment.prod:
-        return EnvConfig.production();
+        return await production();
     }
   }
 
