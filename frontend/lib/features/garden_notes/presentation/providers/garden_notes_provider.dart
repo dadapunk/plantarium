@@ -1,20 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
-import 'package:plantarium/core/services/garden_note.service.dart';
-import 'package:plantarium/core/services/garden_note_cache.service.dart';
+import 'package:plantarium/shared/services/garden_note_service_interface.dart';
+import 'package:plantarium/shared/services/garden_note_cache_service_interface.dart';
 import 'package:plantarium/core/network/models/api_error.dart';
 
 class GardenNotesProvider with ChangeNotifier {
-  final GardenNoteService gardenNoteService;
-  final GardenNoteCacheService _cacheService;
+  final IGardenNoteService gardenNoteService;
+  final IGardenNoteCacheService _cacheService;
   List<GardenNoteDTO> _notes = [];
   bool _isLoading = false;
   String? _error;
   String? _errorCode;
   Map<String, dynamic>? _errorDetails;
 
-  GardenNotesProvider(this.gardenNoteService)
-    : _cacheService = GardenNoteCacheService();
+  GardenNotesProvider(this.gardenNoteService, this._cacheService);
 
   List<GardenNoteDTO> get notes => _notes;
   bool get isLoading => _isLoading;

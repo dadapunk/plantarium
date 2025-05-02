@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:plantarium/core/config/app_config.dart';
 import 'package:plantarium/features/garden_notes/presentation/screens/garden_notes_list_screen.dart';
-import 'package:plantarium/core/services/garden_note.service.dart';
 import 'package:plantarium/features/garden_notes/presentation/providers/garden_notes_provider.dart';
-import 'package:dio/dio.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter/foundation.dart';
+import 'package:plantarium/shared/di/service_locator.dart';
+import 'package:plantarium/shared/di/providers_factory.dart';
+import 'package:plantarium/shared/services/garden_note_service_interface.dart';
 
 void main() async {
   // Ensure Flutter bindings are initialized
@@ -34,6 +35,9 @@ void main() async {
   // Initialize configuration asynchronously
   await AppConfig.init(env);
 
+  // Initialize dependency injection
+  await initializeDependencies();
+
   // Run the app with provider
   runApp(const PlantariumApp());
 }
@@ -43,25 +47,10 @@ class PlantariumApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize Dio with base configuration
-    final dio = Dio(
-      BaseOptions(
-        baseUrl: AppConfig.current.apiBaseUrl,
-        connectTimeout: AppConfig.current.timeoutDuration,
-        receiveTimeout: AppConfig.current.timeoutDuration,
-      ),
-    );
-
-    // Initialize GardenNoteService
-    final gardenNoteService = GardenNoteService(
-      dio: dio,
-      baseUrl: AppConfig.current.apiBaseUrl,
-    );
-
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => GardenNotesProvider(gardenNoteService),
+        ChangeNotifierProvider<GardenNotesProvider>(
+          create: (_) => ProvidersFactory.createGardenNotesProvider(),
         ),
       ],
       child: MaterialApp(
@@ -70,7 +59,7 @@ class PlantariumApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true,
         ),
-        home: GardenNotesListScreen(gardenNoteService: gardenNoteService),
+        home: const GardenNotesListScreen(),
       ),
     );
   }

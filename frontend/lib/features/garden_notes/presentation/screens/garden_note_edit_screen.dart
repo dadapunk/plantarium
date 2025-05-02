@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
-import 'package:plantarium/core/services/garden_note.service.dart';
+import 'package:plantarium/shared/services/garden_note_service_interface.dart';
 import 'package:plantarium/core/network/models/api_error.dart';
 import 'package:flutter/foundation.dart';
 
 class GardenNoteEditScreen extends StatefulWidget {
-  final GardenNoteService gardenNoteService;
+  final IGardenNoteService gardenNoteService;
   final GardenNoteDTO? note;
 
   const GardenNoteEditScreen({
