@@ -13,77 +13,80 @@ This approach combines the benefits of structured data storage with the flexibil
 1. [Architecture](#architecture)
 2. [Data Model](#data-model)
 3. [API Endpoints](#api-endpoints)
-4. [File System Integration](#file-system-integration)
-5. [Synchronization](#synchronization)
-6. [Usage Examples](#usage-examples)
-7. [Future Enhancements](#future-enhancements)
+4. [Service Interfaces](#service-interfaces)
+5. [Dependency Injection](#dependency-injection)
+6. [UI Components](#ui-components)
+7. [File System Integration](#file-system-integration)
+8. [Synchronization](#synchronization)
+9. [Usage Examples](#usage-examples)
+10. [Future Enhancements](#future-enhancements)
 
 ## Architecture
 
 ### Module Structure
 ```
-backend/src/garden-notes/
-├── entities/
-│   └── garden-note.entity.ts
-├── dto/
-│   └── create-garden-note.dto.ts
-├── garden-note.controller.ts
-├── garden-note.service.ts
-└── garden-note.module.ts
+frontend/lib/features/garden_notes/
+├── data/
+│   ├── models/
+│   │   └── garden_note.dto.dart
+│   ├── datasources/
+│   │   ├── garden_notes_api.datasource.dart
+│   │   └── garden_notes_local.datasource.dart
+│   └── repositories/
+│       └── garden_notes.repository_impl.dart
+├── domain/
+│   ├── entities/
+│   │   └── garden_note.entity.dart
+│   └── repositories/
+│       └── garden_notes.repository.dart
+└── presentation/
+    ├── providers/
+    │   └── garden_notes_provider.dart
+    └── screens/
+        ├── garden_notes_list_screen.dart
+        └── garden_note_detail_screen.dart
 ```
 
 ### Current Implementation
-- **Database**: SQLite for structured storage
-- **File System**: Markdown files in `garden notes` directory
-- **Sync**: Real-time synchronization between database and files
+- **Database**: SQLite for structured storage via `sqflite_common_ffi`
+- **State Management**: Provider pattern with `ChangeNotifier`
+- **Service Architecture**: Interface-based with dependency injection
+- **UI Components**: Reusable shared widgets
 
 ## Data Model
 
 ### Current Entity
-```typescript
-@Entity()
-export class GardenNote {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  title: string;
-
-  @Column()
-  note: string;
-
-  @Column({
-    type: 'date',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  date: Date;
+```dart
+class GardenNoteDTO {
+  final int id;
+  final String title;
+  final String note;
+  final DateTime date;
+  
+  GardenNoteDTO({
+    required this.id,
+    required this.title,
+    required this.note,
+    required this.date,
+  });
+  
+  // Serialization methods...
 }
 ```
 
 ### Planned Enhancements
-```typescript
-@Entity()
-export class GardenNote {
+```dart
+class GardenNoteDTO {
   // ... existing fields ...
   
-  @Column({ nullable: true })
-  plantId?: number;
-
-  @Column({ nullable: true })
-  plotId?: number;
-
-  @Column('simple-array', { nullable: true })
-  tags?: string[];
-
-  @Column({ nullable: true })
-  weather?: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
+  final int? plantId;
+  final int? plotId;
+  final List<String>? tags;
+  final String? weather;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  
+  // Constructor and serialization methods...
 }
 ```
 
@@ -105,6 +108,204 @@ export class GardenNote {
 | GET    | `/garden-notes/by-plant/:plantId` | Get notes for a specific plant |
 | GET    | `/garden-notes/by-plot/:plotId` | Get notes for a specific plot |
 | GET    | `/garden-notes/by-date-range` | Get notes within a date range |
+
+## Service Interfaces
+
+The Garden Notes feature uses a well-defined set of interfaces for service operations, following SOLID principles.
+
+### Base Service
+```dart
+/// Base service interface that defines common functionality for all services
+abstract class BaseService {
+  /// Logs a message for debugging purposes
+  void log(String message);
+
+  /// Handles errors in a consistent way across services
+  Object handleError(Object error, String operation);
+}
+```
+
+### Garden Note Service Interface
+```dart
+/// Interface defining the contract for garden note operations
+abstract class IGardenNoteService extends BaseService {
+  /// Retrieves all garden notes
+  Future<List<GardenNoteDTO>> getAllNotes();
+
+  /// Retrieves a garden note by its ID
+  Future<GardenNoteDTO> getNoteById(int id);
+
+  /// Creates a new garden note
+  Future<GardenNoteDTO> createNote(GardenNoteDTO note);
+
+  /// Updates an existing garden note
+  Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note);
+
+  /// Deletes a garden note by its ID
+  Future<void> deleteNote(int id);
+}
+```
+
+### Garden Note Cache Service Interface
+```dart
+/// Interface defining the contract for garden note caching operations
+abstract class IGardenNoteCacheService extends BaseService {
+  /// Caches a list of garden notes locally
+  Future<void> cacheNotes(List<GardenNoteDTO> notes);
+
+  /// Retrieves all cached garden notes
+  Future<List<GardenNoteDTO>> getCachedNotes();
+
+  /// Clears all cached garden notes
+  Future<void> clearCache();
+}
+```
+
+### Generic Service Interfaces
+These generic interfaces can be used for any entity type:
+
+```dart
+/// A generic interface for data services that handle CRUD operations
+abstract class IDataService<T, ID> extends BaseService {
+  /// Retrieves all entities
+  Future<List<T>> getAll();
+
+  /// Retrieves an entity by its ID
+  Future<T> getById(ID id);
+
+  /// Creates a new entity
+  Future<T> create(T entity);
+
+  /// Updates an existing entity
+  Future<T> update(ID id, T entity);
+
+  /// Deletes an entity by its ID
+  Future<void> delete(ID id);
+}
+
+/// A generic interface for cache services
+abstract class ICacheService<T> extends BaseService {
+  /// Caches a list of entities
+  Future<void> cacheItems(List<T> items);
+
+  /// Retrieves all cached entities
+  Future<List<T>> getCachedItems();
+
+  /// Clears the cache
+  Future<void> clearCache();
+
+  /// Gets a single item from cache by ID
+  Future<T?> getCachedItemById(dynamic id);
+
+  /// Caches a single item
+  Future<void> cacheItem(T item);
+
+  /// Removes a single item from cache
+  Future<void> removeCachedItem(dynamic id);
+}
+```
+
+## Dependency Injection
+
+The Garden Notes feature uses the `get_it` package for dependency injection, allowing for better testability and loose coupling.
+
+### Service Locator
+```dart
+/// Global ServiceLocator instance
+final sl = GetIt.instance;
+
+/// Initialize the dependency injection container
+Future<void> initializeDependencies() async {
+  // Register App Config
+  sl.registerSingleton<AppConfig>(AppConfig.current);
+
+  // Register Dio
+  sl.registerLazySingleton<Dio>(
+    () => Dio(
+      BaseOptions(
+        baseUrl: sl<AppConfig>().apiBaseUrl,
+        connectTimeout: sl<AppConfig>().timeoutDuration,
+        receiveTimeout: sl<AppConfig>().timeoutDuration,
+      ),
+    ),
+  );
+
+  // Register Services
+  sl.registerLazySingleton<IGardenNoteService>(
+    () => GardenNoteService(
+        dio: sl<Dio>(), 
+        baseUrl: sl<AppConfig>().apiBaseUrl
+    ),
+  );
+
+  sl.registerLazySingleton<IGardenNoteCacheService>(
+    () => GardenNoteCacheService(),
+  );
+}
+```
+
+### Provider Factory
+```dart
+/// Factory to create providers with dependencies injected
+class ProvidersFactory {
+  /// Create GardenNotesProvider with dependencies injected
+  static GardenNotesProvider createGardenNotesProvider() {
+    return GardenNotesProvider(
+      sl<IGardenNoteService>(),
+      sl<IGardenNoteCacheService>(),
+    );
+  }
+}
+```
+
+## UI Components
+
+The Garden Notes feature utilizes the shared widget library for consistent UI patterns.
+
+### Loading Indicators
+The feature uses standardized loading indicators from `AppLoadingIndicators`:
+
+- **Standard Loading**: Used on the main notes list screen during data fetching
+- **Inline Loading**: Used during specific operations like saving a note
+- **Overlay Loading**: Used for potentially long operations
+- **Shimmer Loading**: Used as placeholders during initial data loading
+
+### Error Displays
+Standardized error handling with `AppErrorDisplays`:
+
+- **Standard Error**: Displayed on the main screen if loading fails
+- **Inline Error**: Used for field-specific validation errors
+- **Banner Error**: Shown for system-wide or connectivity issues
+
+### Empty States
+Various empty state displays using `AppEmptyStates`:
+
+- **Standard Empty State**: Shown when there are no notes yet
+- **Search Empty State**: Displayed when search returns no results
+
+### Reusable Card Component
+Notes are displayed using the standardized `AppCard` component:
+
+```dart
+AppCard(
+  onTap: () => _navigateToEditScreen(context, note),
+  title: note.title,
+  actions: [
+    DateDisplay(
+      date: note.date,
+      style: theme.textTheme.bodySmall?.copyWith(
+        color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+      ),
+    ),
+  ],
+  child: Text(
+    note.note,
+    style: theme.textTheme.bodyMedium,
+    maxLines: 3,
+    overflow: TextOverflow.ellipsis,
+  ),
+)
+```
 
 ## File System Integration
 
@@ -153,27 +354,57 @@ Note content
 
 ## Usage Examples
 
-### Creating a Note via API
-```json
-POST /garden-notes
-{
-  "title": "First Tomato Planting",
-  "note": "Planted tomatoes in Bed 2. Weather was sunny.",
-  "date": "2024-05-01"
-}
+### Creating a Note via Provider
+```dart
+final provider = Provider.of<GardenNotesProvider>(context, listen: false);
+final newNote = GardenNoteDTO(
+  id: 0, // Will be replaced with actual ID after creation
+  title: "First Tomato Planting",
+  note: "Planted tomatoes in Bed 2. Weather was sunny.",
+  date: DateTime.now(),
+);
+await provider.createNote(newNote);
 ```
 
-### Resulting Markdown File
-```markdown
-# First Tomato Planting
-
-Planted tomatoes in Bed 2. Weather was sunny.
+### Loading Notes with Caching
+```dart
+@override
+void initState() {
+  super.initState();
+  // The provider will load from cache first, then from network
+  Provider.of<GardenNotesProvider>(context, listen: false).loadNotes();
+}
 ```
 
 ### External Editing
 1. Open the `garden notes` directory in your preferred markdown editor
 2. Edit or create `.md` files
 3. Changes are automatically synced to the database
+
+## Environment Configuration
+
+The Garden Notes feature uses environment-specific configuration from `.env` files loaded with `flutter_dotenv`:
+
+```dart
+// .env.development
+API_BASE_URL=http://localhost:3002
+ENABLE_LOGGING=true
+TIMEOUT_DURATION=30
+MAX_RETRIES=3
+
+// .env.production
+API_BASE_URL=https://api.plantarium.app
+ENABLE_LOGGING=false
+TIMEOUT_DURATION=20
+MAX_RETRIES=1
+```
+
+This is accessed through the `AppConfig` class:
+
+```dart
+final apiUrl = AppConfig.current.apiBaseUrl;
+final timeout = AppConfig.current.timeoutDuration;
+```
 
 ## Future Enhancements
 
@@ -217,10 +448,12 @@ Planted tomatoes in Bed 2. Weather was sunny.
 ## Contributing
 
 When contributing to the Garden Notes feature:
-1. Follow the existing dual-storage pattern
-2. Maintain backward compatibility
-3. Add appropriate tests
-4. Update documentation
+1. Follow the existing interface-based architecture
+2. Use the dependency injection system for services
+3. Utilize the shared widget library for UI components
+4. Maintain backward compatibility
+5. Add appropriate tests
+6. Update documentation
 
 ## Support
 
