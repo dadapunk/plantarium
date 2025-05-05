@@ -6,6 +6,8 @@ import 'package:plantarium/features/garden_notes/presentation/screens/garden_not
 import 'package:plantarium/shared/widgets/app_widgets.dart';
 import 'package:plantarium/shared/di/service_locator.dart';
 import 'package:plantarium/shared/services/garden_note_service_interface.dart';
+import 'package:plantarium/features/dashboard/presentation/widgets/app_sidebar.dart';
+import 'package:intl/intl.dart';
 
 class GardenNotesListScreen extends StatelessWidget {
   const GardenNotesListScreen({Key? key}) : super(key: key);
@@ -32,21 +34,61 @@ class _GardenNotesListContent extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Garden Notes'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: provider.loadNotes,
-            tooltip: 'Refresh notes',
+      body: Row(
+        children: [
+          // Sidebar navigation
+          const AppSidebar(selectedIndex: 7),
+
+          // Main content
+          Expanded(
+            child: Column(
+              children: [
+                _buildAppBar(theme),
+                Expanded(child: _buildBody(context, provider, theme)),
+              ],
+            ),
           ),
         ],
       ),
-      body: _buildBody(context, provider, theme),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToEditScreen(context, null),
-        tooltip: 'Create new note',
-        child: const Icon(Icons.add),
+    );
+  }
+
+  Widget _buildAppBar(ThemeData theme) {
+    return Container(
+      height: 60,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Garden Notes',
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                'Keep track of observations and tasks',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -70,56 +112,203 @@ class _GardenNotesListContent extends StatelessWidget {
       );
     }
 
-    if (provider.notes.isEmpty) {
-      return AppEmptyStates.standard(
-        title: 'No garden notes yet',
-        subtitle: 'Create your first note to get started!',
-        icon: Icons.note_add,
-        iconColor: theme.colorScheme.primary.withOpacity(0.5),
-        actionButton: ElevatedButton.icon(
-          onPressed: () => _navigateToEditScreen(context, null),
-          icon: const Icon(Icons.add),
-          label: const Text('Create Note'),
-        ),
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: provider.loadNotes,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: provider.notes.length,
-        itemBuilder: (context, index) {
-          final note = provider.notes[index];
-          return _buildNoteCard(context, note, theme);
-        },
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Existing Notes',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child:
+                provider.notes.isEmpty
+                    ? _buildEmptyState(context, theme)
+                    : _buildNotesList(context, provider, theme),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Add New Note',
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildNewNoteForm(context, theme),
+        ],
       ),
     );
   }
 
-  Widget _buildNoteCard(
-    BuildContext context,
-    GardenNoteDTO note,
-    ThemeData theme,
-  ) {
-    return AppCard(
-      onTap: () => _navigateToEditScreen(context, note),
-      title: note.title,
-      actions: [
-        DateDisplay(
-          date: note.date,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+  Widget _buildEmptyState(BuildContext context, ThemeData theme) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.note_add,
+            size: 64,
+            color: theme.colorScheme.primary.withOpacity(0.5),
           ),
-        ),
-      ],
-      child: Text(
-        note.note,
-        style: theme.textTheme.bodyMedium,
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
+          const SizedBox(height: 16),
+          Text(
+            'No garden notes yet',
+            style: theme.textTheme.titleLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Add your first note below to get started!',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildNotesList(
+    BuildContext context,
+    GardenNotesProvider provider,
+    ThemeData theme,
+  ) {
+    return ListView.builder(
+      itemCount: provider.notes.length,
+      itemBuilder: (context, index) {
+        final note = provider.notes[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          color: theme.cardColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      note.title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      _formatDate(note.date),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.textTheme.bodySmall?.color?.withOpacity(
+                          0.7,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(note.note, style: theme.textTheme.bodyMedium),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNewNoteForm(BuildContext context, ThemeData theme) {
+    // Garden selection
+    final gardenTypes = ['Backyard Garden', 'Herb Garden', 'Container Garden'];
+    String selectedGarden = gardenTypes[0];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Note input area
+        Container(
+          height: 120,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.cardColor.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: theme.dividerColor),
+          ),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Write your garden observations here...',
+              hintStyle: TextStyle(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+              ),
+              border: InputBorder.none,
+            ),
+            style: theme.textTheme.bodyMedium,
+            maxLines: 5,
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Garden selector and save button
+        Row(
+          children: [
+            // Garden dropdown
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: theme.dividerColor),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedGarden,
+                    isExpanded: true,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    items:
+                        gardenTypes.map((String garden) {
+                          return DropdownMenuItem<String>(
+                            value: garden,
+                            child: Text(garden),
+                          );
+                        }).toList(),
+                    onChanged: (String? newValue) {
+                      // This would be handled in a StatefulWidget
+                      if (newValue != null) {
+                        selectedGarden = newValue;
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+
+            // Save button
+            ElevatedButton(
+              onPressed: () {
+                // This would save the note in a real implementation
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+              child: const Text('Save Note'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('MMMM d, yyyy').format(date);
   }
 
   void _navigateToEditScreen(BuildContext context, GardenNoteDTO? note) {
