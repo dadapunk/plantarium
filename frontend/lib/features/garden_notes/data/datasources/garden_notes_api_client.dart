@@ -46,5 +46,5 @@ abstract class GardenNotesApiClient {
 
   /// Deletes a garden note.
   @DELETE('/garden-notes/{id}')
-  Future<ApiResponse<void>> deleteNote(@Path('id') int id);
+  Future<ApiResponse<dynamic>> deleteNote(@Path('id') int id);
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plantarium/core/config/app_config.dart';
 import 'package:plantarium/core/config/app_theme.dart';
 import 'package:plantarium/features/garden_notes/presentation/screens/garden_notes_list_screen.dart';
@@ -45,8 +45,8 @@ void main() async {
   // Initialize dependency injection
   await initializeDependencies();
 
-  // Run the app with provider
-  runApp(const PlantariumApp());
+  // Run the app with Riverpod
+  runApp(const ProviderScope(child: PlantariumApp()));
 }
 
 class PlantariumApp extends StatelessWidget {
@@ -54,31 +54,18 @@ class PlantariumApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<GardenNotesProvider>(
-          create: (_) => ProvidersFactory.createGardenNotesProvider(),
-        ),
-        ChangeNotifierProvider<PlantDatabaseProvider>(
-          create: (_) => PlantDatabaseProvider(),
-        ),
-        ChangeNotifierProvider<PlantingCalendarProvider>(
-          create: (_) => PlantingCalendarProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'Plantarium',
-        themeMode: ThemeMode.dark, // Default to dark theme
-        theme: AppTheme.lightTheme(),
-        darkTheme: AppTheme.darkTheme(),
-        home: const DashboardScreen(),
-        routes: {
-          '/garden_notes': (context) => const GardenNotesListScreen(),
-          '/garden_layout': (context) => const GardenLayoutScreen(),
-          '/plant_database': (context) => const PlantDatabaseScreen(),
-          '/planting_calendar': (context) => const PlantingCalendarScreen(),
-        },
-      ),
+    return MaterialApp(
+      title: 'Plantarium',
+      themeMode: ThemeMode.dark, // Default to dark theme
+      theme: AppTheme.lightTheme(),
+      darkTheme: AppTheme.darkTheme(),
+      home: const DashboardScreen(),
+      routes: {
+        '/garden_notes': (context) => const GardenNotesListScreen(),
+        '/garden_layout': (context) => const GardenLayoutScreen(),
+        '/plant_database': (context) => const PlantDatabaseScreen(),
+        '/planting_calendar': (context) => const PlantingCalendarScreen(),
+      },
     );
   }
 }

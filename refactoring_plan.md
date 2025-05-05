@@ -32,11 +32,11 @@ This document outlines a comprehensive plan to refactor the Plantarium applicati
 
 ### 2.1 Riverpod Implementation
 
-- [ ] 2.1.1 Add Riverpod dependencies to `pubspec.yaml`
-- [ ] 2.1.2 Configure ProviderScope in main.dart application wrapper
-- [ ] 2.1.3 Create provider container for testing environments
-- [ ] 2.1.4 Implement base state classes using freezed package
-- [ ] 2.1.5 Design error, loading, and success state representations
+- [x] 2.1.1 Add Riverpod dependencies to `pubspec.yaml`
+- [x] 2.1.2 Configure ProviderScope in main.dart application wrapper
+- [x] 2.1.3 Create provider container for testing environments
+- [x] 2.1.4 Implement base state classes using freezed package
+- [x] 2.1.5 Design error, loading, and success state representations
 
 ### 2.2 Garden Notes State Management
 
