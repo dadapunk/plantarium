@@ -5,9 +5,13 @@ import 'package:plantarium/core/services/garden_note.service.dart';
 import 'package:plantarium/core/services/garden_note_cache.service.dart';
 import 'package:plantarium/shared/services/garden_note_cache_service_interface.dart';
 import 'package:plantarium/shared/services/garden_note_service_interface.dart';
+import 'package:plantarium/shared/di/riverpod_providers.dart';
 
 /// Global ServiceLocator instance
 final sl = GetIt.instance;
+
+/// Access the GetIt instance
+GetIt get getIt => sl;
 
 /// Initialize the dependency injection container
 Future<void> initializeDependencies() async {
@@ -34,4 +38,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<IGardenNoteCacheService>(
     () => GardenNoteCacheService(),
   );
+
+  // Register Riverpod dependencies
+  registerRiverpodDependencies(sl);
 }

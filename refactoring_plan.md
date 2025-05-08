@@ -40,11 +40,11 @@ This document outlines a comprehensive plan to refactor the Plantarium applicati
 
 ### 2.2 Garden Notes State Management
 
-- [ ] 2.2.1 Create `garden_notes.state.dart` with freezed union types
-- [ ] 2.2.2 Implement `garden_notes.notifier.dart` extending StateNotifier
-- [ ] 2.2.3 Set up provider definitions in `garden_notes.provider.dart`
-- [ ] 2.2.4 Create use case classes for each garden note operation
-- [ ] 2.2.5 Implement dependency injection for state management
+- [x] 2.2.1 Create `garden_notes.state.dart` with freezed union types
+- [x] 2.2.2 Implement `garden_notes.notifier.dart` extending StateNotifier
+- [x] 2.2.3 Set up provider definitions in `garden_notes.provider.dart`
+- [x] 2.2.4 Create use case classes for each garden note operation
+- [x] 2.2.5 Implement dependency injection for state management
 
 ## 3. API and Data Layer
 
