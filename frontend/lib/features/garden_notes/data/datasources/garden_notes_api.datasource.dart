@@ -11,22 +11,20 @@ abstract class GardenNotesApiDatasource {
   Future<List<GardenNoteDTO>> getAllNotes();
 
   /// Get a single garden note by ID
-  Future<GardenNoteDTO> getNoteById(int id);
+  Future<GardenNoteDTO> getNoteById(final int id);
 
   /// Create a new garden note
-  Future<GardenNoteDTO> createNote(GardenNoteDTO note);
+  Future<GardenNoteDTO> createNote(final GardenNoteDTO note);
 
   /// Update an existing garden note
-  Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note);
+  Future<GardenNoteDTO> updateNote(final int id, final GardenNoteDTO note);
 
   /// Delete a garden note
-  Future<void> deleteNote(int id);
+  Future<void> deleteNote(final int id);
 }
 
 /// Implementation of the Garden Notes API datasource using Retrofit
 class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
-  final GardenNotesApiClient _apiClient;
-
   /// Create a new instance of the API datasource with Retrofit
   RetrofitGardenNotesApiDatasource({required GardenNotesApiClient apiClient})
     : _apiClient = apiClient;
@@ -39,8 +37,9 @@ class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
     final apiClient = GardenNotesApiClient.create(dio: dio, baseUrl: baseUrl);
     return RetrofitGardenNotesApiDatasource(apiClient: apiClient);
   }
+  final GardenNotesApiClient _apiClient;
 
-  void _log(String message) {
+  void _log(final String message) {
     if (kDebugMode) {
       print('GardenNotesApiDatasource: $message');
     }
@@ -69,7 +68,7 @@ class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<GardenNoteDTO> getNoteById(int id) async {
+  Future<GardenNoteDTO> getNoteById(final int id) async {
     _log('Fetching garden note with ID: $id');
     try {
       final response = await _apiClient.getNoteById(id);
@@ -91,7 +90,7 @@ class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<GardenNoteDTO> createNote(GardenNoteDTO note) async {
+  Future<GardenNoteDTO> createNote(final GardenNoteDTO note) async {
     _log('Creating new garden note with title: "${note.title}"');
     try {
       final response = await _apiClient.createNote(note);
@@ -115,7 +114,10 @@ class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note) async {
+  Future<GardenNoteDTO> updateNote(
+    final int id,
+    final GardenNoteDTO note,
+  ) async {
     _log('Updating garden note with ID: $id');
     try {
       final response = await _apiClient.updateNote(id, note);
@@ -137,7 +139,7 @@ class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteNote(final int id) async {
     _log('Deleting garden note with ID: $id');
     try {
       final response = await _apiClient.deleteNote(id);
@@ -161,15 +163,14 @@ class RetrofitGardenNotesApiDatasource implements GardenNotesApiDatasource {
 /// Legacy implementation of the Garden Notes API datasource using Dio directly
 /// This will be deprecated once the Retrofit implementation is fully tested
 class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
-  final Dio _dio;
-  final String _baseUrl;
-
   /// Create a new instance of the API datasource
   GardenNotesApiDatasourceImpl({required Dio dio, required String baseUrl})
     : _dio = dio,
       _baseUrl = baseUrl;
+  final Dio _dio;
+  final String _baseUrl;
 
-  void _log(String message) {
+  void _log(final String message) {
     if (kDebugMode) {
       print('GardenNotesApiDatasource: $message');
     }
@@ -183,14 +184,15 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
       final notes =
           (response.data as List)
               .map(
-                (json) => GardenNoteDTO.fromJson(json as Map<String, dynamic>),
+                (final json) =>
+                    GardenNoteDTO.fromJson(json as Map<String, dynamic>),
               )
               .toList();
       _log('Successfully fetched ${notes.length} garden notes');
       return notes;
     } catch (e) {
       _log('Error fetching garden notes: $e');
-      if (e is DioError) {
+      if (e is DioException) {
         _log(
           'DioError details: ${e.response?.statusCode} - ${e.response?.data}',
         );
@@ -201,7 +203,7 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<GardenNoteDTO> getNoteById(int id) async {
+  Future<GardenNoteDTO> getNoteById(final int id) async {
     _log('Fetching garden note with ID: $id');
     try {
       final response = await _dio.get('$_baseUrl/garden-notes/$id');
@@ -212,7 +214,7 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
       return note;
     } catch (e) {
       _log('Error fetching garden note with ID $id: $e');
-      if (e is DioError) {
+      if (e is DioException) {
         _log(
           'DioError details: ${e.response?.statusCode} - ${e.response?.data}',
         );
@@ -223,7 +225,7 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<GardenNoteDTO> createNote(GardenNoteDTO note) async {
+  Future<GardenNoteDTO> createNote(final GardenNoteDTO note) async {
     _log('Creating new garden note with title: "${note.title}"');
     _log('Request data: ${note.toJson()}');
 
@@ -243,7 +245,7 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
     } catch (e) {
       _log('Error creating garden note: $e');
 
-      if (e is DioError) {
+      if (e is DioException) {
         _log(
           'DioError details: ${e.response?.statusCode} - ${e.response?.data}',
         );
@@ -262,7 +264,10 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note) async {
+  Future<GardenNoteDTO> updateNote(
+    final int id,
+    final GardenNoteDTO note,
+  ) async {
     _log('Updating garden note with ID: $id');
     _log('Update data: ${note.toJson()}');
 
@@ -284,7 +289,7 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
     } catch (e) {
       _log('Error updating garden note with ID $id: $e');
 
-      if (e is DioError) {
+      if (e is DioException) {
         _log(
           'DioError details: ${e.response?.statusCode} - ${e.response?.data}',
         );
@@ -303,7 +308,7 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
   }
 
   @override
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteNote(final int id) async {
     _log('Deleting garden note with ID: $id');
 
     try {
@@ -314,7 +319,7 @@ class GardenNotesApiDatasourceImpl implements GardenNotesApiDatasource {
     } catch (e) {
       _log('Error deleting garden note with ID $id: $e');
 
-      if (e is DioError) {
+      if (e is DioException) {
         _log(
           'DioError details: ${e.response?.statusCode} - ${e.response?.data}',
         );

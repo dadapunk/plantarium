@@ -6,10 +6,8 @@ import 'package:plantarium/shared/services/garden_note_cache_service_interface.d
 /// Factory to create providers with dependencies injected
 class ProvidersFactory {
   /// Create GardenNotesProvider with dependencies injected
-  static GardenNotesProvider createGardenNotesProvider() {
-    return GardenNotesProvider(
-      sl<IGardenNoteService>(),
-      sl<IGardenNoteCacheService>(),
-    );
-  }
+  static GardenNotesProvider createGardenNotesProvider() => GardenNotesProvider(
+    sl<IGardenNoteService>(),
+    sl<IGardenNoteCacheService>(),
+  );
 }

@@ -6,16 +6,16 @@ part 'plot.dto.g.dart';
 @JsonSerializable()
 class PlotDTO {
   PlotDTO({
-    this.id,
     required this.name,
-    this.description,
     required this.width,
     required this.length,
-    this.imageUrl,
     required this.plants,
+    this.id,
+    this.description,
+    this.imageUrl,
   });
 
-  factory PlotDTO.fromJson(Map<String, dynamic> json) =>
+  factory PlotDTO.fromJson(final Map<String, dynamic> json) =>
       _$PlotDTOFromJson(json);
   final int? id;
   final String name;

@@ -37,9 +37,9 @@ This document outlines a simplified plan to refactor the Plantarium application 
 ## 3. Simplified Data Layer
 
 ### 3.1 API Client
-- [x] 3.1.1 Implement basic API interface
-- [x] 3.1.2 Add simple error handling for network failures
-- [x] 3.1.3 Add minimal logging
+- [ ] 3.1.1 Implement basic API interface
+- [ ] 3.1.2 Add simple error handling for network failures
+- [ ] 3.1.3 Add minimal logging
 
 ### 3.2 Local Storage
 - [ ] 3.2.1 Implement basic caching functionality

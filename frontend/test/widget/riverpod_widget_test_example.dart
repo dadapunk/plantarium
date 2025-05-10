@@ -4,14 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'test_widget_wrapper.dart';
 
 // Example provider for the test
-final counterProvider = StateProvider<int>((ref) => 0);
+final counterProvider = StateProvider<int>((final ref) => 0);
 
 // Example widget that uses the provider
 class CounterWidget extends ConsumerWidget {
-  const CounterWidget({Key? key}) : super(key: key);
+  const CounterWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(final BuildContext context, final WidgetRef ref) {
     final count = ref.watch(counterProvider);
 
     return Scaffold(
@@ -34,9 +34,7 @@ class CounterWidget extends ConsumerWidget {
 
 void main() {
   group('Riverpod Widget Tests', () {
-    testWidgets('CounterWidget displays initial count', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('CounterWidget displays initial count', (tester) async {
       // Pump the widget with the TestWidgetWrapper
       await tester.pumpWidget(const TestWidgetWrapper(child: CounterWidget()));
 
@@ -45,7 +43,7 @@ void main() {
     });
 
     testWidgets('CounterWidget increments count when button is pressed', (
-      WidgetTester tester,
+      tester,
     ) async {
       // Pump the widget with the TestWidgetWrapper
       await tester.pumpWidget(const TestWidgetWrapper(child: CounterWidget()));
@@ -59,12 +57,12 @@ void main() {
     });
 
     testWidgets('CounterWidget can be tested with overridden initial value', (
-      WidgetTester tester,
+      tester,
     ) async {
       // Pump the widget with the TestWidgetWrapper and overrides
       await tester.pumpWidget(
         TestWidgetWrapper(
-          overrides: [counterProvider.overrideWith((ref) => 10)],
+          overrides: [counterProvider.overrideWith((final ref) => 10)],
           child: const CounterWidget(),
         ),
       );

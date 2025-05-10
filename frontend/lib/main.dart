@@ -29,13 +29,13 @@ void main() async {
   }
 
   // Initialize environment configuration
-  final String envName = const String.fromEnvironment(
+  const String envName = String.fromEnvironment(
     'ENVIRONMENT',
     defaultValue: 'development',
   );
 
   final env = Environment.values.firstWhere(
-    (e) => e.name == envName,
+    (final e) => e.name == envName,
     orElse: () => Environment.development,
   );
 
@@ -53,19 +53,17 @@ class PlantariumApp extends StatelessWidget {
   const PlantariumApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Plantarium',
-      themeMode: ThemeMode.dark, // Default to dark theme
-      theme: AppTheme.lightTheme(),
-      darkTheme: AppTheme.darkTheme(),
-      home: const DashboardScreen(),
-      routes: {
-        '/garden_notes': (context) => const GardenNotesListScreen(),
-        '/garden_layout': (context) => const GardenLayoutScreen(),
-        '/plant_database': (context) => const PlantDatabaseScreen(),
-        '/planting_calendar': (context) => const PlantingCalendarScreen(),
-      },
-    );
-  }
+  Widget build(final BuildContext context) => MaterialApp(
+    title: 'Plantarium',
+    themeMode: ThemeMode.dark, // Default to dark theme
+    theme: AppTheme.lightTheme(),
+    darkTheme: AppTheme.darkTheme(),
+    home: const DashboardScreen(),
+    routes: {
+      '/garden_notes': (context) => const GardenNotesListScreen(),
+      '/garden_layout': (context) => const GardenLayoutScreen(),
+      '/plant_database': (context) => const PlantDatabaseScreen(),
+      '/planting_calendar': (context) => const PlantingCalendarScreen(),
+    },
+  );
 }

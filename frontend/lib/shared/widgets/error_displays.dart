@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class AppErrorDisplays {
   /// Standard error display with retry option
   static Widget standard({
-    required String errorMessage,
-    String? errorCode,
-    VoidCallback? onRetry,
-    bool centered = true,
+    required final String errorMessage,
+    final String? errorCode,
+    final VoidCallback? onRetry,
+    final bool centered = true,
   }) {
     final content = Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -18,17 +18,10 @@ class AppErrorDisplays {
           Icon(Icons.error_outline, size: 48, color: Colors.red.shade700),
           const SizedBox(height: 16),
           Text(
-            'Error: $errorMessage',
+            errorMessage,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
-          if (errorCode != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              'Code: $errorCode',
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ],
           if (onRetry != null) ...[
             const SizedBox(height: 16),
             ElevatedButton.icon(
@@ -45,60 +38,59 @@ class AppErrorDisplays {
   }
 
   /// Inline error display for small contexts
-  static Widget inline({required String errorMessage, VoidCallback? onRetry}) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.error_outline, size: 16, color: Colors.red.shade700),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            errorMessage,
-            style: TextStyle(fontSize: 12, color: Colors.red.shade700),
-          ),
+  static Widget inline({
+    required final String errorMessage,
+    final VoidCallback? onRetry,
+  }) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(Icons.error_outline, size: 16, color: Colors.red.shade700),
+      const SizedBox(width: 8),
+      Flexible(
+        child: Text(
+          errorMessage,
+          style: TextStyle(fontSize: 12, color: Colors.red.shade700),
         ),
-        if (onRetry != null) ...[
-          const SizedBox(width: 8),
-          InkWell(
-            onTap: onRetry,
-            child: const Icon(Icons.refresh, size: 16, color: Colors.blue),
-          ),
-        ],
+      ),
+      if (onRetry != null) ...[
+        const SizedBox(width: 8),
+        InkWell(
+          onTap: onRetry,
+          child: const Icon(Icons.refresh, size: 16, color: Colors.blue),
+        ),
       ],
-    );
-  }
+    ],
+  );
 
   /// Banner error display for the top of the screen
   static Widget banner({
-    required String errorMessage,
-    VoidCallback? onDismiss,
-  }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      color: Colors.red.shade700,
-      child: Row(
-        children: [
-          const Icon(Icons.warning_amber_rounded, color: Colors.white),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              errorMessage,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
+    required final String errorMessage,
+    final VoidCallback? onDismiss,
+  }) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+    color: Colors.red.shade700,
+    child: Row(
+      children: [
+        const Icon(Icons.warning_amber_rounded, color: Colors.white),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            errorMessage,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          if (onDismiss != null)
-            IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
-              onPressed: onDismiss,
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-            ),
-        ],
-      ),
-    );
-  }
+        ),
+        if (onDismiss != null)
+          IconButton(
+            icon: const Icon(Icons.close, color: Colors.white),
+            onPressed: onDismiss,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+          ),
+      ],
+    ),
+  );
 }

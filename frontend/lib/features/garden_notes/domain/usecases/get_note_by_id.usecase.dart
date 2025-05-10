@@ -3,14 +3,12 @@ import 'package:plantarium/features/garden_notes/domain/repositories/garden_note
 
 /// Use case for getting a garden note by ID
 class GetNoteByIdUseCase {
-  /// The garden notes repository
-  final GardenNotesRepository repository;
-
   /// Constructor
   const GetNoteByIdUseCase(this.repository);
 
+  /// The garden notes repository
+  final GardenNotesRepository repository;
+
   /// Execute the use case to get a note by ID
-  Future<GardenNote> call(int id) {
-    return repository.getNoteById(id);
-  }
+  Future<GardenNote> call(final int id) => repository.getNoteById(id);
 }

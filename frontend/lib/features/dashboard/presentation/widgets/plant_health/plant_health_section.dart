@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:plantarium/features/dashboard/presentation/widgets/plant_health/plant_health_status_bar.dart';
 
 class PlantHealthSection extends StatefulWidget {
-  const PlantHealthSection({Key? key}) : super(key: key);
+  const PlantHealthSection({super.key});
 
   @override
   State<PlantHealthSection> createState() => _PlantHealthSectionState();
@@ -51,7 +52,7 @@ class _PlantHealthSectionState extends State<PlantHealthSection> {
     } else if (_selectedFilter == 'Issues') {
       return _plantHealthData
           .where(
-            (plant) =>
+            (final plant) =>
                 plant['status'] == 'Poor' ||
                 plant['status'] == 'Needs Attention',
           )
@@ -59,7 +60,7 @@ class _PlantHealthSectionState extends State<PlantHealthSection> {
     } else if (_selectedFilter == 'Healthy') {
       return _plantHealthData
           .where(
-            (plant) =>
+            (final plant) =>
                 plant['status'] == 'Good' || plant['status'] == 'Excellent',
           )
           .toList();
@@ -68,16 +69,16 @@ class _PlantHealthSectionState extends State<PlantHealthSection> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -116,7 +117,7 @@ class _PlantHealthSectionState extends State<PlantHealthSection> {
             Expanded(
               child: ListView.builder(
                 itemCount: filteredPlants.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (final context, final index) {
                   final plant = filteredPlants[index];
                   return PlantHealthStatusBar(
                     plantName: plant['name'],
@@ -133,7 +134,7 @@ class _PlantHealthSectionState extends State<PlantHealthSection> {
     );
   }
 
-  Widget _buildFilterButton(String label, ThemeData theme) {
+  Widget _buildFilterButton(final String label, final ThemeData theme) {
     final isSelected = _selectedFilter == label;
 
     return GestureDetector(
@@ -165,6 +166,14 @@ class _PlantHealthSectionState extends State<PlantHealthSection> {
           ),
         ),
       ),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      IterableProperty<Map<String, dynamic>>('filteredPlants', filteredPlants),
     );
   }
 }

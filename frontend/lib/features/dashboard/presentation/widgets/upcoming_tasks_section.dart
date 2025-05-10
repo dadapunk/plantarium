@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:plantarium/shared/widgets/date_display.dart';
 
 class UpcomingTasksSection extends StatelessWidget {
-  const UpcomingTasksSection({Key? key}) : super(key: key);
+  const UpcomingTasksSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
     // Mock data for tasks - would come from a provider in a real app
@@ -36,7 +36,7 @@ class UpcomingTasksSection extends StatelessWidget {
       },
     ];
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(8),
@@ -46,7 +46,7 @@ class UpcomingTasksSection extends StatelessWidget {
         children: [
           // Section header
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -70,10 +70,10 @@ class UpcomingTasksSection extends StatelessWidget {
           // Task list
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               itemCount:
                   tasksList.length + 1, // +1 for the "View All Tasks" button
-              itemBuilder: (context, index) {
+              itemBuilder: (final context, final index) {
                 // "View All Tasks" button at the end
                 if (index == tasksList.length) {
                   return _buildViewAllTasksButton(theme);
@@ -83,10 +83,10 @@ class UpcomingTasksSection extends StatelessWidget {
                 final task = tasksList[index];
                 return _buildTaskItem(
                   context: context,
-                  title: task['title'] as String,
-                  garden: task['garden'] as String,
-                  date: task['date'] as DateTime,
-                  status: task['status'] as String,
+                  title: task['title']! as String,
+                  garden: task['garden']! as String,
+                  date: task['date']! as DateTime,
+                  status: task['status']! as String,
                 );
               },
             ),
@@ -97,11 +97,11 @@ class UpcomingTasksSection extends StatelessWidget {
   }
 
   Widget _buildTaskItem({
-    required BuildContext context,
-    required String title,
-    required String garden,
-    required DateTime date,
-    required String status,
+    required final BuildContext context,
+    required final String title,
+    required final String garden,
+    required final DateTime date,
+    required final String status,
   }) {
     final theme = Theme.of(context);
 
@@ -181,20 +181,18 @@ class UpcomingTasksSection extends StatelessWidget {
     );
   }
 
-  Widget _buildViewAllTasksButton(ThemeData theme) {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: theme.cardColor,
-          foregroundColor: theme.textTheme.bodyLarge?.color,
-          elevation: 0,
-          side: BorderSide(color: theme.dividerColor),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: const Text('View All Tasks'),
+  Widget _buildViewAllTasksButton(final ThemeData theme) => Container(
+    margin: const EdgeInsets.only(top: 8),
+    child: ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: theme.cardColor,
+        foregroundColor: theme.textTheme.bodyLarge?.color,
+        elevation: 0,
+        side: BorderSide(color: theme.dividerColor),
+        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
-    );
-  }
+      child: const Text('View All Tasks'),
+    ),
+  );
 }

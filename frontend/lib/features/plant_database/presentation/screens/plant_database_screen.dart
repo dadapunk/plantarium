@@ -7,10 +7,10 @@ import 'package:plantarium/features/plant_database/presentation/widgets/plant_ca
 import 'package:plantarium/shared/widgets/app_widgets.dart';
 
 class PlantDatabaseScreen extends StatelessWidget {
-  const PlantDatabaseScreen({Key? key}) : super(key: key);
+  const PlantDatabaseScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     // Get the provider from context and load plants
     final provider = Provider.of<PlantDatabaseProvider>(context, listen: false);
 
@@ -24,7 +24,7 @@ class PlantDatabaseScreen extends StatelessWidget {
 }
 
 class _PlantDatabaseContent extends StatefulWidget {
-  const _PlantDatabaseContent({Key? key}) : super(key: key);
+  const _PlantDatabaseContent({super.key});
 
   @override
   State<_PlantDatabaseContent> createState() => _PlantDatabaseContentState();
@@ -40,7 +40,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final provider = context.watch<PlantDatabaseProvider>();
     final theme = Theme.of(context);
 
@@ -67,50 +67,48 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
     );
   }
 
-  Widget _buildAppBar(ThemeData theme) {
-    return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Plant Database',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+  Widget _buildAppBar(final ThemeData theme) => Container(
+    height: 60,
+    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+    decoration: BoxDecoration(
+      color: theme.scaffoldBackgroundColor,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Plant Database',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
-              Text(
-                'Browse and search for plants to add to your garden',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-                ),
+            ),
+            Text(
+              'Browse and search for plants to add to your garden',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 
   Widget _buildBody(
-    BuildContext context,
-    PlantDatabaseProvider provider,
-    ThemeData theme,
+    final BuildContext context,
+    final PlantDatabaseProvider provider,
+    final ThemeData theme,
   ) {
     if (provider.isLoading) {
       return AppLoadingIndicators.standard(
@@ -126,7 +124,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           // Search and filter row
@@ -150,79 +148,77 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
   }
 
   Widget _buildSearchAndFilterRow(
-    BuildContext context,
-    PlantDatabaseProvider provider,
-    ThemeData theme,
-  ) {
-    return Row(
-      children: [
-        // Search field
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: theme.cardColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: theme.dividerColor),
+    final BuildContext context,
+    final PlantDatabaseProvider provider,
+    final ThemeData theme,
+  ) => Row(
+    children: [
+      // Search field
+      Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: theme.dividerColor),
+          ),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search plants...',
+              border: InputBorder.none,
+              prefixIcon: const Icon(Icons.search),
+              prefixIconConstraints: const BoxConstraints(minWidth: 40),
+              suffixIcon:
+                  _searchController.text.isNotEmpty
+                      ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          provider.setSearchQuery('');
+                        },
+                      )
+                      : null,
             ),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search plants...',
-                border: InputBorder.none,
-                prefixIcon: const Icon(Icons.search),
-                prefixIconConstraints: const BoxConstraints(minWidth: 40),
-                suffixIcon:
-                    _searchController.text.isNotEmpty
-                        ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                            provider.setSearchQuery('');
-                          },
-                        )
-                        : null,
-              ),
-              onChanged: (value) {
-                provider.setSearchQuery(value);
-              },
-            ),
+            onChanged: (value) {
+              provider.setSearchQuery(value);
+            },
           ),
         ),
-        const SizedBox(width: 16),
+      ),
+      const SizedBox(width: 16),
 
-        // Filter button
-        ElevatedButton.icon(
-          onPressed: () {
-            // Filter functionality would go here
-          },
-          icon: const Icon(Icons.filter_list),
-          label: const Text('Filter'),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          ),
+      // Filter button
+      ElevatedButton.icon(
+        onPressed: () {
+          // Filter functionality would go here
+        },
+        icon: const Icon(Icons.filter_list),
+        label: const Text('Filter'),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
-        const SizedBox(width: 8),
+      ),
+      const SizedBox(width: 8),
 
-        // Sort button
-        ElevatedButton.icon(
-          onPressed: () {
-            // Sort functionality would go here
-          },
-          icon: const Icon(Icons.sort),
-          label: const Text('Sort'),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          ),
+      // Sort button
+      ElevatedButton.icon(
+        onPressed: () {
+          // Sort functionality would go here
+        },
+        icon: const Icon(Icons.sort),
+        label: const Text('Sort'),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 
   Widget _buildCategoryTabs(
-    BuildContext context,
-    PlantDatabaseProvider provider,
-    ThemeData theme,
+    final BuildContext context,
+    final PlantDatabaseProvider provider,
+    final ThemeData theme,
   ) {
     final categories = [
       'All Plants',
@@ -237,14 +233,14 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children:
-            categories.map((category) {
+            categories.map((final category) {
               final isSelected = provider.selectedCategory == category;
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: ChoiceChip(
                   label: Text(category),
                   selected: isSelected,
-                  onSelected: (selected) {
+                  onSelected: (final selected) {
                     if (selected) {
                       provider.setSelectedCategory(category);
                     }
@@ -266,39 +262,37 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
     );
   }
 
-  Widget _buildEmptyState(ThemeData theme) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.local_florist,
-            size: 64,
-            color: theme.colorScheme.primary.withOpacity(0.5),
+  Widget _buildEmptyState(final ThemeData theme) => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.local_florist,
+          size: 64,
+          color: theme.colorScheme.primary.withOpacity(0.5),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'No plants found',
+          style: theme.textTheme.titleLarge,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Try adjusting your search or filters',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
           ),
-          const SizedBox(height: 16),
-          Text(
-            'No plants found',
-            style: theme.textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Try adjusting your search or filters',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  );
 
   Widget _buildPlantGrid(
-    BuildContext context,
-    PlantDatabaseProvider provider,
-    ThemeData theme,
+    final BuildContext context,
+    final PlantDatabaseProvider provider,
+    final ThemeData theme,
   ) {
     // Calculate crossAxisCount based on screen width
     final screenWidth = MediaQuery.of(context).size.width;
@@ -312,7 +306,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
         mainAxisSpacing: 16,
       ),
       itemCount: provider.plants.length,
-      itemBuilder: (context, index) {
+      itemBuilder: (final context, final index) {
         final plant = provider.plants[index];
         return PlantCard(
           plant: plant,
@@ -323,7 +317,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
     );
   }
 
-  void _viewPlantDetails(BuildContext context, PlantDTO plant) {
+  void _viewPlantDetails(final BuildContext context, final PlantDTO plant) {
     // This would navigate to a plant details screen
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

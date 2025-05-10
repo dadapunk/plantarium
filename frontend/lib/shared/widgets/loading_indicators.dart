@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class AppLoadingIndicators {
   /// Standard loading indicator with text
   static Widget standard({
-    String message = 'Loading...',
-    bool centered = true,
+    final String message = 'Loading...',
+    final bool centered = true,
   }) {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
@@ -21,49 +21,44 @@ class AppLoadingIndicators {
   }
 
   /// Inline loading indicator for smaller contexts
-  static Widget inline({double size = 20, Color? color}) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CircularProgressIndicator(strokeWidth: 2.0, color: color),
-    );
-  }
+  static Widget inline({final double size = 20, final Color? color}) =>
+      SizedBox(
+        width: size,
+        height: size,
+        child: CircularProgressIndicator(strokeWidth: 2.0, color: color),
+      );
 
   /// Overlay loading indicator with semi-transparent background
   static Widget overlay({
-    String message = 'Loading...',
-    bool dismissible = false,
-    VoidCallback? onDismiss,
-  }) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: dismissible ? onDismiss : null,
-            child: Container(
-              color: Colors.black.withOpacity(0.5),
-              child: standard(message: message),
-            ),
+    final String message = 'Loading...',
+    final bool dismissible = false,
+    final VoidCallback? onDismiss,
+  }) => Stack(
+    children: [
+      Positioned.fill(
+        child: GestureDetector(
+          onTap: dismissible ? onDismiss : null,
+          child: Container(
+            color: Colors.black.withOpacity(0.5),
+            child: standard(message: message),
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 
   /// Shimmer loading effect placeholder - to be implemented
   /// Using a simple container placeholder for now
   static Widget shimmer({
-    required double width,
-    required double height,
-    double borderRadius = 8.0,
-  }) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade300,
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-    );
-  }
+    required final double width,
+    required final double height,
+    final double borderRadius = 8.0,
+  }) => Container(
+    width: width,
+    height: height,
+    decoration: BoxDecoration(
+      color: Colors.grey.shade300,
+      borderRadius: BorderRadius.circular(borderRadius),
+    ),
+  );
 }

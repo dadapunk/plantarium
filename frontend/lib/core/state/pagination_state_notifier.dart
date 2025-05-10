@@ -29,9 +29,9 @@ abstract class PaginationStateNotifier<T>
 
   /// Sets the state to success with the provided items.
   void setSuccess({
-    required List<T> items,
-    required int currentPage,
-    required bool hasReachedMax,
+    required final List<T> items,
+    required final int currentPage,
+    required final bool hasReachedMax,
   }) {
     state = PaginationState.success(
       items: items,
@@ -42,9 +42,9 @@ abstract class PaginationStateNotifier<T>
 
   /// Appends new items to the existing list and updates the state.
   void appendItems({
-    required List<T> newItems,
-    required int currentPage,
-    required bool hasReachedMax,
+    required final List<T> newItems,
+    required final int currentPage,
+    required final bool hasReachedMax,
   }) {
     final currentItems = state.items;
     final allItems = [...currentItems, ...newItems];
@@ -57,7 +57,11 @@ abstract class PaginationStateNotifier<T>
   }
 
   /// Sets the state to error with the provided message.
-  void setError(String message, {Object? error, StackTrace? stackTrace}) {
+  void setError(
+    final String message, {
+    final Object? error,
+    final StackTrace? stackTrace,
+  }) {
     state = PaginationState.error(
       message: message,
       error: error,
@@ -79,7 +83,7 @@ abstract class PaginationStateNotifier<T>
 
   /// A utility method to run an operation for the first page with proper state handling.
   Future<void> runLoadFirstPage(
-    Future<({List<T> items, bool hasReachedMax})> Function() callback,
+    final Future<({List<T> items, bool hasReachedMax})> Function() callback,
   ) async {
     try {
       setLoading();
@@ -96,7 +100,7 @@ abstract class PaginationStateNotifier<T>
 
   /// A utility method to run an operation for the next page with proper state handling.
   Future<void> runLoadNextPage(
-    Future<({List<T> items, bool hasReachedMax})> Function() callback,
+    final Future<({List<T> items, bool hasReachedMax})> Function() callback,
   ) async {
     if (state.isLoadingMore || !state.canLoadMore) {
       return;

@@ -1,7 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// A reusable card component with consistent styling
 class AppCard extends StatelessWidget {
+  const AppCard({
+    super.key,
+    required this.child,
+    this.title,
+    this.subtitle,
+    this.icon,
+    this.onTap,
+    this.elevation = 2,
+    this.contentPadding = const EdgeInsets.all(16),
+    this.margin = const EdgeInsets.only(bottom: 16),
+    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+    this.actions,
+  });
+
   /// The card's content
   final Widget child;
 
@@ -32,22 +47,8 @@ class AppCard extends StatelessWidget {
   /// Actions to display in the card header
   final List<Widget>? actions;
 
-  const AppCard({
-    super.key,
-    required this.child,
-    this.title,
-    this.subtitle,
-    this.icon,
-    this.onTap,
-    this.elevation = 2,
-    this.contentPadding = const EdgeInsets.all(16),
-    this.margin = const EdgeInsets.only(bottom: 16),
-    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
-    this.actions,
-  });
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
     final hasHeader = title != null || subtitle != null || icon != null;
 
@@ -107,6 +108,23 @@ class AppCard extends StatelessWidget {
       elevation: elevation,
       shape: RoundedRectangleBorder(borderRadius: borderRadius),
       child: InkWell(onTap: onTap, borderRadius: borderRadius, child: content),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('title', title));
+    properties.add(StringProperty('subtitle', subtitle));
+    properties.add(DiagnosticsProperty<IconData?>('icon', icon));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onTap', onTap));
+    properties.add(DoubleProperty('elevation', elevation));
+    properties.add(
+      DiagnosticsProperty<EdgeInsetsGeometry>('contentPadding', contentPadding),
+    );
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry>('margin', margin));
+    properties.add(
+      DiagnosticsProperty<BorderRadius>('borderRadius', borderRadius),
     );
   }
 }

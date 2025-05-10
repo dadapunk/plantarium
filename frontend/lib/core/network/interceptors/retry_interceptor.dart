@@ -7,8 +7,8 @@ class RetryInterceptor extends Interceptor {
 
   @override
   Future<void> onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
+    final DioException err,
+    final ErrorInterceptorHandler handler,
   ) async {
     final options = err.requestOptions;
     final response = err.response;

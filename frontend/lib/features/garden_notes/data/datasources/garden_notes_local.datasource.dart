@@ -8,7 +8,7 @@ abstract class GardenNotesLocalDatasource {
   Future<List<GardenNoteDTO>> getCachedNotes();
 
   /// Cache a list of garden notes
-  Future<void> cacheNotes(List<GardenNoteDTO> notes);
+  Future<void> cacheNotes(final List<GardenNoteDTO> notes);
 
   /// Clear the cache
   Future<void> clearCache();
@@ -32,11 +32,11 @@ class GardenNotesLocalDatasourceImpl implements GardenNotesLocalDatasource {
       await databaseFactory.getDatabasesPath(),
       'plantarium.db',
     );
-    return await databaseFactory.openDatabase(
+    return databaseFactory.openDatabase(
       path,
       options: OpenDatabaseOptions(
         version: 1,
-        onCreate: (Database db, int version) async {
+        onCreate: (db, version) async {
           await db.execute('''
             CREATE TABLE $_tableName(
               id INTEGER PRIMARY KEY,
@@ -51,9 +51,9 @@ class GardenNotesLocalDatasourceImpl implements GardenNotesLocalDatasource {
   }
 
   @override
-  Future<void> cacheNotes(List<GardenNoteDTO> notes) async {
+  Future<void> cacheNotes(final List<GardenNoteDTO> notes) async {
     final db = await database;
-    await db.transaction((txn) async {
+    await db.transaction((final txn) async {
       await txn.delete(_tableName);
       for (final note in notes) {
         await txn.insert(_tableName, {
@@ -70,14 +70,15 @@ class GardenNotesLocalDatasourceImpl implements GardenNotesLocalDatasource {
   Future<List<GardenNoteDTO>> getCachedNotes() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(_tableName);
-    return List.generate(maps.length, (i) {
-      return GardenNoteDTO(
+    return List.generate(
+      maps.length,
+      (final i) => GardenNoteDTO(
         id: maps[i]['id'] as int,
         title: maps[i]['title'] as String,
         note: maps[i]['note'] as String,
         date: DateTime.parse(maps[i]['date'] as String),
-      );
-    });
+      ),
+    );
   }
 
   @override

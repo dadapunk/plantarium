@@ -17,51 +17,44 @@ class EnvConfig {
   });
 
   /// Development environment configuration
-  static Future<EnvConfig> development() async {
-    return EnvConfig._(
-      environment: Environment.dev,
-      apiBaseUrl: EnvLoader.getString(
-        'API_BASE_URL',
-        defaultValue: 'http://localhost:3002',
-      ),
-      weatherApiKey: EnvLoader.getString(
-        'WEATHER_API_KEY',
-        defaultValue: 'dev_key',
-      ),
-      enableLogging: EnvLoader.getBool('ENABLE_LOGGING', defaultValue: true),
-      useMockServices: EnvLoader.getBool(
-        'USE_MOCK_SERVICES',
-        defaultValue: true,
-      ),
-      timeoutDuration: EnvLoader.getDuration(
-        'TIMEOUT_DURATION',
-        defaultSeconds: 30,
-      ),
-      maxRetryAttempts: EnvLoader.getInt('MAX_RETRY_ATTEMPTS', defaultValue: 3),
-    );
-  }
+  static Future<EnvConfig> development() async => EnvConfig._(
+    environment: Environment.dev,
+    apiBaseUrl: EnvLoader.getString(
+      'API_BASE_URL',
+      defaultValue: 'http://localhost:3002',
+    ),
+    weatherApiKey: EnvLoader.getString(
+      'WEATHER_API_KEY',
+      defaultValue: 'dev_key',
+    ),
+    enableLogging: EnvLoader.getBool('ENABLE_LOGGING', defaultValue: true),
+    useMockServices: EnvLoader.getBool('USE_MOCK_SERVICES', defaultValue: true),
+    timeoutDuration: EnvLoader.getDuration(
+      'TIMEOUT_DURATION',
+      defaultSeconds: 30,
+    ),
+    maxRetryAttempts: EnvLoader.getInt('MAX_RETRY_ATTEMPTS', defaultValue: 3),
+  );
 
   /// Production environment configuration
-  static Future<EnvConfig> production() async {
-    return EnvConfig._(
-      environment: Environment.prod,
-      apiBaseUrl: EnvLoader.getString(
-        'API_BASE_URL',
-        defaultValue: 'https://api.plantarium.app',
-      ),
-      weatherApiKey: EnvLoader.getString('WEATHER_API_KEY', defaultValue: ''),
-      enableLogging: EnvLoader.getBool('ENABLE_LOGGING', defaultValue: false),
-      useMockServices: EnvLoader.getBool(
-        'USE_MOCK_SERVICES',
-        defaultValue: false,
-      ),
-      timeoutDuration: EnvLoader.getDuration(
-        'TIMEOUT_DURATION',
-        defaultSeconds: 30,
-      ),
-      maxRetryAttempts: EnvLoader.getInt('MAX_RETRY_ATTEMPTS', defaultValue: 3),
-    );
-  }
+  static Future<EnvConfig> production() async => EnvConfig._(
+    environment: Environment.prod,
+    apiBaseUrl: EnvLoader.getString(
+      'API_BASE_URL',
+      defaultValue: 'https://api.plantarium.app',
+    ),
+    weatherApiKey: EnvLoader.getString('WEATHER_API_KEY', defaultValue: ''),
+    enableLogging: EnvLoader.getBool('ENABLE_LOGGING', defaultValue: false),
+    useMockServices: EnvLoader.getBool(
+      'USE_MOCK_SERVICES',
+      defaultValue: false,
+    ),
+    timeoutDuration: EnvLoader.getDuration(
+      'TIMEOUT_DURATION',
+      defaultSeconds: 30,
+    ),
+    maxRetryAttempts: EnvLoader.getInt('MAX_RETRY_ATTEMPTS', defaultValue: 3),
+  );
 
   final Environment environment;
   final String apiBaseUrl;
@@ -75,9 +68,9 @@ class EnvConfig {
   static Future<EnvConfig> getConfig(final Environment env) async {
     switch (env) {
       case Environment.dev:
-        return await development();
+        return development();
       case Environment.prod:
-        return await production();
+        return production();
     }
   }
 

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 class AppEmptyStates {
   /// Standard empty state display with customizable content
   static Widget standard({
-    required String title,
-    String? subtitle,
-    IconData icon = Icons.inbox_outlined,
-    Color? iconColor,
-    Widget? actionButton,
-    bool centered = true,
+    required final String title,
+    final String? subtitle,
+    final IconData icon = Icons.inbox_outlined,
+    final Color? iconColor,
+    final Widget? actionButton,
+    final bool centered = true,
   }) {
     final content = Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -45,44 +45,40 @@ class AppEmptyStates {
 
   /// Empty state for lists or search results
   static Widget forList({
-    String title = 'No items found',
-    String? subtitle,
-    VoidCallback? onActionPressed,
-    String actionLabel = 'Add Item',
-    IconData icon = Icons.format_list_bulleted,
-  }) {
-    return standard(
-      title: title,
-      subtitle: subtitle,
-      icon: icon,
-      actionButton:
-          onActionPressed != null
-              ? ElevatedButton.icon(
-                onPressed: onActionPressed,
-                icon: const Icon(Icons.add),
-                label: Text(actionLabel),
-              )
-              : null,
-    );
-  }
+    final String title = 'No items found',
+    final String? subtitle,
+    final VoidCallback? onActionPressed,
+    final String actionLabel = 'Add Item',
+    final IconData icon = Icons.format_list_bulleted,
+  }) => standard(
+    title: title,
+    subtitle: subtitle,
+    icon: icon,
+    actionButton:
+        onActionPressed != null
+            ? ElevatedButton.icon(
+              onPressed: onActionPressed,
+              icon: const Icon(Icons.add),
+              label: Text(actionLabel),
+            )
+            : null,
+  );
 
   /// Empty state specifically for search results
   static Widget forSearch({
-    String title = 'No results found',
-    String? subtitle = 'Try different search terms',
-    VoidCallback? onClearSearch,
-  }) {
-    return standard(
-      title: title,
-      subtitle: subtitle,
-      icon: Icons.search_off,
-      actionButton:
-          onClearSearch != null
-              ? OutlinedButton(
-                onPressed: onClearSearch,
-                child: const Text('Clear Search'),
-              )
-              : null,
-    );
-  }
+    final String title = 'No results found',
+    final String? subtitle = 'Try different search terms',
+    final VoidCallback? onClearSearch,
+  }) => standard(
+    title: title,
+    subtitle: subtitle,
+    icon: Icons.search_off,
+    actionButton:
+        onClearSearch != null
+            ? OutlinedButton(
+              onPressed: onClearSearch,
+              child: const Text('Clear Search'),
+            )
+            : null,
+  );
 }

@@ -4,15 +4,14 @@ import 'package:plantarium/core/errors/app_exception.dart';
 
 /// Interceptor that handles API errors and converts them to [AppException] instances.
 class ErrorInterceptor extends Interceptor {
-  final bool _debug;
-
   /// Creates a new error interceptor.
   ///
   /// [debug] enables debug logging.
   ErrorInterceptor({bool debug = false}) : _debug = debug;
+  final bool _debug;
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  void onError(final DioException err, final ErrorInterceptorHandler handler) {
     _logDebug('Error: ${err.type} - ${err.message}');
 
     // Create an app exception from the Dio error
@@ -31,7 +30,7 @@ class ErrorInterceptor extends Interceptor {
   }
 
   /// Maps a Dio error to an app exception.
-  AppException _mapDioErrorToAppException(DioException err) {
+  AppException _mapDioErrorToAppException(final DioException err) {
     final statusCode = err.response?.statusCode;
 
     _logDebug('Status code: $statusCode');
@@ -149,7 +148,7 @@ class ErrorInterceptor extends Interceptor {
   }
 
   /// Extracts the error message from a Dio error.
-  String? _extractErrorMessage(DioException err) {
+  String? _extractErrorMessage(final DioException err) {
     try {
       final data = err.response?.data;
 
@@ -169,7 +168,7 @@ class ErrorInterceptor extends Interceptor {
   }
 
   /// Extracts error details from a Dio error.
-  Map<String, dynamic>? _extractErrorDetails(DioException err) {
+  Map<String, dynamic>? _extractErrorDetails(final DioException err) {
     try {
       final data = err.response?.data;
       final details = <String, dynamic>{};
@@ -197,7 +196,7 @@ class ErrorInterceptor extends Interceptor {
   }
 
   /// Logs a debug message if debug is enabled.
-  void _logDebug(String message) {
+  void _logDebug(final String message) {
     if (_debug && kDebugMode) {
       print('ErrorInterceptor: $message');
     }

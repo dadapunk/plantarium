@@ -3,14 +3,12 @@ import 'package:plantarium/features/garden_notes/domain/repositories/garden_note
 
 /// Use case for creating a garden note
 class CreateNoteUseCase {
-  /// The garden notes repository
-  final GardenNotesRepository repository;
-
   /// Constructor
   const CreateNoteUseCase(this.repository);
 
+  /// The garden notes repository
+  final GardenNotesRepository repository;
+
   /// Execute the use case to create a note
-  Future<GardenNote> call(GardenNote note) {
-    return repository.createNote(note);
-  }
+  Future<GardenNote> call(final GardenNote note) => repository.createNote(note);
 }

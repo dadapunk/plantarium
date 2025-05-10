@@ -5,33 +5,24 @@ import 'package:plantarium/shared/services/garden_note_cache_service_interface.d
 import 'package:plantarium/core/network/models/api_error.dart';
 
 class GardenNotesProvider with ChangeNotifier {
+  GardenNotesProvider(this.gardenNoteService, this._cacheService);
   final IGardenNoteService gardenNoteService;
   final IGardenNoteCacheService _cacheService;
   List<GardenNoteDTO> _notes = [];
   bool _isLoading = false;
   String? _error;
-  String? _errorCode;
-  Map<String, dynamic>? _errorDetails;
-
-  GardenNotesProvider(this.gardenNoteService, this._cacheService);
 
   List<GardenNoteDTO> get notes => _notes;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  String? get errorCode => _errorCode;
-  Map<String, dynamic>? get errorDetails => _errorDetails;
 
-  void _setError(ApiError apiError) {
+  void _setError(final ApiError apiError) {
     _error = apiError.message;
-    _errorCode = apiError.errorCode;
-    _errorDetails = apiError.errorDetails;
     notifyListeners();
   }
 
   void _clearError() {
     _error = null;
-    _errorCode = null;
-    _errorDetails = null;
     notifyListeners();
   }
 
@@ -62,7 +53,7 @@ class GardenNotesProvider with ChangeNotifier {
     }
   }
 
-  Future<void> createNote(GardenNoteDTO note) async {
+  Future<void> createNote(final GardenNoteDTO note) async {
     try {
       final createdNote = await gardenNoteService.createNote(note);
       _notes = [..._notes, createdNote];
@@ -78,10 +69,11 @@ class GardenNotesProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateNote(GardenNoteDTO note) async {
+  Future<void> updateNote(final GardenNoteDTO note) async {
     try {
       final updatedNote = await gardenNoteService.updateNote(note.id!, note);
-      _notes = _notes.map((n) => n.id == note.id ? updatedNote : n).toList();
+      _notes =
+          _notes.map((final n) => n.id == note.id ? updatedNote : n).toList();
       await _cacheService.cacheNotes(_notes);
       _clearError();
       notifyListeners();
@@ -94,10 +86,10 @@ class GardenNotesProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteNote(final int id) async {
     try {
       await gardenNoteService.deleteNote(id);
-      _notes = _notes.where((note) => note.id != id).toList();
+      _notes = _notes.where((final note) => note.id != id).toList();
       await _cacheService.cacheNotes(_notes);
       _clearError();
       notifyListeners();

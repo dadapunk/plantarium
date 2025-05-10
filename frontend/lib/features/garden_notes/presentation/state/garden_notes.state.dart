@@ -16,14 +16,15 @@ class GardenNotesState with _$GardenNotesState {
   const factory GardenNotesState.loading() = _Loading;
 
   /// Success state with loaded notes
-  const factory GardenNotesState.success({required List<GardenNote> notes}) =
-      _Success;
+  const factory GardenNotesState.success({
+    required final List<GardenNote> notes,
+  }) = _Success;
 
   /// Error state
   const factory GardenNotesState.error({
-    required String message,
-    String? errorCode,
-    Map<String, dynamic>? errorDetails,
+    required final String message,
+    final String? errorCode,
+    final Map<String, dynamic>? errorDetails,
   }) = _Error;
 
   /// Helper to check if the state is in loading state
@@ -34,11 +35,11 @@ class GardenNotesState with _$GardenNotesState {
 
   /// Helper to get the notes from the success state
   List<GardenNote> get notes =>
-      maybeMap(success: (state) => state.notes, orElse: () => []);
+      maybeMap(success: (final state) => state.notes, orElse: () => []);
 
   /// Helper to get the error message
   String? get errorMessage =>
-      maybeMap(error: (state) => state.message, orElse: () => null);
+      maybeMap(error: (final state) => state.message, orElse: () => null);
 }
 
 /// State for garden note detail (view/edit/create)
@@ -54,21 +55,22 @@ class GardenNoteDetailState with _$GardenNoteDetailState {
   const factory GardenNoteDetailState.loading() = _DetailLoading;
 
   /// Success state with loaded note
-  const factory GardenNoteDetailState.success({required GardenNote note}) =
-      _DetailSuccess;
+  const factory GardenNoteDetailState.success({
+    required final GardenNote note,
+  }) = _DetailSuccess;
 
   /// Error state
   const factory GardenNoteDetailState.error({
-    required String message,
-    String? errorCode,
-    Map<String, dynamic>? errorDetails,
+    required final String message,
+    final String? errorCode,
+    final Map<String, dynamic>? errorDetails,
   }) = _DetailError;
 
   /// State when creating or updating a note
   const factory GardenNoteDetailState.saving() = _DetailSaving;
 
   /// State after successful save
-  const factory GardenNoteDetailState.saved({required GardenNote note}) =
+  const factory GardenNoteDetailState.saved({required final GardenNote note}) =
       _DetailSaved;
 
   /// State when deleting a note
@@ -94,12 +96,12 @@ class GardenNoteDetailState with _$GardenNoteDetailState {
 
   /// Helper to get the note from states that contain it
   GardenNote? get note => maybeMap(
-    success: (state) => state.note,
-    saved: (state) => state.note,
+    success: (final state) => state.note,
+    saved: (final state) => state.note,
     orElse: () => null,
   );
 
   /// Helper to get the error message
   String? get errorMessage =>
-      maybeMap(error: (state) => state.message, orElse: () => null);
+      maybeMap(error: (final state) => state.message, orElse: () => null);
 }

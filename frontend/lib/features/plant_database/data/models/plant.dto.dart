@@ -1,15 +1,4 @@
 class PlantDTO {
-  final String id;
-  final String name;
-  final String scientificName;
-  final String category;
-  final String growthDifficulty;
-  final List<String> tags;
-  final String description;
-  final String imagePath;
-  final String growingSeason;
-  final bool isFavorite;
-
   PlantDTO({
     required this.id,
     required this.name,
@@ -22,31 +11,39 @@ class PlantDTO {
     required this.growingSeason,
     this.isFavorite = false,
   });
+  final String id;
+  final String name;
+  final String scientificName;
+  final String category;
+  final String growthDifficulty;
+  final List<String> tags;
+  final String description;
+  final String imagePath;
+  final String growingSeason;
+  final bool isFavorite;
 
   // Create a copy of the current plant with modified properties
   PlantDTO copyWith({
-    String? id,
-    String? name,
-    String? scientificName,
-    String? category,
-    String? growthDifficulty,
-    List<String>? tags,
-    String? description,
-    String? imagePath,
-    String? growingSeason,
-    bool? isFavorite,
-  }) {
-    return PlantDTO(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      scientificName: scientificName ?? this.scientificName,
-      category: category ?? this.category,
-      growthDifficulty: growthDifficulty ?? this.growthDifficulty,
-      tags: tags ?? this.tags,
-      description: description ?? this.description,
-      imagePath: imagePath ?? this.imagePath,
-      growingSeason: growingSeason ?? this.growingSeason,
-      isFavorite: isFavorite ?? this.isFavorite,
-    );
-  }
+    final String? id,
+    final String? name,
+    final String? scientificName,
+    final String? category,
+    final String? growthDifficulty,
+    final List<String>? tags,
+    final String? description,
+    final String? imagePath,
+    final String? growingSeason,
+    final bool? isFavorite,
+  }) => PlantDTO(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    scientificName: scientificName ?? this.scientificName,
+    category: category ?? this.category,
+    growthDifficulty: growthDifficulty ?? this.growthDifficulty,
+    tags: tags ?? this.tags,
+    description: description ?? this.description,
+    imagePath: imagePath ?? this.imagePath,
+    growingSeason: growingSeason ?? this.growingSeason,
+    isFavorite: isFavorite ?? this.isFavorite,
+  );
 }

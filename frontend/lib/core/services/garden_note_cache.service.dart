@@ -20,11 +20,11 @@ class GardenNoteCacheService implements IGardenNoteCacheService {
       await databaseFactory.getDatabasesPath(),
       'plantarium.db',
     );
-    return await databaseFactory.openDatabase(
+    return databaseFactory.openDatabase(
       path,
       options: OpenDatabaseOptions(
         version: 1,
-        onCreate: (Database db, int version) async {
+        onCreate: (db, version) async {
           await db.execute('''
             CREATE TABLE $_tableName(
               id INTEGER PRIMARY KEY,
@@ -39,24 +39,24 @@ class GardenNoteCacheService implements IGardenNoteCacheService {
   }
 
   @override
-  void log(String message) {
+  void log(final String message) {
     if (kDebugMode) {
       print('GardenNoteCacheService: $message');
     }
   }
 
   @override
-  Object handleError(Object error, String operation) {
+  Object handleError(final Object error, final String operation) {
     log('Error $operation: $error');
     return Exception('Failed to $operation: $error');
   }
 
   @override
-  Future<void> cacheNotes(List<GardenNoteDTO> notes) async {
+  Future<void> cacheNotes(final List<GardenNoteDTO> notes) async {
     log('Caching ${notes.length} garden notes');
     try {
       final db = await database;
-      await db.transaction((txn) async {
+      await db.transaction((final txn) async {
         await txn.delete(_tableName);
         for (final note in notes) {
           await txn.insert(_tableName, {
@@ -79,14 +79,15 @@ class GardenNoteCacheService implements IGardenNoteCacheService {
     try {
       final db = await database;
       final List<Map<String, dynamic>> maps = await db.query(_tableName);
-      final notes = List.generate(maps.length, (i) {
-        return GardenNoteDTO(
+      final notes = List.generate(
+        maps.length,
+        (final i) => GardenNoteDTO(
           id: maps[i]['id'] as int,
           title: maps[i]['title'] as String,
           note: maps[i]['note'] as String,
           date: DateTime.parse(maps[i]['date'] as String),
-        );
-      });
+        ),
+      );
       log('Retrieved ${notes.length} cached garden notes');
       return notes;
     } catch (e) {

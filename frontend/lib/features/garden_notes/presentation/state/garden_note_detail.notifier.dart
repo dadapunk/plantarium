@@ -8,18 +8,6 @@ import 'package:plantarium/features/garden_notes/presentation/state/garden_notes
 
 /// Notifier for garden note detail operations
 class GardenNoteDetailNotifier extends StateNotifier<GardenNoteDetailState> {
-  /// Get note by ID use case
-  final GetNoteByIdUseCase _getNoteByIdUseCase;
-
-  /// Create note use case
-  final CreateNoteUseCase _createNoteUseCase;
-
-  /// Update note use case
-  final UpdateNoteUseCase _updateNoteUseCase;
-
-  /// Delete note use case
-  final DeleteNoteUseCase _deleteNoteUseCase;
-
   /// Constructor
   GardenNoteDetailNotifier({
     required GetNoteByIdUseCase getNoteByIdUseCase,
@@ -32,8 +20,20 @@ class GardenNoteDetailNotifier extends StateNotifier<GardenNoteDetailState> {
        _deleteNoteUseCase = deleteNoteUseCase,
        super(const GardenNoteDetailState.initial());
 
+  /// Get note by ID use case
+  final GetNoteByIdUseCase _getNoteByIdUseCase;
+
+  /// Create note use case
+  final CreateNoteUseCase _createNoteUseCase;
+
+  /// Update note use case
+  final UpdateNoteUseCase _updateNoteUseCase;
+
+  /// Delete note use case
+  final DeleteNoteUseCase _deleteNoteUseCase;
+
   /// Load a garden note by ID
-  Future<void> loadNote(int id) async {
+  Future<void> loadNote(final int id) async {
     state = const GardenNoteDetailState.loading();
 
     try {
@@ -45,7 +45,7 @@ class GardenNoteDetailNotifier extends StateNotifier<GardenNoteDetailState> {
   }
 
   /// Create a new garden note
-  Future<void> createNote(GardenNote note) async {
+  Future<void> createNote(final GardenNote note) async {
     state = const GardenNoteDetailState.saving();
 
     try {
@@ -57,7 +57,7 @@ class GardenNoteDetailNotifier extends StateNotifier<GardenNoteDetailState> {
   }
 
   /// Update an existing garden note
-  Future<void> updateNote(GardenNote note) async {
+  Future<void> updateNote(final GardenNote note) async {
     state = const GardenNoteDetailState.saving();
 
     try {
@@ -69,7 +69,7 @@ class GardenNoteDetailNotifier extends StateNotifier<GardenNoteDetailState> {
   }
 
   /// Delete a garden note
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteNote(final int id) async {
     state = const GardenNoteDetailState.deleting();
 
     try {
@@ -81,7 +81,7 @@ class GardenNoteDetailNotifier extends StateNotifier<GardenNoteDetailState> {
   }
 
   /// Save a garden note (create or update)
-  Future<void> saveNote(GardenNote note) async {
+  Future<void> saveNote(final GardenNote note) async {
     if (note.id == null) {
       await createNote(note);
     } else {

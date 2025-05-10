@@ -4,13 +4,6 @@ part 'user.dto.g.dart';
 
 @JsonSerializable()
 class UserDTO {
-  final int? id;
-  final String username;
-  final String email;
-  final String? firstName;
-  final String? lastName;
-  final String? avatarUrl;
-
   UserDTO({
     this.id,
     required this.username,
@@ -22,5 +15,11 @@ class UserDTO {
 
   factory UserDTO.fromJson(Map<String, dynamic> json) =>
       _$UserDTOFromJson(json);
+  final int? id;
+  final String username;
+  final String email;
+  final String? firstName;
+  final String? lastName;
+  final String? avatarUrl;
   Map<String, dynamic> toJson() => _$UserDTOToJson(this);
 }

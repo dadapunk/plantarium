@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:plantarium/shared/widgets/app_card.dart';
 
 class ActiveGardensSection extends StatelessWidget {
-  const ActiveGardensSection({Key? key}) : super(key: key);
+  const ActiveGardensSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
     // Mock data for gardens - would come from a provider in a real app
@@ -15,7 +15,7 @@ class ActiveGardensSection extends StatelessWidget {
       {'name': 'Container Garden', 'plants': 5, 'icon': Icons.inbox},
     ];
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(8),
@@ -25,7 +25,7 @@ class ActiveGardensSection extends StatelessWidget {
         children: [
           // Section header
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -49,10 +49,10 @@ class ActiveGardensSection extends StatelessWidget {
           // Garden cards
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               itemCount:
                   gardensList.length + 1, // +1 for the "Manage Gardens" button
-              itemBuilder: (context, index) {
+              itemBuilder: (final context, final index) {
                 // "Manage Gardens" button at the end
                 if (index == gardensList.length) {
                   return _buildManageGardensButton(theme);
@@ -62,9 +62,9 @@ class ActiveGardensSection extends StatelessWidget {
                 final garden = gardensList[index];
                 return _buildGardenCard(
                   context: context,
-                  name: garden['name'] as String,
-                  plants: garden['plants'] as int,
-                  icon: garden['icon'] as IconData,
+                  name: garden['name']! as String,
+                  plants: garden['plants']! as int,
+                  icon: garden['icon']! as IconData,
                 );
               },
             ),
@@ -75,10 +75,10 @@ class ActiveGardensSection extends StatelessWidget {
   }
 
   Widget _buildGardenCard({
-    required BuildContext context,
-    required String name,
-    required int plants,
-    required IconData icon,
+    required final BuildContext context,
+    required final String name,
+    required final int plants,
+    required final IconData icon,
   }) {
     final theme = Theme.of(context);
 
@@ -95,7 +95,7 @@ class ActiveGardensSection extends StatelessWidget {
         ),
       ],
       child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
+        padding: const EdgeInsets.only(top: 8),
         child: Text(
           '$plants plants',
           style: theme.textTheme.bodyMedium?.copyWith(
@@ -106,20 +106,18 @@ class ActiveGardensSection extends StatelessWidget {
     );
   }
 
-  Widget _buildManageGardensButton(ThemeData theme) {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: theme.cardColor,
-          foregroundColor: theme.textTheme.bodyLarge?.color,
-          elevation: 0,
-          side: BorderSide(color: theme.dividerColor),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: const Text('Manage Gardens'),
+  Widget _buildManageGardensButton(final ThemeData theme) => Container(
+    margin: const EdgeInsets.only(top: 8),
+    child: ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: theme.cardColor,
+        foregroundColor: theme.textTheme.bodyLarge?.color,
+        elevation: 0,
+        side: BorderSide(color: theme.dividerColor),
+        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
-    );
-  }
+      child: const Text('Manage Gardens'),
+    ),
+  );
 }

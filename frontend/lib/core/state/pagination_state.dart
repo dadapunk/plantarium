@@ -20,26 +20,26 @@ class PaginationState<T> with _$PaginationState<T> {
   ///
   /// The [items] parameter contains the items that have been loaded so far.
   const factory PaginationState.loadingMore({
-    required List<T> items,
-    required int currentPage,
-    required bool hasReachedMax,
+    required final List<T> items,
+    required final int currentPage,
+    required final bool hasReachedMax,
   }) = _PaginationLoadingMore<T>;
 
   /// Success state with loaded items.
   const factory PaginationState.success({
-    required List<T> items,
-    required int currentPage,
-    required bool hasReachedMax,
+    required final List<T> items,
+    required final int currentPage,
+    required final bool hasReachedMax,
   }) = _PaginationSuccess<T>;
 
   /// Error state when loading fails.
   const factory PaginationState.error({
-    required String message,
-    Object? error,
-    StackTrace? stackTrace,
-    List<T>? items,
-    @Default(0) int currentPage,
-    @Default(false) bool hasReachedMax,
+    required final String message,
+    final Object? error,
+    final StackTrace? stackTrace,
+    final List<T>? items,
+    @Default(0) final int currentPage,
+    @Default(false) final bool hasReachedMax,
   }) = _PaginationError<T>;
 
   /// Helper to check if the state is in loading state (initial load).
@@ -54,31 +54,31 @@ class PaginationState<T> with _$PaginationState<T> {
 
   /// Helper to get all items from states that might contain them.
   List<T> get items => maybeMap(
-    success: (state) => state.items,
-    loadingMore: (state) => state.items,
-    error: (state) => state.items ?? [],
+    success: (final state) => state.items,
+    loadingMore: (final state) => state.items,
+    error: (final state) => state.items ?? [],
     orElse: () => [],
   );
 
   /// Helper to check if there are more items to load.
   bool get canLoadMore =>
       maybeMap(
-        success: (state) => !state.hasReachedMax,
-        loadingMore: (state) => !state.hasReachedMax,
-        error: (state) => !state.hasReachedMax,
+        success: (final state) => !state.hasReachedMax,
+        loadingMore: (final state) => !state.hasReachedMax,
+        error: (final state) => !state.hasReachedMax,
         orElse: () => false,
       ) &&
       !isLoadingMore;
 
   /// Helper to get the current page number.
   int get currentPage => maybeMap(
-    success: (state) => state.currentPage,
-    loadingMore: (state) => state.currentPage,
-    error: (state) => state.currentPage,
+    success: (final state) => state.currentPage,
+    loadingMore: (final state) => state.currentPage,
+    error: (final state) => state.currentPage,
     orElse: () => 0,
   );
 
   /// Helper to get the error message if any.
   String? get errorMessage =>
-      maybeMap(error: (state) => state.message, orElse: () => null);
+      maybeMap(error: (final state) => state.message, orElse: () => null);
 }

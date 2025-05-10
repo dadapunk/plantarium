@@ -1,24 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// A widget that displays a loading state.
 ///
 /// This widget provides a consistent loading experience across the app.
 class LoadingState extends StatelessWidget {
-  /// Optional text to display below the loader.
-  final String? message;
-
-  /// Whether to show the loading state with a full-screen overlay.
-  final bool isOverlay;
-
-  /// The size of the loading indicator.
-  final double size;
-
-  /// The color of the loading indicator. If null, it uses the theme's primary color.
-  final Color? color;
-
-  /// Whether to show a text message with the loading indicator.
-  final bool showMessage;
-
   /// Creates a loading state widget.
   const LoadingState({
     Key? key,
@@ -44,8 +30,23 @@ class LoadingState extends StatelessWidget {
     );
   }
 
+  /// Optional text to display below the loader.
+  final String? message;
+
+  /// Whether to show the loading state with a full-screen overlay.
+  final bool isOverlay;
+
+  /// The size of the loading indicator.
+  final double size;
+
+  /// The color of the loading indicator. If null, it uses the theme's primary color.
+  final Color? color;
+
+  /// Whether to show a text message with the loading indicator.
+  final bool showMessage;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final loadingWidget = Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -73,12 +74,22 @@ class LoadingState extends StatelessWidget {
     );
 
     if (isOverlay) {
-      return Container(
+      return ColoredBox(
         color: Colors.black.withOpacity(0.5),
         child: loadingWidget,
       );
     }
 
     return loadingWidget;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('message', message));
+    properties.add(DiagnosticsProperty<bool>('isOverlay', isOverlay));
+    properties.add(DoubleProperty('size', size));
+    properties.add(ColorProperty('color', color));
+    properties.add(DiagnosticsProperty<bool>('showMessage', showMessage));
   }
 }

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import '../api_client.dart';
-import 'api_client.dart';
+import 'package:plantarium/core/network/api_client.dart';
+import 'package:plantarium/core/network/retrofit/api_client.dart';
 
 /// An adapter that implements the [ApiClient] interface using [RetrofitApiClient].
 ///
@@ -8,9 +8,6 @@ import 'api_client.dart';
 /// [ApiClient] interface, allowing it to be used wherever an [ApiClient]
 /// is required.
 class RetrofitApiClientAdapter implements ApiClient {
-  final RetrofitApiClient _retrofitClient;
-  final String _baseUrl;
-
   /// Creates a new instance of the adapter with the given Retrofit client.
   ///
   /// [retrofitClient] The Retrofit client to use for making API requests.
@@ -35,12 +32,14 @@ class RetrofitApiClientAdapter implements ApiClient {
       baseUrl: baseUrl,
     );
   }
+  final RetrofitApiClient _retrofitClient;
+  final String _baseUrl;
 
   @override
   Future<Response<T>> get<T>(
-    String endpoint, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final response = await _retrofitClient.get<T>(
       endpoint,
@@ -58,10 +57,10 @@ class RetrofitApiClientAdapter implements ApiClient {
 
   @override
   Future<Response<T>> post<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final response = await _retrofitClient.post<T>(
       endpoint,
@@ -79,10 +78,10 @@ class RetrofitApiClientAdapter implements ApiClient {
 
   @override
   Future<Response<T>> put<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final response = await _retrofitClient.put<T>(
       endpoint,
@@ -100,10 +99,10 @@ class RetrofitApiClientAdapter implements ApiClient {
 
   @override
   Future<Response<T>> delete<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final response = await _retrofitClient.delete<T>(
       endpoint,
@@ -120,10 +119,10 @@ class RetrofitApiClientAdapter implements ApiClient {
 
   @override
   Future<Response<T>> patch<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   }) async {
     final response = await _retrofitClient.patch<T>(
       endpoint,

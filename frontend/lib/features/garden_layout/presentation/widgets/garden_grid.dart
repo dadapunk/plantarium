@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:plantarium/features/garden_layout/presentation/widgets/plant_plot.dart';
 
 class GardenGrid extends StatelessWidget {
-  const GardenGrid({Key? key}) : super(key: key);
+  const GardenGrid({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
     // Mock data for garden layout - would come from a provider in a real app
@@ -20,13 +20,13 @@ class GardenGrid extends StatelessWidget {
     ];
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: LayoutBuilder(
-              builder: (context, constraints) {
+              builder: (final context, final constraints) {
                 final gridSize = gardenGrid.length;
                 final cellWidth = constraints.maxWidth / gridSize;
                 final cellHeight = constraints.maxHeight / gridSize;
@@ -39,7 +39,7 @@ class GardenGrid extends StatelessWidget {
                       height: constraints.maxHeight,
                       decoration: BoxDecoration(
                         color: theme.cardColor,
-                        border: Border.all(color: theme.dividerColor, width: 1),
+                        border: Border.all(color: theme.dividerColor),
                       ),
                       child: GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
@@ -47,57 +47,58 @@ class GardenGrid extends StatelessWidget {
                           crossAxisCount: gridSize,
                         ),
                         itemCount: gridSize * gridSize,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: theme.dividerColor,
-                                width: 0.5,
+                        itemBuilder:
+                            (final context, final index) => Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: theme.dividerColor,
+                                  width: 0.5,
+                                ),
                               ),
                             ),
-                          );
-                        },
                       ),
                     ),
 
                     // Plant plots
-                    ...List.generate(gardenGrid.length, (row) {
-                      return List.generate(gardenGrid[row].length, (col) {
-                        final plantType = gardenGrid[row][col];
-                        if (plantType == 0) {
-                          return const SizedBox.shrink(); // Empty plot
-                        }
+                    ...List.generate(
+                      gardenGrid.length,
+                      (final row) =>
+                          List.generate(gardenGrid[row].length, (col) {
+                            final plantType = gardenGrid[row][col];
+                            if (plantType == 0) {
+                              return const SizedBox.shrink(); // Empty plot
+                            }
 
-                        String plantName;
-                        Color color;
+                            String plantName;
+                            Color color;
 
-                        switch (plantType) {
-                          case 1: // Tomato
-                            plantName = 'Tomato';
-                            color = const Color(0xFF1F5324);
-                            break;
-                          case 2: // Lettuce
-                            plantName = 'Lettuce';
-                            color = const Color(0xFF5F6D13);
-                            break;
-                          case 3: // Pepper
-                            plantName = 'Pepper';
-                            color = const Color(0xFF80303A);
-                            break;
-                          default:
-                            plantName = 'Unknown';
-                            color = Colors.grey;
-                        }
+                            switch (plantType) {
+                              case 1: // Tomato
+                                plantName = 'Tomato';
+                                color = const Color(0xFF1F5324);
+                                break;
+                              case 2: // Lettuce
+                                plantName = 'Lettuce';
+                                color = const Color(0xFF5F6D13);
+                                break;
+                              case 3: // Pepper
+                                plantName = 'Pepper';
+                                color = const Color(0xFF80303A);
+                                break;
+                              default:
+                                plantName = 'Unknown';
+                                color = Colors.grey;
+                            }
 
-                        return Positioned(
-                          left: col * cellWidth,
-                          top: row * cellHeight,
-                          width: cellWidth,
-                          height: cellHeight,
-                          child: PlantPlot(name: plantName, color: color),
-                        );
-                      });
-                    }).expand((list) => list).toList(),
+                            return Positioned(
+                              left: col * cellWidth,
+                              top: row * cellHeight,
+                              width: cellWidth,
+                              height: cellHeight,
+                              child: PlantPlot(name: plantName, color: color),
+                            );
+                          }),
+                    ).expand((final list) => list).toList(),
                   ],
                 );
               },
@@ -106,7 +107,7 @@ class GardenGrid extends StatelessWidget {
 
           // Plant legend at the bottom
           Padding(
-            padding: const EdgeInsets.only(top: 16.0),
+            padding: const EdgeInsets.only(top: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -123,20 +124,22 @@ class GardenGrid extends StatelessWidget {
     );
   }
 
-  Widget _buildLegendItem(String name, Color color, ThemeData theme) {
-    return Row(
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4),
-          ),
+  Widget _buildLegendItem(
+    final String name,
+    final Color color,
+    final ThemeData theme,
+  ) => Row(
+    children: [
+      Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(4),
         ),
-        const SizedBox(width: 8),
-        Text(name, style: theme.textTheme.bodyMedium),
-      ],
-    );
-  }
+      ),
+      const SizedBox(width: 8),
+      Text(name, style: theme.textTheme.bodyMedium),
+    ],
+  );
 }

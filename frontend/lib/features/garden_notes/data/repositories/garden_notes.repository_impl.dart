@@ -6,15 +6,14 @@ import 'package:plantarium/features/garden_notes/domain/repositories/garden_note
 
 /// Implementation of the garden notes repository
 class GardenNotesRepositoryImpl implements GardenNotesRepository {
-  final GardenNotesApiDatasource _apiDatasource;
-  final GardenNotesLocalDatasource _localDatasource;
-
   /// Creates a new repository implementation with the given datasources
   GardenNotesRepositoryImpl({
     required GardenNotesApiDatasource apiDatasource,
     required GardenNotesLocalDatasource localDatasource,
   }) : _apiDatasource = apiDatasource,
        _localDatasource = localDatasource;
+  final GardenNotesApiDatasource _apiDatasource;
+  final GardenNotesLocalDatasource _localDatasource;
 
   @override
   Future<List<GardenNote>> getAllNotes() async {
@@ -35,7 +34,7 @@ class GardenNotesRepositoryImpl implements GardenNotesRepository {
   }
 
   @override
-  Future<GardenNote> getNoteById(int id) async {
+  Future<GardenNote> getNoteById(final int id) async {
     try {
       // Try to get note from API
       final dto = await _apiDatasource.getNoteById(id);
@@ -44,7 +43,7 @@ class GardenNotesRepositoryImpl implements GardenNotesRepository {
       // If API call fails, try to get from cache
       final cachedDtoList = await _localDatasource.getCachedNotes();
       final cachedDto = cachedDtoList.firstWhere(
-        (note) => note.id == id,
+        (final note) => note.id == id,
         orElse: () => throw Exception('Note not found'),
       );
       return GardenNoteMapper.toEntity(cachedDto);
@@ -52,7 +51,7 @@ class GardenNotesRepositoryImpl implements GardenNotesRepository {
   }
 
   @override
-  Future<GardenNote> createNote(GardenNote note) async {
+  Future<GardenNote> createNote(final GardenNote note) async {
     // Convert entity to DTO
     final dto = GardenNoteMapper.fromEntity(note);
 
@@ -68,7 +67,7 @@ class GardenNotesRepositoryImpl implements GardenNotesRepository {
   }
 
   @override
-  Future<GardenNote> updateNote(GardenNote note) async {
+  Future<GardenNote> updateNote(final GardenNote note) async {
     if (note.id == null) {
       throw ArgumentError('Note ID cannot be null for update operation');
     }
@@ -84,7 +83,7 @@ class GardenNotesRepositoryImpl implements GardenNotesRepository {
     final updatedList =
         cachedDtoList
             .map(
-              (cachedDto) =>
+              (final cachedDto) =>
                   cachedDto.id == updatedDto.id ? updatedDto : cachedDto,
             )
             .toList();
@@ -95,13 +94,14 @@ class GardenNotesRepositoryImpl implements GardenNotesRepository {
   }
 
   @override
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteNote(final int id) async {
     // Delete note via API
     await _apiDatasource.deleteNote(id);
 
     // Update cache
     final cachedDtoList = await _localDatasource.getCachedNotes();
-    final updatedList = cachedDtoList.where((note) => note.id != id).toList();
+    final updatedList =
+        cachedDtoList.where((final note) => note.id != id).toList();
     await _localDatasource.cacheNotes(updatedList);
   }
 }

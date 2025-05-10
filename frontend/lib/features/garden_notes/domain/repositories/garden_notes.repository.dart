@@ -6,14 +6,14 @@ abstract class GardenNotesRepository {
   Future<List<GardenNote>> getAllNotes();
 
   /// Get a garden note by ID
-  Future<GardenNote> getNoteById(int id);
+  Future<GardenNote> getNoteById(final int id);
 
   /// Create a new garden note
-  Future<GardenNote> createNote(GardenNote note);
+  Future<GardenNote> createNote(final GardenNote note);
 
   /// Update an existing garden note
-  Future<GardenNote> updateNote(GardenNote note);
+  Future<GardenNote> updateNote(final GardenNote note);
 
   /// Delete a garden note by ID
-  Future<void> deleteNote(int id);
+  Future<void> deleteNote(final int id);
 }

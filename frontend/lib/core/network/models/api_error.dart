@@ -4,50 +4,27 @@ import 'package:dio/dio.dart';
 class ApiError implements Exception {
   final String message;
   final int? statusCode;
-  final String? errorCode;
-  final Map<String, dynamic>? errorDetails;
-  final DioException? dioException;
 
-  ApiError({
-    required this.message,
-    this.statusCode,
-    this.errorCode,
-    this.errorDetails,
-    this.dioException,
-  });
+  ApiError({required this.message, this.statusCode});
 
   /// Creates an [ApiError] from a [DioException].
   factory ApiError.fromDioException(DioException e) {
     final response = e.response;
     final data = response?.data;
 
-    if (data is Map<String, dynamic>) {
-      return ApiError(
-        message:
-            (data['message'] as String?) ?? e.message ?? 'An error occurred',
-        statusCode: response?.statusCode,
-        errorCode: data['error_code'] as String?,
-        errorDetails: data['error_details'] as Map<String, dynamic>?,
-        dioException: e,
-      );
+    String errorMessage = 'An error occurred';
+
+    if (data is Map<String, dynamic> && data['message'] != null) {
+      errorMessage = data['message'] as String;
+    } else if (e.message != null) {
+      errorMessage = e.message!;
     }
 
-    return ApiError(
-      message: e.message ?? 'An error occurred',
-      statusCode: response?.statusCode,
-      dioException: e,
-    );
+    return ApiError(message: errorMessage, statusCode: response?.statusCode);
   }
 
   @override
   String toString() {
-    final buffer = StringBuffer('ApiError: $message');
-    if (statusCode != null) {
-      buffer.write(' (Status: $statusCode)');
-    }
-    if (errorCode != null) {
-      buffer.write(' [Code: $errorCode]');
-    }
-    return buffer.toString();
+    return 'ApiError: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
   }
 }

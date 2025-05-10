@@ -6,14 +6,14 @@ abstract class IDataService<T, ID> extends BaseService {
   Future<List<T>> getAll();
 
   /// Retrieves an entity by its ID
-  Future<T> getById(ID id);
+  Future<T> getById(final ID id);
 
   /// Creates a new entity
-  Future<T> create(T entity);
+  Future<T> create(final T entity);
 
   /// Updates an existing entity
-  Future<T> update(ID id, T entity);
+  Future<T> update(final ID id, final T entity);
 
   /// Deletes an entity by its ID
-  Future<void> delete(ID id);
+  Future<void> delete(final ID id);
 }

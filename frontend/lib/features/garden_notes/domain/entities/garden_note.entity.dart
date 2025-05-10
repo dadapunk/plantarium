@@ -2,6 +2,14 @@
 ///
 /// This represents a note in the domain layer, independent of data layer concerns
 class GardenNote {
+  /// Creates a new garden note
+  const GardenNote({
+    this.id,
+    required this.title,
+    required this.content,
+    required this.date,
+  });
+
   /// Unique identifier for the note
   final int? id;
 
@@ -14,26 +22,16 @@ class GardenNote {
   /// Date when the note was created or last modified
   final DateTime date;
 
-  /// Creates a new garden note
-  const GardenNote({
-    this.id,
-    required this.title,
-    required this.content,
-    required this.date,
-  });
-
   /// Creates a copy of this note with the given fields replaced with new values
   GardenNote copyWith({
-    int? id,
-    String? title,
-    String? content,
-    DateTime? date,
-  }) {
-    return GardenNote(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      content: content ?? this.content,
-      date: date ?? this.date,
-    );
-  }
+    final int? id,
+    final String? title,
+    final String? content,
+    final DateTime? date,
+  }) => GardenNote(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    date: date ?? this.date,
+  );
 }

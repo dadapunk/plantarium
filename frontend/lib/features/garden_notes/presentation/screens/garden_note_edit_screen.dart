@@ -1,37 +1,49 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
 import 'package:plantarium/shared/services/garden_note_service_interface.dart';
 import 'package:plantarium/core/network/models/api_error.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:async';
 
 class GardenNoteEditScreen extends StatefulWidget {
-  final IGardenNoteService gardenNoteService;
-  final GardenNoteDTO? note;
-
   const GardenNoteEditScreen({
     Key? key,
     required this.gardenNoteService,
     this.note,
   }) : super(key: key);
+  final IGardenNoteService gardenNoteService;
+  final GardenNoteDTO? note;
 
   @override
   State<GardenNoteEditScreen> createState() => _GardenNoteEditScreenState();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<IGardenNoteService>(
+        'gardenNoteService',
+        gardenNoteService,
+      ),
+    );
+    properties.add(DiagnosticsProperty<GardenNoteDTO?>('note', note));
+  }
 }
 
 class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _titleController;
-  late TextEditingController _noteController;
-  bool _isSaving = false;
-  String? _error;
-  String? _errorCode;
-  Map<String, dynamic>? _errorDetails;
-  bool _hasUnsavedChanges = false;
-  DateTime? _lastAutoSave;
-  late TabController _tabController;
+  late final TextEditingController _titleController;
+  late final TextEditingController _noteController;
+  late final TabController _tabController;
   bool _isPreviewMode = false;
+  bool _isSaving = false;
+  bool _hasUnsavedChanges = false;
+  String? _error;
+  DateTime? _lastAutoSave;
+  Timer? _autoSaveTimer;
 
   @override
   void initState() {
@@ -79,7 +91,7 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     }
   }
 
-  void _autoSave() async {
+  Future<void> _autoSave() async {
     // Skip auto-save for new notes
     if (!_hasUnsavedChanges || _isSaving || widget.note == null) return;
 
@@ -93,8 +105,6 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     setState(() {
       _isSaving = true;
       _error = null;
-      _errorCode = null;
-      _errorDetails = null;
     });
 
     try {
@@ -130,8 +140,6 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     } on ApiError catch (e) {
       setState(() {
         _error = e.message;
-        _errorCode = e.errorCode;
-        _errorDetails = e.errorDetails;
       });
     } catch (e) {
       setState(() {
@@ -148,8 +156,6 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     setState(() {
       _isSaving = true;
       _error = null;
-      _errorCode = null;
-      _errorDetails = null;
     });
 
     try {
@@ -210,8 +216,6 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     } on ApiError catch (e) {
       setState(() {
         _error = e.message;
-        _errorCode = e.errorCode;
-        _errorDetails = e.errorDetails;
       });
     } catch (e) {
       setState(() {
@@ -223,7 +227,7 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -234,7 +238,7 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
         final shouldPop = await showDialog<bool>(
           context: context,
           builder:
-              (context) => AlertDialog(
+              (final context) => AlertDialog(
                 title: const Text('Unsaved Changes'),
                 content: const Text(
                   'You have unsaved changes. Are you sure you want to leave?',
@@ -263,7 +267,7 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
             if (_isSaving)
               const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16),
                   child: SizedBox(
                     width: 20,
                     height: 20,
@@ -280,7 +284,7 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
           ],
           bottom: TabBar(
             controller: _tabController,
-            onTap: (index) {
+            onTap: (final index) {
               setState(() => _isPreviewMode = index == 1);
             },
             tabs: const [
@@ -294,195 +298,183 @@ class _GardenNoteEditScreenState extends State<GardenNoteEditScreen>
     );
   }
 
-  Widget _buildBody(ThemeData theme, bool isDark) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_error != null) ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.errorContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          color: theme.colorScheme.error,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _error!,
-                            style: TextStyle(color: theme.colorScheme.error),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (_errorCode != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        'Error Code: $_errorCode',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.error,
+  Widget _buildBody(final ThemeData theme, final bool isDark) => Form(
+    key: _formKey,
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_error != null) ...[
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.errorContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.error_outline, color: theme.colorScheme.error),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _error!,
+                          style: TextStyle(color: theme.colorScheme.error),
                         ),
                       ),
                     ],
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
-            TextFormField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor:
-                    isDark
-                        ? theme.colorScheme.surfaceVariant.withOpacity(0.5)
-                        : theme.colorScheme.surfaceVariant.withOpacity(0.3),
-                prefixIcon: const Icon(Icons.title),
-                suffixIcon: ValueListenableBuilder(
-                  valueListenable: _titleController,
-                  builder: (context, value, child) {
-                    return Text(
-                      '${value.text.length}/100',
-                      style: theme.textTheme.bodySmall,
-                    );
-                  },
-                ),
-              ),
-              maxLength: 100,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a title';
-                }
-                return null;
-              },
             ),
             const SizedBox(height: 16),
-            Expanded(
-              child:
-                  _isPreviewMode
-                      ? Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color:
-                              isDark
-                                  ? theme.colorScheme.surfaceVariant
-                                      .withOpacity(0.5)
-                                  : theme.colorScheme.surfaceVariant
-                                      .withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Markdown(
-                          data: _noteController.text,
-                          selectable: true,
-                          styleSheet: MarkdownStyleSheet(
-                            p: theme.textTheme.bodyLarge,
-                            h1: theme.textTheme.headlineSmall,
-                            h2: theme.textTheme.titleLarge,
-                            h3: theme.textTheme.titleMedium,
-                            h4: theme.textTheme.titleSmall,
-                            blockquote: theme.textTheme.bodyLarge?.copyWith(
-                              fontStyle: FontStyle.italic,
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                            code: theme.textTheme.bodyMedium?.copyWith(
-                              backgroundColor: theme.colorScheme.surfaceVariant,
-                              fontFamily: 'monospace',
-                            ),
-                            listBullet: theme.textTheme.bodyLarge,
-                          ),
-                        ),
-                      )
-                      : Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _noteController,
-                              decoration: InputDecoration(
-                                labelText: 'Note',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+          ],
+          TextFormField(
+            controller: _titleController,
+            decoration: InputDecoration(
+              labelText: 'Title',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              filled: true,
+              fillColor:
+                  isDark
+                      ? theme.colorScheme.surfaceVariant.withOpacity(0.5)
+                      : theme.colorScheme.surfaceVariant.withOpacity(0.3),
+              prefixIcon: const Icon(Icons.title),
+              suffixIcon: ValueListenableBuilder(
+                valueListenable: _titleController,
+                builder: (context, value, child) {
+                  return Text(
+                    '${value.text.length}/100',
+                    style: theme.textTheme.bodySmall,
+                  );
+                },
+              ),
+            ),
+            maxLength: 100,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a title';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child:
+                _isPreviewMode
+                    ? Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color:
+                            isDark
+                                ? theme.colorScheme.surfaceVariant.withOpacity(
+                                  0.5,
+                                )
+                                : theme.colorScheme.surfaceVariant.withOpacity(
+                                  0.3,
                                 ),
-                                filled: true,
-                                fillColor:
-                                    isDark
-                                        ? theme.colorScheme.surfaceVariant
-                                            .withOpacity(0.5)
-                                        : theme.colorScheme.surfaceVariant
-                                            .withOpacity(0.3),
-                                alignLabelWithHint: true,
-                                prefixIcon: const Icon(Icons.note),
-                              ),
-                              maxLines: null,
-                              expands: true,
-                              textAlignVertical: TextAlignVertical.top,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your note';
-                                }
-                                return null;
-                              },
-                            ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Markdown(
+                        data: _noteController.text,
+                        selectable: true,
+                        styleSheet: MarkdownStyleSheet(
+                          p: theme.textTheme.bodyLarge,
+                          h1: theme.textTheme.headlineSmall,
+                          h2: theme.textTheme.titleLarge,
+                          h3: theme.textTheme.titleMedium,
+                          h4: theme.textTheme.titleSmall,
+                          blockquote: theme.textTheme.bodyLarge?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
-                          const SizedBox(height: 8),
-                          ValueListenableBuilder(
-                            valueListenable: _noteController,
-                            builder: (context, value, child) {
-                              return Text(
-                                '${value.text.length} characters',
-                                style: theme.textTheme.bodySmall,
-                                textAlign: TextAlign.end,
-                              );
+                          code: theme.textTheme.bodyMedium?.copyWith(
+                            backgroundColor: theme.colorScheme.surfaceVariant,
+                            fontFamily: 'monospace',
+                          ),
+                          listBullet: theme.textTheme.bodyLarge,
+                        ),
+                      ),
+                    )
+                    : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _noteController,
+                            decoration: InputDecoration(
+                              labelText: 'Note',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              filled: true,
+                              fillColor:
+                                  isDark
+                                      ? theme.colorScheme.surfaceVariant
+                                          .withOpacity(0.5)
+                                      : theme.colorScheme.surfaceVariant
+                                          .withOpacity(0.3),
+                              alignLabelWithHint: true,
+                              prefixIcon: const Icon(Icons.note),
+                            ),
+                            maxLines: null,
+                            expands: true,
+                            textAlignVertical: TextAlignVertical.top,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your note';
+                              }
+                              return null;
                             },
                           ),
-                        ],
-                      ),
-            ),
-            if (_hasUnsavedChanges) ...[
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: theme.colorScheme.onPrimaryContainer,
-                      size: 16,
+                        ),
+                        const SizedBox(height: 8),
+                        ValueListenableBuilder(
+                          valueListenable: _noteController,
+                          builder: (context, value, child) {
+                            return Text(
+                              '${value.text.length} characters',
+                              style: theme.textTheme.bodySmall,
+                              textAlign: TextAlign.end,
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Changes will be saved automatically',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                    ),
-                  ],
-                ),
+          ),
+          if (_hasUnsavedChanges) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(8),
               ),
-            ],
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: theme.colorScheme.onPrimaryContainer,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Changes will be saved automatically',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
-        ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

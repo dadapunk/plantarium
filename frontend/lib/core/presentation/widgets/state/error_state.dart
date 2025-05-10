@@ -1,24 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// A widget that displays an error state.
 ///
 /// This widget provides a consistent error experience across the app.
 class ErrorState extends StatelessWidget {
-  /// The error message to display.
-  final String message;
-
-  /// Optional callback for the retry button.
-  final VoidCallback? onRetry;
-
-  /// Whether to show a retry button.
-  final bool showRetry;
-
-  /// Whether to show a back button.
-  final bool showBackButton;
-
-  /// Optional icon to display above the error message.
-  final IconData? icon;
-
   /// Creates an error state widget.
   const ErrorState({
     Key? key,
@@ -74,48 +60,71 @@ class ErrorState extends StatelessWidget {
     );
   }
 
+  /// The error message to display.
+  final String message;
+
+  /// Optional callback for the retry button.
+  final VoidCallback? onRetry;
+
+  /// Whether to show a retry button.
+  final bool showRetry;
+
+  /// Whether to show a back button.
+  final bool showBackButton;
+
+  /// Optional icon to display above the error message.
+  final IconData? icon;
+
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, size: 64, color: Theme.of(context).colorScheme.error),
-              const SizedBox(height: 16),
-            ],
-            Text(
-              message,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (showBackButton)
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.arrow_back),
-                    label: const Text('Back'),
-                  ),
-                if (showBackButton && showRetry && onRetry != null)
-                  const SizedBox(width: 16),
-                if (showRetry && onRetry != null)
-                  ElevatedButton.icon(
-                    onPressed: onRetry,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('Retry'),
-                  ),
-              ],
-            ),
+  Widget build(final BuildContext context) => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 64, color: Theme.of(context).colorScheme.error),
+            const SizedBox(height: 16),
           ],
-        ),
+          Text(
+            message,
+            style: Theme.of(context).textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (showBackButton)
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Back'),
+                ),
+              if (showBackButton && showRetry && onRetry != null)
+                const SizedBox(width: 16),
+              if (showRetry && onRetry != null)
+                ElevatedButton.icon(
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Retry'),
+                ),
+            ],
+          ),
+        ],
       ),
-    );
+    ),
+  );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('message', message));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onRetry', onRetry));
+    properties.add(DiagnosticsProperty<bool>('showRetry', showRetry));
+    properties.add(DiagnosticsProperty<bool>('showBackButton', showBackButton));
+    properties.add(DiagnosticsProperty<IconData?>('icon', icon));
   }
 }

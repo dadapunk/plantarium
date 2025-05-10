@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class WeatherForecastSection extends StatelessWidget {
-  const WeatherForecastSection({Key? key}) : super(key: key);
+  const WeatherForecastSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
     // Mock data for weather forecast - would come from a weather API in a real app
@@ -41,7 +41,7 @@ class WeatherForecastSection extends StatelessWidget {
       },
     ];
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(8),
@@ -51,7 +51,7 @@ class WeatherForecastSection extends StatelessWidget {
         children: [
           // Section header
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -75,11 +75,11 @@ class WeatherForecastSection extends StatelessWidget {
           // Weather forecast list
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               itemCount:
                   forecastList.length +
                   1, // +1 for the "Detailed Forecast" button
-              itemBuilder: (context, index) {
+              itemBuilder: (final context, final index) {
                 // "Detailed Forecast" button at the end
                 if (index == forecastList.length) {
                   return _buildDetailedForecastButton(theme);
@@ -88,10 +88,10 @@ class WeatherForecastSection extends StatelessWidget {
                 // Weather day item
                 final forecast = forecastList[index];
                 return _buildWeatherDayItem(
-                  day: forecast['day'] as String,
-                  condition: forecast['condition'] as String,
-                  temperature: forecast['temperature'] as int,
-                  icon: forecast['icon'] as IconData,
+                  day: forecast['day']! as String,
+                  condition: forecast['condition']! as String,
+                  temperature: forecast['temperature']! as int,
+                  icon: forecast['icon']! as IconData,
                   theme: theme,
                 );
               },
@@ -103,11 +103,11 @@ class WeatherForecastSection extends StatelessWidget {
   }
 
   Widget _buildWeatherDayItem({
-    required String day,
-    required String condition,
-    required int temperature,
-    required IconData icon,
-    required ThemeData theme,
+    required final String day,
+    required final String condition,
+    required final int temperature,
+    required final IconData icon,
+    required final ThemeData theme,
   }) {
     Color iconColor;
 
@@ -123,7 +123,7 @@ class WeatherForecastSection extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: theme.dividerColor, width: 0.5),
@@ -168,20 +168,18 @@ class WeatherForecastSection extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailedForecastButton(ThemeData theme) {
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: theme.cardColor,
-          foregroundColor: theme.textTheme.bodyLarge?.color,
-          elevation: 0,
-          side: BorderSide(color: theme.dividerColor),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: const Text('Detailed Forecast'),
+  Widget _buildDetailedForecastButton(final ThemeData theme) => Container(
+    margin: const EdgeInsets.only(top: 16),
+    child: ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: theme.cardColor,
+        foregroundColor: theme.textTheme.bodyLarge?.color,
+        elevation: 0,
+        side: BorderSide(color: theme.dividerColor),
+        padding: const EdgeInsets.symmetric(vertical: 16),
       ),
-    );
-  }
+      child: const Text('Detailed Forecast'),
+    ),
+  );
 }

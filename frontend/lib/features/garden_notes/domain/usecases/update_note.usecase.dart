@@ -3,14 +3,14 @@ import 'package:plantarium/features/garden_notes/domain/repositories/garden_note
 
 /// Use case for updating a garden note
 class UpdateNoteUseCase {
-  /// The garden notes repository
-  final GardenNotesRepository repository;
-
   /// Constructor
   const UpdateNoteUseCase(this.repository);
 
+  /// The garden notes repository
+  final GardenNotesRepository repository;
+
   /// Execute the use case to update a note
-  Future<GardenNote> call(GardenNote note) {
+  Future<GardenNote> call(final GardenNote note) {
     if (note.id == null) {
       throw ArgumentError('Cannot update a note without an ID');
     }

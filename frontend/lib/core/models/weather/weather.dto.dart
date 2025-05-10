@@ -4,15 +4,6 @@ part 'weather.dto.g.dart';
 
 @JsonSerializable()
 class WeatherDTO {
-  final int? id;
-  final DateTime timestamp;
-  final double temperature;
-  final double humidity;
-  final double precipitation;
-  final double windSpeed;
-  final String condition;
-  final String? location;
-
   WeatherDTO({
     this.id,
     required this.timestamp,
@@ -26,5 +17,13 @@ class WeatherDTO {
 
   factory WeatherDTO.fromJson(Map<String, dynamic> json) =>
       _$WeatherDTOFromJson(json);
+  final int? id;
+  final DateTime timestamp;
+  final double temperature;
+  final double humidity;
+  final double precipitation;
+  final double windSpeed;
+  final String condition;
+  final String? location;
   Map<String, dynamic> toJson() => _$WeatherDTOToJson(this);
 }

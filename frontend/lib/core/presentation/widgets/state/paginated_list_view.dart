@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:plantarium/core/state/pagination_state.dart';
 import 'package:plantarium/core/presentation/widgets/state/error_state.dart';
@@ -41,7 +42,7 @@ class PaginatedListView<T> extends StatefulWidget {
 
   /// Creates a paginated list view.
   const PaginatedListView({
-    Key? key,
+    super.key,
     required this.state,
     required this.itemBuilder,
     required this.onLoadMore,
@@ -51,10 +52,37 @@ class PaginatedListView<T> extends StatefulWidget {
     this.loadMoreHeight = 80.0,
     this.scrollController,
     this.useSliver = false,
-  }) : super(key: key);
+  });
 
   @override
   State<PaginatedListView<T>> createState() => _PaginatedListViewState<T>();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<PaginationState<T>>('state', state));
+    properties.add(
+      ObjectFlagProperty<
+        Widget Function(BuildContext context, T item, int index)
+      >.has('itemBuilder', itemBuilder),
+    );
+    properties.add(
+      ObjectFlagProperty<VoidCallback>.has('onLoadMore', onLoadMore),
+    );
+    properties.add(
+      ObjectFlagProperty<Future<void> Function()>.has('onRefresh', onRefresh),
+    );
+    properties.add(ObjectFlagProperty<VoidCallback>.has('onRetry', onRetry));
+    properties.add(StringProperty('emptyText', emptyText));
+    properties.add(DoubleProperty('loadMoreHeight', loadMoreHeight));
+    properties.add(
+      DiagnosticsProperty<ScrollController?>(
+        'scrollController',
+        scrollController,
+      ),
+    );
+    properties.add(DiagnosticsProperty<bool>('useSliver', useSliver));
+  }
 }
 
 class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
@@ -87,161 +115,131 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
     }
   }
 
-  Widget _buildBody() {
-    return widget.state.maybeMap(
-      initial: (_) => const Center(child: LoadingState()),
-      loading: (_) => const Center(child: LoadingState()),
-      loadingMore: (loadingMoreState) {
-        return _buildListWithItems(loadingMoreState.items, showLoadMore: true);
-      },
-      success: (successState) {
-        if (successState.items.isEmpty) {
-          return _buildEmptyState();
-        }
-        return _buildListWithItems(successState.items, showLoadMore: false);
-      },
-      error: (errorState) {
-        if (errorState.items?.isNotEmpty ?? false) {
-          return Column(
-            children: [
-              Expanded(
-                child: _buildListWithItems(
-                  errorState.items!,
-                  showLoadMore: false,
-                ),
+  Widget _buildBody() => widget.state.maybeMap(
+    initial: (_) => const Center(child: LoadingState()),
+    loading: (_) => const Center(child: LoadingState()),
+    loadingMore: (loadingMoreState) {
+      return _buildListWithItems(loadingMoreState.items, showLoadMore: true);
+    },
+    success: (successState) {
+      if (successState.items.isEmpty) {
+        return _buildEmptyState();
+      }
+      return _buildListWithItems(successState.items, showLoadMore: false);
+    },
+    error: (errorState) {
+      if (errorState.items?.isNotEmpty ?? false) {
+        return Column(
+          children: [
+            Expanded(
+              child: _buildListWithItems(
+                errorState.items!,
+                showLoadMore: false,
               ),
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                color: Theme.of(
-                  context,
-                ).colorScheme.errorContainer.withOpacity(0.3),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        errorState.message,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              color: Theme.of(
+                context,
+              ).colorScheme.errorContainer.withOpacity(0.3),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      errorState.message,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
                       ),
                     ),
-                    TextButton(
-                      onPressed: widget.onRetry,
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
+                  ),
+                  TextButton(
+                    onPressed: widget.onRetry,
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
-            ],
-          );
-        }
-        return Center(
+            ),
+          ],
+        );
+      }
+      return Center(
+        child: ErrorState(message: errorState.message, onRetry: widget.onRetry),
+      );
+    },
+    orElse: () => const SizedBox(),
+  );
+
+  Widget _buildSliverBody() => widget.state.maybeMap(
+    initial:
+        (_) => const SliverFillRemaining(child: Center(child: LoadingState())),
+    loading:
+        (_) => const SliverFillRemaining(child: Center(child: LoadingState())),
+    loadingMore: (loadingMoreState) {
+      return _buildSliverListWithItems(
+        loadingMoreState.items,
+        showLoadMore: true,
+      );
+    },
+    success: (successState) {
+      if (successState.items.isEmpty) {
+        return SliverFillRemaining(child: _buildEmptyState());
+      }
+      return _buildSliverListWithItems(successState.items, showLoadMore: false);
+    },
+    error: (errorState) {
+      if (errorState.items?.isNotEmpty ?? false) {
+        return SliverList(
+          delegate: SliverChildListDelegate([
+            ...errorState.items!.asMap().entries.map((entry) {
+              return widget.itemBuilder(context, entry.value, entry.key);
+            }).toList(),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              color: Theme.of(
+                context,
+              ).colorScheme.errorContainer.withOpacity(0.3),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      errorState.message,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: widget.onRetry,
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ]),
+        );
+      }
+      return SliverFillRemaining(
+        child: Center(
           child: ErrorState(
             message: errorState.message,
             onRetry: widget.onRetry,
           ),
-        );
-      },
-      orElse: () => const SizedBox(),
-    );
-  }
+        ),
+      );
+    },
+    orElse: () => const SliverFillRemaining(),
+  );
 
-  Widget _buildSliverBody() {
-    return widget.state.maybeMap(
-      initial:
-          (_) =>
-              const SliverFillRemaining(child: Center(child: LoadingState())),
-      loading:
-          (_) =>
-              const SliverFillRemaining(child: Center(child: LoadingState())),
-      loadingMore: (loadingMoreState) {
-        return _buildSliverListWithItems(
-          loadingMoreState.items,
-          showLoadMore: true,
-        );
-      },
-      success: (successState) {
-        if (successState.items.isEmpty) {
-          return SliverFillRemaining(child: _buildEmptyState());
-        }
-        return _buildSliverListWithItems(
-          successState.items,
-          showLoadMore: false,
-        );
-      },
-      error: (errorState) {
-        if (errorState.items?.isNotEmpty ?? false) {
-          return SliverList(
-            delegate: SliverChildListDelegate([
-              ...errorState.items!.asMap().entries.map((entry) {
-                return widget.itemBuilder(context, entry.value, entry.key);
-              }).toList(),
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                color: Theme.of(
-                  context,
-                ).colorScheme.errorContainer.withOpacity(0.3),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        errorState.message,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: widget.onRetry,
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              ),
-            ]),
-          );
-        }
-        return SliverFillRemaining(
-          child: Center(
-            child: ErrorState(
-              message: errorState.message,
-              onRetry: widget.onRetry,
-            ),
-          ),
-        );
-      },
-      orElse: () => const SliverFillRemaining(),
-    );
-  }
-
-  Widget _buildListWithItems(List<T> items, {required bool showLoadMore}) {
-    return RefreshIndicator(
-      onRefresh: widget.onRefresh,
-      child: ListView.builder(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: items.length + (showLoadMore ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == items.length) {
-            return SizedBox(
-              height: widget.loadMoreHeight,
-              child: const Center(
-                child: LoadingState(size: 24, showMessage: false),
-              ),
-            );
-          }
-          return widget.itemBuilder(context, items[index], index);
-        },
-      ),
-    );
-  }
-
-  Widget _buildSliverListWithItems(
-    List<T> items, {
-    required bool showLoadMore,
-  }) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate((context, index) {
+  Widget _buildListWithItems(
+    final List<T> items, {
+    required final bool showLoadMore,
+  }) => RefreshIndicator(
+    onRefresh: widget.onRefresh,
+    child: ListView.builder(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: items.length + (showLoadMore ? 1 : 0),
+      itemBuilder: (context, index) {
         if (index == items.length) {
           return SizedBox(
             height: widget.loadMoreHeight,
@@ -251,35 +249,50 @@ class _PaginatedListViewState<T> extends State<PaginatedListView<T>> {
           );
         }
         return widget.itemBuilder(context, items[index], index);
-      }, childCount: items.length + (showLoadMore ? 1 : 0)),
-    );
-  }
+      },
+    ),
+  );
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.info_outline, size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
-          Text(
-            widget.emptyText,
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
+  Widget _buildSliverListWithItems(
+    final List<T> items, {
+    required final bool showLoadMore,
+  }) => SliverList(
+    delegate: SliverChildBuilderDelegate((context, index) {
+      if (index == items.length) {
+        return SizedBox(
+          height: widget.loadMoreHeight,
+          child: const Center(
+            child: LoadingState(size: 24, showMessage: false),
           ),
-          const SizedBox(height: 16),
-          OutlinedButton.icon(
-            onPressed: widget.onRefresh,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Refresh'),
-          ),
-        ],
-      ),
-    );
-  }
+        );
+      }
+      return widget.itemBuilder(context, items[index], index);
+    }, childCount: items.length + (showLoadMore ? 1 : 0)),
+  );
+
+  Widget _buildEmptyState() => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.info_outline, size: 64, color: Colors.grey),
+        const SizedBox(height: 16),
+        Text(
+          widget.emptyText,
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          onPressed: widget.onRefresh,
+          icon: const Icon(Icons.refresh),
+          label: const Text('Refresh'),
+        ),
+      ],
+    ),
+  );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     if (widget.useSliver) {
       return _buildSliverBody();
     }

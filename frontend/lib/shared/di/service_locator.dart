@@ -35,9 +35,7 @@ Future<void> initializeDependencies() async {
         GardenNoteService(dio: sl<Dio>(), baseUrl: sl<AppConfig>().apiBaseUrl),
   );
 
-  sl.registerLazySingleton<IGardenNoteCacheService>(
-    () => GardenNoteCacheService(),
-  );
+  sl.registerLazySingleton<IGardenNoteCacheService>(GardenNoteCacheService.new);
 
   // Register Riverpod dependencies
   registerRiverpodDependencies(sl);

@@ -14,16 +14,14 @@ abstract class GardenNotesApiClient {
   ///
   /// [dio] The Dio HTTP client to use for making requests.
   /// [baseUrl] The base URL for all API requests.
-  factory GardenNotesApiClient(Dio dio, {String baseUrl}) =
+  factory GardenNotesApiClient(final Dio dio, {final String baseUrl}) =
       _GardenNotesApiClient;
 
   /// Creates a new instance with the specified [dio] client and [baseUrl].
   static GardenNotesApiClient create({
-    required Dio dio,
-    required String baseUrl,
-  }) {
-    return GardenNotesApiClient(dio, baseUrl: baseUrl);
-  }
+    required final Dio dio,
+    required final String baseUrl,
+  }) => GardenNotesApiClient(dio, baseUrl: baseUrl);
 
   /// Gets all garden notes.
   @GET('/garden-notes')
@@ -31,20 +29,22 @@ abstract class GardenNotesApiClient {
 
   /// Gets a single garden note by ID.
   @GET('/garden-notes/{id}')
-  Future<ApiResponse<GardenNoteDTO>> getNoteById(@Path('id') int id);
+  Future<ApiResponse<GardenNoteDTO>> getNoteById(@Path('id') final int id);
 
   /// Creates a new garden note.
   @POST('/garden-notes')
-  Future<ApiResponse<GardenNoteDTO>> createNote(@Body() GardenNoteDTO note);
+  Future<ApiResponse<GardenNoteDTO>> createNote(
+    @Body() final GardenNoteDTO note,
+  );
 
   /// Updates an existing garden note.
   @PUT('/garden-notes/{id}')
   Future<ApiResponse<GardenNoteDTO>> updateNote(
-    @Path('id') int id,
-    @Body() GardenNoteDTO note,
+    @Path('id') final int id,
+    @Body() final GardenNoteDTO note,
   );
 
   /// Deletes a garden note.
   @DELETE('/garden-notes/{id}')
-  Future<ApiResponse<dynamic>> deleteNote(@Path('id') int id);
+  Future<ApiResponse<dynamic>> deleteNote(@Path('id') final int id);
 }

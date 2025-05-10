@@ -1,20 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../task/task.dto.dart';
+import 'package:plantarium/core/models/task/task.dto.dart';
 
 part 'plant.dto.g.dart';
 
 @JsonSerializable()
 class PlantDTO {
-  final int? id;
-  final String name;
-  final String species;
-  final String? variety;
-  final String? description;
-  final DateTime? plantingDate;
-  final DateTime? harvestDate;
-  final String? imageUrl;
-  final List<TaskDTO> tasks;
-
   PlantDTO({
     this.id,
     required this.name,
@@ -29,5 +19,14 @@ class PlantDTO {
 
   factory PlantDTO.fromJson(Map<String, dynamic> json) =>
       _$PlantDTOFromJson(json);
+  final int? id;
+  final String name;
+  final String species;
+  final String? variety;
+  final String? description;
+  final DateTime? plantingDate;
+  final DateTime? harvestDate;
+  final String? imageUrl;
+  final List<TaskDTO> tasks;
   Map<String, dynamic> toJson() => _$PlantDTOToJson(this);
 }

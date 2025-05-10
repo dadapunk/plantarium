@@ -15,12 +15,16 @@ abstract class BaseStateNotifier<T> extends StateNotifier<BaseState<T>> {
   }
 
   /// Sets the state to success with the provided data.
-  void setSuccess(T data) {
+  void setSuccess(final T data) {
     state = BaseState.success(data: data);
   }
 
   /// Sets the state to error with the provided message and optional previous data.
-  void setError(String message, {Object? error, StackTrace? stackTrace}) {
+  void setError(
+    final String message, {
+    final Object? error,
+    final StackTrace? stackTrace,
+  }) {
     state = BaseState.error(
       message: message,
       error: error,
@@ -43,7 +47,7 @@ abstract class BaseStateNotifier<T> extends StateNotifier<BaseState<T>> {
   ///   });
   /// }
   /// ```
-  Future<void> runWithState(Future<T> Function() callback) async {
+  Future<void> runWithState(final Future<T> Function() callback) async {
     try {
       setLoading();
       final result = await callback();

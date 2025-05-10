@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../riverpod_test_utils.dart';
 
 // Example provider to test
-final counterProvider = StateProvider<int>((ref) => 0);
+final counterProvider = StateProvider<int>((final ref) => 0);
 
 void main() {
   group('Riverpod Container Tests', () {
@@ -38,7 +38,7 @@ void main() {
     test('Provider can be overridden', () {
       // Create a container with overrides
       final overriddenContainer = RiverpodTestUtils.createContainer(
-        overrides: [counterProvider.overrideWith((ref) => 10)],
+        overrides: [counterProvider.overrideWith((final ref) => 10)],
       );
 
       // Read the value from the overridden container

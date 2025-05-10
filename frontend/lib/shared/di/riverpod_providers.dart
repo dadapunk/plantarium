@@ -14,7 +14,7 @@ import 'package:plantarium/shared/services/garden_note_service_interface.dart';
 import 'package:plantarium/shared/services/garden_note_cache_service_interface.dart';
 
 /// Register Riverpod dependencies in GetIt
-void registerRiverpodDependencies(GetIt sl) {
+void registerRiverpodDependencies(final GetIt sl) {
   // Data Sources
   sl.registerLazySingleton<GardenNotesApiDatasource>(
     () => RetrofitGardenNotesApiDatasource.create(
@@ -24,7 +24,7 @@ void registerRiverpodDependencies(GetIt sl) {
   );
 
   sl.registerLazySingleton<GardenNotesLocalDatasource>(
-    () => GardenNotesLocalDatasourceImpl(),
+    GardenNotesLocalDatasourceImpl.new,
   );
 
   // Repositories

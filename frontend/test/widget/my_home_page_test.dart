@@ -5,11 +5,8 @@ import '../test_config.dart';
 
 void main() {
   group('MyHomePage Widget Tests', () {
-    testWidgets('Counter increments when button is tapped',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MyHomePage(title: 'Test Home Page'),
-      );
+    testWidgets('Counter increments when button is tapped', (tester) async {
+      await tester.pumpWidget(const MyHomePage(title: 'Test Home Page'));
 
       // Verify initial counter value
       expect(find.text('0'), findsOneWidget);
@@ -24,19 +21,15 @@ void main() {
       expect(find.text('1'), findsOneWidget);
     });
 
-    testWidgets('App bar shows correct title', (WidgetTester tester) async {
+    testWidgets('App bar shows correct title', (tester) async {
       const title = 'Test Title';
-      await tester.pumpWidget(testableWidget(
-        const MyHomePage(title: title),
-      ));
+      await tester.pumpWidget(testableWidget(const MyHomePage(title: title)));
 
       expect(find.text(title), findsOneWidget);
     });
 
-    testWidgets('Counter text is displayed', (WidgetTester tester) async {
-      await tester.pumpWidget(testableWidget(
-        const MyHomePage(title: 'Test'),
-      ));
+    testWidgets('Counter text is displayed', (tester) async {
+      await tester.pumpWidget(testableWidget(const MyHomePage(title: 'Test')));
 
       expect(
         find.text('You have pushed the button this many times:'),

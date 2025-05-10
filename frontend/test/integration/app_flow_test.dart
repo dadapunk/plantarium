@@ -7,7 +7,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('App Flow Test', () {
-    testWidgets('Complete app flow test', (tester) async {
+    testWidgets('Complete app flow test', (final tester) async {
       // Start the app
       await tester.pumpWidget(const MyApp());
       await tester.pumpAndSettle();

@@ -3,14 +3,12 @@ import 'package:plantarium/features/garden_notes/domain/repositories/garden_note
 
 /// Use case for getting all garden notes
 class GetAllNotesUseCase {
-  /// The garden notes repository
-  final GardenNotesRepository repository;
-
   /// Constructor
   const GetAllNotesUseCase(this.repository);
 
+  /// The garden notes repository
+  final GardenNotesRepository repository;
+
   /// Execute the use case to get all notes
-  Future<List<GardenNote>> call() {
-    return repository.getAllNotes();
-  }
+  Future<List<GardenNote>> call() => repository.getAllNotes();
 }

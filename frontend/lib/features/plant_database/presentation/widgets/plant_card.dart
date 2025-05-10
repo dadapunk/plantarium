@@ -1,20 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:plantarium/features/plant_database/data/models/plant.dto.dart';
 
 class PlantCard extends StatelessWidget {
-  final PlantDTO plant;
-  final Function(String) onToggleFavorite;
-  final VoidCallback? onTap;
-
   const PlantCard({
     Key? key,
     required this.plant,
     required this.onToggleFavorite,
     this.onTap,
   }) : super(key: key);
+  final PlantDTO plant;
+  final Function(String) onToggleFavorite;
+  final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
     return Card(
@@ -77,7 +77,7 @@ class PlantCard extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.eco, color: Colors.white, size: 14),
+                        const Icon(Icons.eco, color: Colors.white, size: 14),
                         const SizedBox(width: 4),
                         Text(
                           plant.growthDifficulty,
@@ -127,7 +127,9 @@ class PlantCard extends StatelessWidget {
                     spacing: 6,
                     runSpacing: 6,
                     children:
-                        plant.tags.map((tag) => _buildTag(tag, theme)).toList(),
+                        plant.tags
+                            .map((final tag) => _buildTag(tag, theme))
+                            .toList(),
                   ),
 
                   const SizedBox(height: 8),
@@ -156,19 +158,17 @@ class PlantCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTag(String tag, ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: theme.cardColor.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.dividerColor),
-      ),
-      child: Text(tag, style: theme.textTheme.bodySmall),
-    );
-  }
+  Widget _buildTag(final String tag, final ThemeData theme) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    decoration: BoxDecoration(
+      color: theme.cardColor.withOpacity(0.7),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: theme.dividerColor),
+    ),
+    child: Text(tag, style: theme.textTheme.bodySmall),
+  );
 
-  Color _getDifficultyColor(String difficulty) {
+  Color _getDifficultyColor(final String difficulty) {
     switch (difficulty) {
       case 'Easy':
         return Colors.green;
@@ -179,5 +179,18 @@ class PlantCard extends StatelessWidget {
       default:
         return Colors.blue;
     }
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<PlantDTO>('plant', plant));
+    properties.add(
+      ObjectFlagProperty<Function(String p1)>.has(
+        'onToggleFavorite',
+        onToggleFavorite,
+      ),
+    );
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onTap', onTap));
   }
 }

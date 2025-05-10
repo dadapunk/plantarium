@@ -22,21 +22,18 @@ class PlantingCalendarProvider extends ChangeNotifier {
   String? get error => _error;
 
   // Events for a specific day
-  List<PlantingEvent> getEventsForDay(DateTime day) {
-    return _events
-        .where(
-          (event) =>
-              event.date.year == day.year &&
-              event.date.month == day.month &&
-              event.date.day == day.day,
-        )
-        .toList();
-  }
+  List<PlantingEvent> getEventsForDay(final DateTime day) =>
+      _events
+          .where(
+            (event) =>
+                event.date.year == day.year &&
+                event.date.month == day.month &&
+                event.date.day == day.day,
+          )
+          .toList();
 
   // Check if a day has events
-  bool hasEventsOnDay(DateTime day) {
-    return getEventsForDay(day).isNotEmpty;
-  }
+  bool hasEventsOnDay(final DateTime day) => getEventsForDay(day).isNotEmpty;
 
   // Get filtered events based on selected garden
   List<PlantingEvent> get filteredEvents {
@@ -44,50 +41,50 @@ class PlantingCalendarProvider extends ChangeNotifier {
       return _events;
     } else {
       return _events
-          .where((event) => event.gardenName == _selectedGarden)
+          .where((final event) => event.gardenName == _selectedGarden)
           .toList();
     }
   }
 
   // Set selected month
-  void setSelectedMonth(DateTime month) {
-    _selectedMonth = DateTime(month.year, month.month, 1);
+  void setSelectedMonth(final DateTime month) {
+    _selectedMonth = DateTime(month.year, month.month);
     notifyListeners();
   }
 
   // Move to previous month
   void previousMonth() {
-    _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1, 1);
+    _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
     notifyListeners();
   }
 
   // Move to next month
   void nextMonth() {
-    _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 1);
+    _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
     notifyListeners();
   }
 
   // Set view mode (month or week)
-  void setViewMode(bool isMonthView) {
+  void setViewMode(final bool isMonthView) {
     _isMonthView = isMonthView;
     notifyListeners();
   }
 
   // Set selected garden
-  void setSelectedGarden(String garden) {
+  void setSelectedGarden(final String garden) {
     _selectedGarden = garden;
     notifyListeners();
   }
 
   // Add a new event
-  void addEvent(PlantingEvent event) {
+  void addEvent(final PlantingEvent event) {
     _events.add(event);
     notifyListeners();
   }
 
   // Remove an event
-  void removeEvent(String eventId) {
-    _events.removeWhere((event) => event.id == eventId);
+  void removeEvent(final String eventId) {
+    _events.removeWhere((final event) => event.id == eventId);
     notifyListeners();
   }
 
@@ -186,56 +183,54 @@ class PlantingCalendarProvider extends ChangeNotifier {
   }
 
   // Mock data for planting recommendations
-  List<PlantingRecommendation> _getMockRecommendations() {
-    return [
-      PlantingRecommendation(
-        id: '1',
-        plantName: 'Tomato',
-        plantingTimeRange: 'Mid-May to Early June',
-        sunRequirement: 'Full Sun',
-        waterRequirement: 'Moderate',
-        isIdealTime: true,
-      ),
-      PlantingRecommendation(
-        id: '2',
-        plantName: 'Lettuce',
-        plantingTimeRange: 'Now until mid-June',
-        sunRequirement: 'Partial Shade',
-        waterRequirement: 'Regular',
-        isIdealTime: true,
-      ),
-      PlantingRecommendation(
-        id: '3',
-        plantName: 'Carrot',
-        plantingTimeRange: 'Early May to mid-June',
-        sunRequirement: 'Full Sun',
-        waterRequirement: 'Regular',
-        isIdealTime: true,
-      ),
-      PlantingRecommendation(
-        id: '4',
-        plantName: 'Bell Pepper',
-        plantingTimeRange: 'Late May to mid-June',
-        sunRequirement: 'Full Sun',
-        waterRequirement: 'Moderate',
-        isPossible: true,
-      ),
-      PlantingRecommendation(
-        id: '5',
-        plantName: 'Basil',
-        plantingTimeRange: 'Mid-May to late June',
-        sunRequirement: 'Full Sun',
-        waterRequirement: 'Moderate',
-        isIdealTime: true,
-      ),
-      PlantingRecommendation(
-        id: '6',
-        plantName: 'Cucumber',
-        plantingTimeRange: 'Late May to mid-June',
-        sunRequirement: 'Full Sun',
-        waterRequirement: 'Regular',
-        isPossible: true,
-      ),
-    ];
-  }
+  List<PlantingRecommendation> _getMockRecommendations() => [
+    PlantingRecommendation(
+      id: '1',
+      plantName: 'Tomato',
+      plantingTimeRange: 'Mid-May to Early June',
+      sunRequirement: 'Full Sun',
+      waterRequirement: 'Moderate',
+      isIdealTime: true,
+    ),
+    PlantingRecommendation(
+      id: '2',
+      plantName: 'Lettuce',
+      plantingTimeRange: 'Now until mid-June',
+      sunRequirement: 'Partial Shade',
+      waterRequirement: 'Regular',
+      isIdealTime: true,
+    ),
+    PlantingRecommendation(
+      id: '3',
+      plantName: 'Carrot',
+      plantingTimeRange: 'Early May to mid-June',
+      sunRequirement: 'Full Sun',
+      waterRequirement: 'Regular',
+      isIdealTime: true,
+    ),
+    PlantingRecommendation(
+      id: '4',
+      plantName: 'Bell Pepper',
+      plantingTimeRange: 'Late May to mid-June',
+      sunRequirement: 'Full Sun',
+      waterRequirement: 'Moderate',
+      isPossible: true,
+    ),
+    PlantingRecommendation(
+      id: '5',
+      plantName: 'Basil',
+      plantingTimeRange: 'Mid-May to late June',
+      sunRequirement: 'Full Sun',
+      waterRequirement: 'Moderate',
+      isIdealTime: true,
+    ),
+    PlantingRecommendation(
+      id: '6',
+      plantName: 'Cucumber',
+      plantingTimeRange: 'Late May to mid-June',
+      sunRequirement: 'Full Sun',
+      waterRequirement: 'Regular',
+      isPossible: true,
+    ),
+  ];
 }

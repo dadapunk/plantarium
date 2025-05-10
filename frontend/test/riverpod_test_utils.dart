@@ -18,8 +18,8 @@ class RiverpodTestUtils {
   /// expect(result, isA<MockValue>());
   /// ```
   static ProviderContainer createContainer({
-    List<Override> overrides = const [],
-    ProviderObserver? observer,
+    final List<Override> overrides = const [],
+    final ProviderObserver? observer,
   }) {
     final container = ProviderContainer(
       overrides: overrides,
@@ -33,18 +33,16 @@ class RiverpodTestUtils {
   }
 
   /// Creates a test logger observer that logs provider changes during tests.
-  static ProviderObserver createTestObserver() {
-    return _TestObserver();
-  }
+  static ProviderObserver createTestObserver() => _TestObserver();
 }
 
 /// A test observer that logs all provider changes during tests.
 class _TestObserver implements ProviderObserver {
   @override
   void didAddProvider(
-    ProviderBase<Object?> provider,
-    Object? value,
-    ProviderContainer container,
+    final ProviderBase<Object?> provider,
+    final Object? value,
+    final ProviderContainer container,
   ) {
     print(
       'Provider ${provider.name ?? provider.runtimeType} was initialized with $value',
@@ -53,18 +51,18 @@ class _TestObserver implements ProviderObserver {
 
   @override
   void didDisposeProvider(
-    ProviderBase<Object?> provider,
-    ProviderContainer container,
+    final ProviderBase<Object?> provider,
+    final ProviderContainer container,
   ) {
     print('Provider ${provider.name ?? provider.runtimeType} was disposed');
   }
 
   @override
   void didUpdateProvider(
-    ProviderBase<Object?> provider,
-    Object? previousValue,
-    Object? newValue,
-    ProviderContainer container,
+    final ProviderBase<Object?> provider,
+    final Object? previousValue,
+    final Object? newValue,
+    final ProviderContainer container,
   ) {
     print(
       'Provider ${provider.name ?? provider.runtimeType} updated from $previousValue to $newValue',
@@ -73,10 +71,10 @@ class _TestObserver implements ProviderObserver {
 
   @override
   void providerDidFail(
-    ProviderBase<Object?> provider,
-    Object error,
-    StackTrace stackTrace,
-    ProviderContainer container,
+    final ProviderBase<Object?> provider,
+    final Object error,
+    final StackTrace stackTrace,
+    final ProviderContainer container,
   ) {
     print(
       'Provider ${provider.name ?? provider.runtimeType} failed with error: $error',

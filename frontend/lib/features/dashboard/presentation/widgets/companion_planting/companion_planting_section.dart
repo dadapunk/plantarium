@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CompanionPlantingSection extends StatefulWidget {
-  const CompanionPlantingSection({Key? key}) : super(key: key);
+  const CompanionPlantingSection({super.key});
 
   @override
   State<CompanionPlantingSection> createState() =>
@@ -87,16 +88,16 @@ class _CompanionPlantingSectionState extends State<CompanionPlantingSection> {
   List<String> get plantNames => _companionData.keys.toList();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -129,13 +130,15 @@ class _CompanionPlantingSectionState extends State<CompanionPlantingSection> {
                   isExpanded: true,
                   icon: const Icon(Icons.keyboard_arrow_down),
                   items:
-                      plantNames.map((String plant) {
-                        return DropdownMenuItem<String>(
-                          value: plant,
-                          child: Text(plant),
-                        );
-                      }).toList(),
-                  onChanged: (String? newValue) {
+                      plantNames
+                          .map(
+                            (plant) => DropdownMenuItem<String>(
+                              value: plant,
+                              child: Text(plant),
+                            ),
+                          )
+                          .toList(),
+                  onChanged: (newValue) {
                     if (newValue != null) {
                       setState(() {
                         _selectedPlant = newValue;
@@ -151,7 +154,7 @@ class _CompanionPlantingSectionState extends State<CompanionPlantingSection> {
             Expanded(
               child: ListView.builder(
                 itemCount: _companionData[_selectedPlant]?.length ?? 0,
-                itemBuilder: (context, index) {
+                itemBuilder: (final context, final index) {
                   final companionInfo = _companionData[_selectedPlant]![index];
                   return _buildCompanionItem(companionInfo, theme);
                 },
@@ -163,46 +166,49 @@ class _CompanionPlantingSectionState extends State<CompanionPlantingSection> {
     );
   }
 
-  Widget _buildCompanionItem(Map<String, dynamic> info, ThemeData theme) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.cardColor.withOpacity(0.5),
-        border: Border.all(color: theme.dividerColor.withOpacity(0.3)),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            info['icon'] as IconData,
-            color: info['color'] as Color,
-            size: 20,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  info['plant'] as String,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+  Widget _buildCompanionItem(
+    final Map<String, dynamic> info,
+    final ThemeData theme,
+  ) => Container(
+    margin: const EdgeInsets.only(bottom: 12),
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: theme.cardColor.withOpacity(0.5),
+      border: Border.all(color: theme.dividerColor.withOpacity(0.3)),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(info['icon'] as IconData, color: info['color'] as Color, size: 20),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                info['plant'] as String,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w500,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  '${info['relationship'] as String}: ${info['benefit'] as String}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
-                  ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${info['relationship'] as String}: ${info['benefit'] as String}',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.8),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IterableProperty<String>('plantNames', plantNames));
   }
 }

@@ -4,25 +4,24 @@ import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dar
 import 'package:plantarium/shared/services/garden_note_service_interface.dart';
 
 class GardenNoteService implements IGardenNoteService {
-  final Dio _dio;
-  final String _baseUrl;
-
   GardenNoteService({required Dio dio, required String baseUrl})
     : _dio = dio,
       _baseUrl = baseUrl;
+  final Dio _dio;
+  final String _baseUrl;
 
   @override
-  void log(String message) {
+  void log(final String message) {
     if (kDebugMode) {
       print('GardenNoteService: $message');
     }
   }
 
   @override
-  Object handleError(Object error, String operation) {
+  Object handleError(final Object error, final String operation) {
     log('Error $operation: $error');
 
-    if (error is DioError) {
+    if (error is DioException) {
       log(
         'DioError details: ${error.response?.statusCode} - ${error.response?.data}',
       );
@@ -47,7 +46,8 @@ class GardenNoteService implements IGardenNoteService {
       final notes =
           (response.data as List)
               .map(
-                (json) => GardenNoteDTO.fromJson(json as Map<String, dynamic>),
+                (final json) =>
+                    GardenNoteDTO.fromJson(json as Map<String, dynamic>),
               )
               .toList();
       log('Successfully fetched ${notes.length} garden notes');
@@ -59,7 +59,7 @@ class GardenNoteService implements IGardenNoteService {
 
   // Get a single garden note by ID
   @override
-  Future<GardenNoteDTO> getNoteById(int id) async {
+  Future<GardenNoteDTO> getNoteById(final int id) async {
     log('Fetching garden note with ID: $id');
     try {
       final response = await _dio.get('$_baseUrl/garden-notes/$id');
@@ -75,7 +75,7 @@ class GardenNoteService implements IGardenNoteService {
 
   // Create a new garden note
   @override
-  Future<GardenNoteDTO> createNote(GardenNoteDTO note) async {
+  Future<GardenNoteDTO> createNote(final GardenNoteDTO note) async {
     log('Creating new garden note with title: "${note.title}"');
     log('Request data: ${note.toJson()}');
 
@@ -102,7 +102,10 @@ class GardenNoteService implements IGardenNoteService {
 
   // Update an existing garden note
   @override
-  Future<GardenNoteDTO> updateNote(int id, GardenNoteDTO note) async {
+  Future<GardenNoteDTO> updateNote(
+    final int id,
+    final GardenNoteDTO note,
+  ) async {
     log('Updating garden note with ID: $id');
     log('Title: "${note.title}", Content length: ${note.note.length} chars');
 
@@ -134,7 +137,7 @@ class GardenNoteService implements IGardenNoteService {
 
   // Delete a garden note
   @override
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteNote(final int id) async {
     log('Deleting garden note with ID: $id');
 
     try {

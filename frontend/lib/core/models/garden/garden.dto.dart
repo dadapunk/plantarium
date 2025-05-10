@@ -7,16 +7,16 @@ part 'garden.dto.g.dart';
 @JsonSerializable()
 class GardenDTO {
   GardenDTO({
-    this.id,
     required this.name,
+    required this.plots,
+    required this.owner,
+    this.id,
     this.description,
     this.location,
     this.imageUrl,
-    required this.plots,
-    required this.owner,
   });
 
-  factory GardenDTO.fromJson(Map<String, dynamic> json) =>
+  factory GardenDTO.fromJson(final Map<String, dynamic> json) =>
       _$GardenDTOFromJson(json);
   final int? id;
   final String name;

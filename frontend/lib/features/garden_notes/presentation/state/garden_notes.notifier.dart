@@ -8,18 +8,6 @@ import 'package:plantarium/features/garden_notes/presentation/state/garden_notes
 
 /// Notifier for garden notes list
 class GardenNotesNotifier extends StateNotifier<GardenNotesState> {
-  /// Get all notes use case
-  final GetAllNotesUseCase _getAllNotesUseCase;
-
-  /// Create note use case
-  final CreateNoteUseCase _createNoteUseCase;
-
-  /// Update note use case
-  final UpdateNoteUseCase _updateNoteUseCase;
-
-  /// Delete note use case
-  final DeleteNoteUseCase _deleteNoteUseCase;
-
   /// Constructor
   GardenNotesNotifier({
     required GetAllNotesUseCase getAllNotesUseCase,
@@ -31,6 +19,18 @@ class GardenNotesNotifier extends StateNotifier<GardenNotesState> {
        _updateNoteUseCase = updateNoteUseCase,
        _deleteNoteUseCase = deleteNoteUseCase,
        super(const GardenNotesState.initial());
+
+  /// Get all notes use case
+  final GetAllNotesUseCase _getAllNotesUseCase;
+
+  /// Create note use case
+  final CreateNoteUseCase _createNoteUseCase;
+
+  /// Update note use case
+  final UpdateNoteUseCase _updateNoteUseCase;
+
+  /// Delete note use case
+  final DeleteNoteUseCase _deleteNoteUseCase;
 
   /// Load all garden notes
   Future<void> loadNotes() async {
@@ -45,13 +45,13 @@ class GardenNotesNotifier extends StateNotifier<GardenNotesState> {
   }
 
   /// Create a garden note
-  Future<void> createNote(GardenNote note) async {
+  Future<void> createNote(final GardenNote note) async {
     try {
       final createdNote = await _createNoteUseCase(note);
 
       // Update the list of notes if we have them already
       state.maybeMap(
-        success: (success) {
+        success: (final success) {
           state = GardenNotesState.success(
             notes: [...success.notes, createdNote],
           );
@@ -67,16 +67,16 @@ class GardenNotesNotifier extends StateNotifier<GardenNotesState> {
   }
 
   /// Update a garden note
-  Future<void> updateNote(GardenNote note) async {
+  Future<void> updateNote(final GardenNote note) async {
     try {
       final updatedNote = await _updateNoteUseCase(note);
 
       // Update the note in the list
       state.maybeMap(
-        success: (success) {
+        success: (final success) {
           final updatedNotes =
               success.notes
-                  .map((n) => n.id == updatedNote.id ? updatedNote : n)
+                  .map((final n) => n.id == updatedNote.id ? updatedNote : n)
                   .toList();
 
           state = GardenNotesState.success(notes: updatedNotes);
@@ -92,15 +92,15 @@ class GardenNotesNotifier extends StateNotifier<GardenNotesState> {
   }
 
   /// Delete a garden note
-  Future<void> deleteNote(int id) async {
+  Future<void> deleteNote(final int id) async {
     try {
       await _deleteNoteUseCase(id);
 
       // Remove the note from the list
       state.maybeMap(
-        success: (success) {
+        success: (final success) {
           final updatedNotes =
-              success.notes.where((note) => note.id != id).toList();
+              success.notes.where((final note) => note.id != id).toList();
           state = GardenNotesState.success(notes: updatedNotes);
         },
         orElse: () {

@@ -10,13 +10,6 @@ import 'package:crypto/crypto.dart';
 /// This interceptor supports time-based cache expiration, request-specific cache
 /// settings, and cache invalidation strategies.
 class CacheInterceptor extends Interceptor {
-  final SharedPreferences _prefs;
-  final Duration _defaultMaxAge;
-  final bool _debug;
-
-  static const String _cacheKeyPrefix = 'api_cache_';
-  static const String _cacheTimeKeyPrefix = 'api_cache_time_';
-
   /// Creates a new cache interceptor.
   ///
   /// [prefs] is the SharedPreferences instance to use for cache storage.
@@ -29,11 +22,17 @@ class CacheInterceptor extends Interceptor {
   }) : _prefs = prefs,
        _defaultMaxAge = defaultMaxAge,
        _debug = debug;
+  final SharedPreferences _prefs;
+  final Duration _defaultMaxAge;
+  final bool _debug;
+
+  static const String _cacheKeyPrefix = 'api_cache_';
+  static const String _cacheTimeKeyPrefix = 'api_cache_time_';
 
   /// Factory constructor to create a new instance with a new SharedPreferences.
   static Future<CacheInterceptor> create({
-    Duration defaultMaxAge = const Duration(minutes: 30),
-    bool debug = false,
+    final Duration defaultMaxAge = const Duration(minutes: 30),
+    final bool debug = false,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     return CacheInterceptor(
@@ -44,9 +43,9 @@ class CacheInterceptor extends Interceptor {
   }
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
+  Future<void> onRequest(
+    final RequestOptions options,
+    final RequestInterceptorHandler handler,
   ) async {
     // Skip cache for non-GET requests
     if (options.method != 'GET') {
@@ -79,7 +78,10 @@ class CacheInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) async {
+  Future<void> onResponse(
+    final Response response,
+    final ResponseInterceptorHandler handler,
+  ) async {
     // Skip caching non-GET requests or if the response is an error
     if (response.requestOptions.method != 'GET' ||
         response.statusCode == null ||
@@ -119,7 +121,7 @@ class CacheInterceptor extends Interceptor {
         _prefs
             .getKeys()
             .where(
-              (key) =>
+              (final key) =>
                   key.startsWith(_cacheKeyPrefix) ||
                   key.startsWith(_cacheTimeKeyPrefix),
             )
@@ -131,7 +133,7 @@ class CacheInterceptor extends Interceptor {
   }
 
   /// Invalidates cache for a specific request.
-  Future<void> invalidateCache(RequestOptions options) async {
+  Future<void> invalidateCache(final RequestOptions options) async {
     final cacheKey = _generateCacheKey(options);
     _logDebug('Invalidating cache for ${options.path} (key: $cacheKey)');
 
@@ -140,14 +142,15 @@ class CacheInterceptor extends Interceptor {
   }
 
   /// Invalidates cache for requests matching a pattern.
-  Future<void> invalidateCachePattern(String pattern) async {
+  Future<void> invalidateCachePattern(final String pattern) async {
     _logDebug('Invalidating cache matching pattern: $pattern');
 
     final keys =
         _prefs
             .getKeys()
             .where(
-              (key) => key.startsWith(_cacheKeyPrefix) && key.contains(pattern),
+              (final key) =>
+                  key.startsWith(_cacheKeyPrefix) && key.contains(pattern),
             )
             .toList();
 
@@ -159,7 +162,7 @@ class CacheInterceptor extends Interceptor {
   }
 
   /// Checks if the response is too large to cache.
-  bool _isResponseTooLarge(Response response) {
+  bool _isResponseTooLarge(final Response response) {
     // Skip caching large responses (> 5MB)
     const maxCacheSize = 5 * 1024 * 1024; // 5MB in bytes
 
@@ -173,9 +176,9 @@ class CacheInterceptor extends Interceptor {
   }
 
   /// Generates a cache key for a request.
-  String _generateCacheKey(RequestOptions options) {
+  String _generateCacheKey(final RequestOptions options) {
     final keyData =
-        '${options.method}:${options.uri.toString()}:${jsonEncode(options.queryParameters)}:${jsonEncode(options.headers.map((k, v) => MapEntry(k.toLowerCase(), v)))}';
+        '${options.method}:${options.uri.toString()}:${jsonEncode(options.queryParameters)}:${jsonEncode(options.headers.map((final k, final v) => MapEntry(k.toLowerCase(), v)))}';
 
     // Use MD5 hash to create a fixed-length key
     return md5.convert(utf8.encode(keyData)).toString();
@@ -183,8 +186,8 @@ class CacheInterceptor extends Interceptor {
 
   /// Gets a cached response for a request.
   Response<dynamic>? _getCachedResponse(
-    String cacheKey,
-    RequestOptions options,
+    final String cacheKey,
+    final RequestOptions options,
   ) {
     try {
       // Check if we have a cached response
@@ -221,7 +224,8 @@ class CacheInterceptor extends Interceptor {
         headers: Headers.fromMap(
           Map<String, List<String>>.from(
             (cacheData['headers'] as Map).map(
-              (k, v) => MapEntry(k as String, (v as List).cast<String>()),
+              (final k, final v) =>
+                  MapEntry(k as String, (v as List).cast<String>()),
             ),
           ),
         ),
@@ -237,7 +241,10 @@ class CacheInterceptor extends Interceptor {
   }
 
   /// Caches a response.
-  Future<void> _cacheResponse(String cacheKey, Response response) async {
+  Future<void> _cacheResponse(
+    final String cacheKey,
+    final Response response,
+  ) async {
     try {
       // Prepare the cache data
       final cacheData = {
@@ -263,7 +270,7 @@ class CacheInterceptor extends Interceptor {
   }
 
   /// Logs a debug message if debug is enabled.
-  void _logDebug(String message) {
+  void _logDebug(final String message) {
     if (_debug && kDebugMode) {
       print('CacheInterceptor: $message');
     }

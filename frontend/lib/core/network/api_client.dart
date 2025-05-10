@@ -11,9 +11,9 @@ abstract class ApiClient {
   /// [queryParameters] are optional query parameters to include in the request
   /// [options] are additional Dio request options
   Future<Response<T>> get<T>(
-    String endpoint, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   });
 
   /// Performs a POST request to the specified endpoint
@@ -23,10 +23,10 @@ abstract class ApiClient {
   /// [queryParameters] are optional query parameters to include in the request
   /// [options] are additional Dio request options
   Future<Response<T>> post<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   });
 
   /// Performs a PUT request to the specified endpoint
@@ -36,10 +36,10 @@ abstract class ApiClient {
   /// [queryParameters] are optional query parameters to include in the request
   /// [options] are additional Dio request options
   Future<Response<T>> put<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   });
 
   /// Performs a DELETE request to the specified endpoint
@@ -49,10 +49,10 @@ abstract class ApiClient {
   /// [queryParameters] are optional query parameters to include in the request
   /// [options] are additional Dio request options
   Future<Response<T>> delete<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   });
 
   /// Performs a PATCH request to the specified endpoint
@@ -62,18 +62,15 @@ abstract class ApiClient {
   /// [queryParameters] are optional query parameters to include in the request
   /// [options] are additional Dio request options
   Future<Response<T>> patch<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
   });
 }
 
 /// Default implementation of the ApiClient interface using Dio
 class DioApiClient implements ApiClient {
-  final Dio _dio;
-  final String _baseUrl;
-
   /// Creates a new instance of the API client
   ///
   /// [dio] is the Dio instance to use for HTTP requests
@@ -81,77 +78,69 @@ class DioApiClient implements ApiClient {
   DioApiClient({required Dio dio, required String baseUrl})
     : _dio = dio,
       _baseUrl = baseUrl;
+  final Dio _dio;
+  final String _baseUrl;
 
   @override
   Future<Response<T>> get<T>(
-    String endpoint, {
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) {
-    return _dio.get<T>(
-      '$_baseUrl/$endpoint',
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
+    final String endpoint, {
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
+  }) => _dio.get<T>(
+    '$_baseUrl/$endpoint',
+    queryParameters: queryParameters,
+    options: options,
+  );
 
   @override
   Future<Response<T>> post<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) {
-    return _dio.post<T>(
-      '$_baseUrl/$endpoint',
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
+  }) => _dio.post<T>(
+    '$_baseUrl/$endpoint',
+    data: data,
+    queryParameters: queryParameters,
+    options: options,
+  );
 
   @override
   Future<Response<T>> put<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) {
-    return _dio.put<T>(
-      '$_baseUrl/$endpoint',
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
+  }) => _dio.put<T>(
+    '$_baseUrl/$endpoint',
+    data: data,
+    queryParameters: queryParameters,
+    options: options,
+  );
 
   @override
   Future<Response<T>> delete<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) {
-    return _dio.delete<T>(
-      '$_baseUrl/$endpoint',
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
+  }) => _dio.delete<T>(
+    '$_baseUrl/$endpoint',
+    data: data,
+    queryParameters: queryParameters,
+    options: options,
+  );
 
   @override
   Future<Response<T>> patch<T>(
-    String endpoint, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    Options? options,
-  }) {
-    return _dio.patch<T>(
-      '$_baseUrl/$endpoint',
-      data: data,
-      queryParameters: queryParameters,
-      options: options,
-    );
-  }
+    final String endpoint, {
+    final dynamic data,
+    final Map<String, dynamic>? queryParameters,
+    final Options? options,
+  }) => _dio.patch<T>(
+    '$_baseUrl/$endpoint',
+    data: data,
+    queryParameters: queryParameters,
+    options: options,
+  );
 }

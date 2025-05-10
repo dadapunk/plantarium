@@ -1,11 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class PlantHealthStatusBar extends StatelessWidget {
-  final String plantName;
-  final double healthPercentage;
-  final String status;
-  final Color statusColor;
-
   const PlantHealthStatusBar({
     Key? key,
     required this.plantName,
@@ -13,9 +9,13 @@ class PlantHealthStatusBar extends StatelessWidget {
     required this.status,
     required this.statusColor,
   }) : super(key: key);
+  final String plantName;
+  final double healthPercentage;
+  final String status;
+  final Color statusColor;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
@@ -95,7 +95,7 @@ class PlantHealthStatusBar extends StatelessWidget {
     );
   }
 
-  Color _getHealthColor(double health) {
+  Color _getHealthColor(final double health) {
     if (health >= 0.7) {
       return Colors.green;
     } else if (health >= 0.4) {
@@ -103,5 +103,14 @@ class PlantHealthStatusBar extends StatelessWidget {
     } else {
       return Colors.red;
     }
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('plantName', plantName));
+    properties.add(DoubleProperty('healthPercentage', healthPercentage));
+    properties.add(StringProperty('status', status));
+    properties.add(ColorProperty('statusColor', statusColor));
   }
 }

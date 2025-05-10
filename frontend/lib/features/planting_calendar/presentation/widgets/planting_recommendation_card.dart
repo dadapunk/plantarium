@@ -1,18 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:plantarium/features/planting_calendar/data/models/planting_recommendation.dart';
 
 class PlantingRecommendationCard extends StatelessWidget {
-  final PlantingRecommendation recommendation;
-  final VoidCallback onAddToCalendar;
-
   const PlantingRecommendationCard({
     Key? key,
     required this.recommendation,
     required this.onAddToCalendar,
   }) : super(key: key);
+  final PlantingRecommendation recommendation;
+  final VoidCallback onAddToCalendar;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
     final statusLabel =
         recommendation.isIdealTime
@@ -78,7 +78,7 @@ class PlantingRecommendationCard extends StatelessWidget {
                 // Sun requirements
                 Row(
                   children: [
-                    Icon(Icons.wb_sunny, size: 18, color: Colors.amber),
+                    const Icon(Icons.wb_sunny, size: 18, color: Colors.amber),
                     const SizedBox(width: 4),
                     Text(
                       recommendation.sunRequirement,
@@ -91,7 +91,7 @@ class PlantingRecommendationCard extends StatelessWidget {
                 // Water requirements
                 Row(
                   children: [
-                    Icon(Icons.water_drop, size: 18, color: Colors.blue),
+                    const Icon(Icons.water_drop, size: 18, color: Colors.blue),
                     const SizedBox(width: 4),
                     Text(
                       recommendation.waterRequirement,
@@ -118,6 +118,20 @@ class PlantingRecommendationCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      DiagnosticsProperty<PlantingRecommendation>(
+        'recommendation',
+        recommendation,
+      ),
+    );
+    properties.add(
+      ObjectFlagProperty<VoidCallback>.has('onAddToCalendar', onAddToCalendar),
     );
   }
 }

@@ -1,12 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AppSidebar extends StatelessWidget {
+  const AppSidebar({Key? key, required this.selectedIndex}) : super(key: key);
   final int selectedIndex;
 
-  const AppSidebar({Key? key, required this.selectedIndex}) : super(key: key);
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
@@ -119,54 +119,52 @@ class AppSidebar extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(ThemeData theme) {
-    return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.3),
-        border: Border(
-          bottom: BorderSide(color: Colors.black.withOpacity(0.2), width: 1),
+  Widget _buildHeader(final ThemeData theme) => Container(
+    height: 60,
+    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    decoration: BoxDecoration(
+      color: Colors.black.withOpacity(0.3),
+      border: Border(
+        bottom: BorderSide(color: Colors.black.withOpacity(0.2), width: 1),
+      ),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Plantarium',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: Colors.green,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Plantarium',
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: Colors.green,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.white54),
-            onPressed: () {},
-            tooltip: 'Collapse sidebar',
-          ),
-        ],
-      ),
-    );
-  }
+        IconButton(
+          icon: const Icon(Icons.close, color: Colors.white54),
+          onPressed: () {},
+          tooltip: 'Collapse sidebar',
+        ),
+      ],
+    ),
+  );
 
   Widget _buildNavItem({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required bool isSelected,
-    required VoidCallback onTap,
-    int? badgeCount,
+    required final BuildContext context,
+    required final IconData icon,
+    required final String title,
+    required final bool isSelected,
+    required final VoidCallback onTap,
+    final int? badgeCount,
   }) {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+      margin: const EdgeInsets.only(top: 2, bottom: 2),
       decoration: BoxDecoration(
         color:
             isSelected
                 ? theme.primaryColor.withOpacity(0.15)
                 : Colors.transparent,
-        borderRadius: BorderRadius.circular(4.0),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: ListTile(
         leading: Icon(
@@ -203,10 +201,16 @@ class AppSidebar extends StatelessWidget {
                 : null,
         onTap: onTap,
         dense: true,
-        visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
+        visualDensity: const VisualDensity(vertical: -2),
         selected: isSelected,
         selectedTileColor: theme.primaryColor.withOpacity(0.15),
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IntProperty('selectedIndex', selectedIndex));
   }
 }

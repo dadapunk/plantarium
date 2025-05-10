@@ -1,8 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 /// A reusable widget for displaying formatted dates
 class DateDisplay extends StatelessWidget {
+  /// Constructor for DateDisplay
+  const DateDisplay({
+    super.key,
+    required this.date,
+    this.customFormat,
+    this.formatType = DateFormatType.standard,
+    this.style,
+    this.useRelative = true,
+  });
+
   /// The date to display
   final DateTime date;
 
@@ -18,18 +30,8 @@ class DateDisplay extends StatelessWidget {
   /// Whether to show relative dates (e.g., "Today", "Yesterday")
   final bool useRelative;
 
-  /// Constructor for DateDisplay
-  const DateDisplay({
-    super.key,
-    required this.date,
-    this.customFormat,
-    this.formatType = DateFormatType.standard,
-    this.style,
-    this.useRelative = true,
-  });
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     final theme = Theme.of(context);
     final actualStyle = style ?? theme.textTheme.bodySmall;
 
@@ -51,7 +53,7 @@ class DateDisplay extends StatelessWidget {
     }
 
     if (customFormat != null) {
-      return DateFormat(customFormat!).format(date);
+      return DateFormat(customFormat).format(date);
     }
 
     switch (formatType) {
@@ -66,6 +68,16 @@ class DateDisplay extends StatelessWidget {
       case DateFormatType.dateTime:
         return DateFormat('dd/MM/yyyy HH:mm').format(date);
     }
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<DateTime>('date', date));
+    properties.add(StringProperty('customFormat', customFormat));
+    properties.add(EnumProperty<DateFormatType>('formatType', formatType));
+    properties.add(DiagnosticsProperty<TextStyle?>('style', style));
+    properties.add(DiagnosticsProperty<bool>('useRelative', useRelative));
   }
 }
 
