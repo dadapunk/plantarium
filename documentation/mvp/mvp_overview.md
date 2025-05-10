@@ -11,7 +11,7 @@ The MVP focuses on the following core features:
 ### Garden Notes
 - Basic creation, viewing, editing, and deletion of garden notes
 - Simple markdown formatting support
-- Basic offline capability for notes
+- Basic local storage using SharedPreferences
 - Minimal UI with essential functionality
 
 ### Core Infrastructure
@@ -19,7 +19,7 @@ The MVP focuses on the following core features:
 - Basic state management with Riverpod
 - Essential error handling
 - Minimal API client implementation
-- Simple local storage for offline functionality
+- Simple local storage with SharedPreferences
 
 ### User Interface
 - Functional garden notes list view
@@ -31,7 +31,8 @@ The MVP focuses on the following core features:
 
 The following features are deliberately excluded from the MVP:
 
-- Advanced offline synchronization
+- Advanced offline synchronization with connectivity tracking
+- Complex SQLite database implementation for offline data
 - Complex UI animations and transitions
 - Comprehensive test coverage
 - CI/CD pipeline

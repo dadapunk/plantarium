@@ -7,15 +7,15 @@ part of 'plot.dto.dart';
 // **************************************************************************
 
 PlotDTO _$PlotDTOFromJson(Map<String, dynamic> json) => PlotDTO(
-      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
-      description: json['description'] as String?,
       width: (json['width'] as num).toDouble(),
       length: (json['length'] as num).toDouble(),
-      imageUrl: json['imageUrl'] as String?,
       plants: (json['plants'] as List<dynamic>)
           .map((e) => PlantDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
+      id: (json['id'] as num?)?.toInt(),
+      description: json['description'] as String?,
+      imageUrl: json['imageUrl'] as String?,
     );
 
 Map<String, dynamic> _$PlotDTOToJson(PlotDTO instance) => <String, dynamic>{

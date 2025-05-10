@@ -1,36 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:plantarium/features/dashboard/presentation/widgets/app_sidebar.dart';
 import 'package:plantarium/features/plant_database/data/models/plant.dto.dart';
-import 'package:plantarium/features/plant_database/presentation/providers/plant_database_provider.dart';
+import 'package:plantarium/features/plant_database/presentation/providers/plant_database.provider.dart';
 import 'package:plantarium/features/plant_database/presentation/widgets/plant_card.dart';
 import 'package:plantarium/shared/widgets/app_widgets.dart';
 
-class PlantDatabaseScreen extends StatelessWidget {
+class PlantDatabaseScreen extends ConsumerWidget {
   const PlantDatabaseScreen({super.key});
 
   @override
-  Widget build(final BuildContext context) {
-    // Get the provider from context and load plants
-    final provider = Provider.of<PlantDatabaseProvider>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Get the provider using Riverpod's ref
+    final plantDatabaseState = ref.watch(plantDatabaseProvider);
+    final plantDatabaseNotifier = ref.read(plantDatabaseProvider.notifier);
 
     // Initialize loading plants
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      provider.loadPlants();
+      if (plantDatabaseState.allPlants.isEmpty &&
+          !plantDatabaseState.isLoading) {
+        plantDatabaseNotifier.loadPlants();
+      }
     });
 
     return const _PlantDatabaseContent();
   }
 }
 
-class _PlantDatabaseContent extends StatefulWidget {
+class _PlantDatabaseContent extends ConsumerStatefulWidget {
   const _PlantDatabaseContent({super.key});
 
   @override
-  State<_PlantDatabaseContent> createState() => _PlantDatabaseContentState();
+  ConsumerState<_PlantDatabaseContent> createState() =>
+      _PlantDatabaseContentState();
 }
 
-class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
+class _PlantDatabaseContentState extends ConsumerState<_PlantDatabaseContent> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -41,7 +46,8 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
 
   @override
   Widget build(final BuildContext context) {
-    final provider = context.watch<PlantDatabaseProvider>();
+    final state = ref.watch(plantDatabaseProvider);
+    final notifier = ref.read(plantDatabaseProvider.notifier);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -58,7 +64,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
                 _buildAppBar(theme),
 
                 // Content area
-                Expanded(child: _buildBody(context, provider, theme)),
+                Expanded(child: _buildBody(context, state, notifier, theme)),
               ],
             ),
           ),
@@ -107,19 +113,20 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
 
   Widget _buildBody(
     final BuildContext context,
-    final PlantDatabaseProvider provider,
+    final plantDatabaseState,
+    final plantDatabaseNotifier,
     final ThemeData theme,
   ) {
-    if (provider.isLoading) {
+    if (plantDatabaseState.isLoading) {
       return AppLoadingIndicators.standard(
         message: 'Loading plant database...',
       );
     }
 
-    if (provider.error != null) {
+    if (plantDatabaseState.hasError) {
       return AppErrorDisplays.standard(
-        errorMessage: provider.error ?? 'Unknown error',
-        onRetry: provider.loadPlants,
+        errorMessage: plantDatabaseState.errorMessage ?? 'Unknown error',
+        onRetry: plantDatabaseNotifier.loadPlants,
       );
     }
 
@@ -128,19 +135,29 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
       child: Column(
         children: [
           // Search and filter row
-          _buildSearchAndFilterRow(context, provider, theme),
+          _buildSearchAndFilterRow(context, plantDatabaseNotifier, theme),
           const SizedBox(height: 16),
 
           // Category tabs
-          _buildCategoryTabs(context, provider, theme),
+          _buildCategoryTabs(
+            context,
+            plantDatabaseState,
+            plantDatabaseNotifier,
+            theme,
+          ),
           const SizedBox(height: 16),
 
           // Plant grid
           Expanded(
             child:
-                provider.plants.isEmpty
+                plantDatabaseState.filteredPlants.isEmpty
                     ? _buildEmptyState(theme)
-                    : _buildPlantGrid(context, provider, theme),
+                    : _buildPlantGrid(
+                      context,
+                      plantDatabaseState,
+                      plantDatabaseNotifier,
+                      theme,
+                    ),
           ),
         ],
       ),
@@ -149,7 +166,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
 
   Widget _buildSearchAndFilterRow(
     final BuildContext context,
-    final PlantDatabaseProvider provider,
+    final plantDatabaseNotifier,
     final ThemeData theme,
   ) => Row(
     children: [
@@ -175,13 +192,13 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
                         icon: const Icon(Icons.clear),
                         onPressed: () {
                           _searchController.clear();
-                          provider.setSearchQuery('');
+                          plantDatabaseNotifier.setSearchQuery('');
                         },
                       )
                       : null,
             ),
             onChanged: (value) {
-              provider.setSearchQuery(value);
+              plantDatabaseNotifier.setSearchQuery(value);
             },
           ),
         ),
@@ -217,7 +234,8 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
 
   Widget _buildCategoryTabs(
     final BuildContext context,
-    final PlantDatabaseProvider provider,
+    final plantDatabaseState,
+    final plantDatabaseNotifier,
     final ThemeData theme,
   ) {
     final categories = [
@@ -234,7 +252,8 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
       child: Row(
         children:
             categories.map((final category) {
-              final isSelected = provider.selectedCategory == category;
+              final isSelected =
+                  plantDatabaseState.selectedCategory == category;
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: ChoiceChip(
@@ -242,7 +261,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
                   selected: isSelected,
                   onSelected: (final selected) {
                     if (selected) {
-                      provider.setSelectedCategory(category);
+                      plantDatabaseNotifier.setSelectedCategory(category);
                     }
                   },
                   backgroundColor: theme.cardColor,
@@ -253,7 +272,7 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
                             ? theme.colorScheme.primary
                             : theme.textTheme.bodyMedium?.color,
                     fontWeight:
-                        isSelected ? FontWeight.w500 : FontWeight.normal,
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
               );
@@ -291,7 +310,8 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
 
   Widget _buildPlantGrid(
     final BuildContext context,
-    final PlantDatabaseProvider provider,
+    final plantDatabaseState,
+    final plantDatabaseNotifier,
     final ThemeData theme,
   ) {
     // Calculate crossAxisCount based on screen width
@@ -305,12 +325,12 @@ class _PlantDatabaseContentState extends State<_PlantDatabaseContent> {
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
       ),
-      itemCount: provider.plants.length,
+      itemCount: plantDatabaseState.filteredPlants.length,
       itemBuilder: (final context, final index) {
-        final plant = provider.plants[index];
+        final plant = plantDatabaseState.filteredPlants[index];
         return PlantCard(
           plant: plant,
-          onToggleFavorite: provider.toggleFavorite,
+          onToggleFavorite: plantDatabaseNotifier.toggleFavorite,
           onTap: () => _viewPlantDetails(context, plant),
         );
       },

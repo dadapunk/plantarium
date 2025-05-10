@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:plantarium/core/config/app_config.dart';
 import 'package:plantarium/core/services/garden_note.service.dart';
 import 'package:plantarium/core/services/garden_note_cache.service.dart';
+import 'package:plantarium/core/services/connectivity_service.dart';
 import 'package:plantarium/shared/services/garden_note_cache_service_interface.dart';
 import 'package:plantarium/shared/services/garden_note_service_interface.dart';
 import 'package:plantarium/shared/di/riverpod_providers.dart';
@@ -36,6 +37,9 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerLazySingleton<IGardenNoteCacheService>(GardenNoteCacheService.new);
+
+  // Register Connectivity Service - kept for future features but not used for garden notes
+  sl.registerLazySingleton<ConnectivityService>(ConnectivityService.new);
 
   // Register Riverpod dependencies
   registerRiverpodDependencies(sl);

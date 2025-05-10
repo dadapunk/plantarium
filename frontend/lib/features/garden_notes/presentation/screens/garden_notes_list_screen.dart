@@ -1,36 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:plantarium/features/garden_notes/data/models/garden_note.dto.dart';
-import 'package:plantarium/features/garden_notes/presentation/providers/garden_notes_provider.dart';
-import 'package:plantarium/features/garden_notes/presentation/screens/garden_note_edit_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:plantarium/features/garden_notes/domain/entities/garden_note.entity.dart';
+import 'package:plantarium/features/garden_notes/presentation/providers/garden_notes.provider.dart';
+import 'package:plantarium/features/garden_notes/presentation/state/garden_notes.state.dart';
 import 'package:plantarium/shared/widgets/app_widgets.dart';
-import 'package:plantarium/shared/di/service_locator.dart';
-import 'package:plantarium/shared/services/garden_note_service_interface.dart';
 import 'package:plantarium/features/dashboard/presentation/widgets/app_sidebar.dart';
 import 'package:intl/intl.dart';
 
-class GardenNotesListScreen extends StatelessWidget {
+class GardenNotesListScreen extends ConsumerWidget {
   const GardenNotesListScreen({super.key});
 
   @override
-  Widget build(final BuildContext context) {
-    // Get the provider from context and load notes
-    final provider = Provider.of<GardenNotesProvider>(context, listen: false);
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    // Get the provider from Riverpod and load notes
+    final notifier = ref.read(gardenNotesProvider.notifier);
+
     // Initialize loading notes
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      provider.loadNotes();
+      notifier.loadNotes();
     });
 
     return const _GardenNotesListContent();
   }
 }
 
-class _GardenNotesListContent extends StatelessWidget {
+class _GardenNotesListContent extends ConsumerWidget {
   const _GardenNotesListContent({super.key});
 
   @override
-  Widget build(final BuildContext context) {
-    final provider = context.watch<GardenNotesProvider>();
+  Widget build(final BuildContext context, final WidgetRef ref) {
+    final state = ref.watch(gardenNotesProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -44,7 +43,7 @@ class _GardenNotesListContent extends StatelessWidget {
             child: Column(
               children: [
                 _buildAppBar(theme),
-                Expanded(child: _buildBody(context, provider, theme)),
+                Expanded(child: _buildBody(context, ref, state, theme)),
               ],
             ),
           ),
@@ -93,21 +92,24 @@ class _GardenNotesListContent extends StatelessWidget {
 
   Widget _buildBody(
     final BuildContext context,
-    final GardenNotesProvider provider,
+    final WidgetRef ref,
+    final GardenNotesState state,
     final ThemeData theme,
   ) {
-    if (provider.isLoading) {
+    if (state.isLoading) {
       return AppLoadingIndicators.standard(
         message: 'Loading your garden notes...',
       );
     }
 
-    if (provider.error != null) {
+    if (state.hasError) {
       return AppErrorDisplays.standard(
-        errorMessage: provider.error ?? 'Unknown error',
-        onRetry: provider.loadNotes,
+        errorMessage: state.errorMessage ?? 'Unknown error',
+        onRetry: () => ref.read(gardenNotesProvider.notifier).loadNotes(),
       );
     }
+
+    final notes = state.notes;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -123,9 +125,9 @@ class _GardenNotesListContent extends StatelessWidget {
           const SizedBox(height: 16),
           Expanded(
             child:
-                provider.notes.isEmpty
+                notes.isEmpty
                     ? _buildEmptyState(context, theme)
-                    : _buildNotesList(context, provider, theme),
+                    : _buildNotesList(context, ref, notes, theme),
           ),
           const SizedBox(height: 16),
           Text(
@@ -135,7 +137,7 @@ class _GardenNotesListContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildNewNoteForm(context, theme),
+          _buildNewNoteForm(context, ref, theme),
         ],
       ),
     );
@@ -171,12 +173,13 @@ class _GardenNotesListContent extends StatelessWidget {
 
   Widget _buildNotesList(
     final BuildContext context,
-    final GardenNotesProvider provider,
+    final WidgetRef ref,
+    final List<GardenNote> notes,
     final ThemeData theme,
   ) => ListView.builder(
-    itemCount: provider.notes.length,
+    itemCount: notes.length,
     itemBuilder: (context, index) {
-      final note = provider.notes[index];
+      final note = notes[index];
       return Card(
         margin: const EdgeInsets.only(bottom: 12),
         color: theme.cardColor,
@@ -204,7 +207,7 @@ class _GardenNotesListContent extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              Text(note.note, style: theme.textTheme.bodyMedium),
+              Text(note.content, style: theme.textTheme.bodyMedium),
             ],
           ),
         ),
@@ -212,14 +215,30 @@ class _GardenNotesListContent extends StatelessWidget {
     },
   );
 
-  Widget _buildNewNoteForm(final BuildContext context, final ThemeData theme) {
+  Widget _buildNewNoteForm(
+    final BuildContext context,
+    final WidgetRef ref,
+    final ThemeData theme,
+  ) {
     // Garden selection
     final gardenTypes = ['Backyard Garden', 'Herb Garden', 'Container Garden'];
     String selectedGarden = gardenTypes[0];
+    final titleController = TextEditingController();
+    final contentController = TextEditingController();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Title input
+        TextField(
+          controller: titleController,
+          decoration: InputDecoration(
+            hintText: 'Note title',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+        const SizedBox(height: 16),
+
         // Note input area
         Container(
           height: 120,
@@ -230,6 +249,7 @@ class _GardenNotesListContent extends StatelessWidget {
             border: Border.all(color: theme.dividerColor),
           ),
           child: TextField(
+            controller: contentController,
             decoration: InputDecoration(
               hintText: 'Write your garden observations here...',
               hintStyle: TextStyle(
@@ -248,52 +268,61 @@ class _GardenNotesListContent extends StatelessWidget {
           children: [
             // Garden dropdown
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.dividerColor),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: selectedGarden,
-                    isExpanded: true,
-                    icon: const Icon(Icons.keyboard_arrow_down),
-                    items:
-                        gardenTypes
-                            .map(
-                              (garden) => DropdownMenuItem<String>(
-                                value: garden,
-                                child: Text(garden),
-                              ),
-                            )
-                            .toList(),
-                    onChanged: (final newValue) {
-                      // This would be handled in a StatefulWidget
-                      if (newValue != null) {
-                        selectedGarden = newValue;
-                      }
-                    },
+              child: DropdownButtonFormField<String>(
+                value: selectedGarden,
+                decoration: InputDecoration(
+                  labelText: 'Garden',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
+                items:
+                    gardenTypes.map((garden) {
+                      return DropdownMenuItem<String>(
+                        value: garden,
+                        child: Text(garden),
+                      );
+                    }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    selectedGarden = value;
+                  }
+                },
               ),
             ),
             const SizedBox(width: 16),
 
             // Save button
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {
-                // This would save the note in a real implementation
+                if (titleController.text.isNotEmpty &&
+                    contentController.text.isNotEmpty) {
+                  // Create a new garden note
+                  final newNote = GardenNote(
+                    id: null, // ID will be assigned by repository
+                    title: titleController.text,
+                    content: contentController.text,
+                    date: DateTime.now(),
+                  );
+
+                  // Save the note using the provider
+                  ref.read(gardenNotesProvider.notifier).createNote(newNote);
+
+                  // Clear the form
+                  titleController.clear();
+                  contentController.clear();
+                }
               },
+              icon: const Icon(Icons.save),
+              label: const Text('Save Note'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.colorScheme.primary,
-                foregroundColor: Colors.white,
+                foregroundColor: theme.colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
-                  vertical: 12,
+                  vertical: 16,
                 ),
               ),
-              child: const Text('Save Note'),
             ),
           ],
         ),
@@ -301,29 +330,7 @@ class _GardenNotesListContent extends StatelessWidget {
     );
   }
 
-  String _formatDate(final DateTime date) =>
-      DateFormat('MMMM d, yyyy').format(date);
-
-  void _navigateToEditScreen(
-    final BuildContext context,
-    final GardenNoteDTO? note,
-  ) {
-    // Get the provider from the current context
-    final provider = Provider.of<GardenNotesProvider>(context, listen: false);
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (final context) => GardenNoteEditScreen(
-              gardenNoteService: sl<IGardenNoteService>(),
-              note: note,
-            ),
-      ),
-    ).then((final shouldRefresh) {
-      if (shouldRefresh == true) {
-        provider.loadNotes();
-      }
-    });
+  String _formatDate(final DateTime date) {
+    return DateFormat.yMMMd().format(date);
   }
 }

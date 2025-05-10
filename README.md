@@ -17,137 +17,105 @@
 
 ## About
 
-Plantarium is a desktop application designed to help home gardeners and small-scale growers:
+Plantarium is a comprehensive plant management application designed to help gardeners, plant enthusiasts, and permaculture practitioners manage their green spaces effectively. The application provides tools for tracking plants, designing garden layouts, and recording observations.
 
-- Plan garden layouts visually
-- Get personalized planting schedules
-- Receive timely gardening reminders
-- Implement companion planting and crop rotation strategies
+## Key Features (MVP)
 
-Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
+- **Garden Notes**: Create, edit, and manage markdown notes about your garden
+- **Simple Local Storage**: Lightweight caching with SharedPreferences
+- **Markdown Support**: Format your notes with basic markdown
+- **Offline Capability**: Basic access to your notes even when offline
 
-## Features
+## Technical Implementation
 
-### 🌿 Garden Planning
-- Drag-and-drop garden layout designer
-- Visual representation of plants and spacing
-- Multiple garden areas and beds management
+### Architecture
 
-### 📅 Smart Scheduling
-- Location-based planting calendar
-- Automatic task reminders (planting, fertilizing, harvesting)
-- Weather-integrated suggestions (frost alerts)
+Plantarium follows a clean architecture pattern with the following layers:
 
-### 🌱 Plant Management
-- Integrated plant database (Permapeople API)
-- Custom plant entries
-- Companion planting guidance
-- Crop rotation tracking
+- **Presentation**: UI components and state management
+- **Domain**: Business logic and entities
+- **Data**: Data sources, repositories, and DTOs
 
-### 🔔 Notifications
-- Desktop alerts for gardening tasks
-- Rotation warnings
-- Weather alerts
+### Technologies
 
-## Screenshots
+- **Flutter**: Cross-platform UI framework
+- **Riverpod**: State management
+- **Dio**: HTTP client for API requests
+- **SharedPreferences**: Simple local storage solution
+- **Markdown**: Markdown rendering for notes
 
-*(Replace with actual screenshot URLs)*  
-![Layout Designer](https://via.placeholder.com/600x400?text=Garden+Layout+Designer)  
-![Plant Calendar](https://via.placeholder.com/600x400?text=Planting+Calendar)  
-![Plant Database](https://via.placeholder.com/600x400?text=Plant+Database)
-
-## Installation
+## Development Setup
 
 ### Prerequisites
-- Flutter SDK (latest stable version)
-- Dart SDK (comes with Flutter)
-- Git
 
-### Steps
+- Flutter SDK (latest stable version)
+- Dart SDK (latest stable version)
+- IDE (VS Code, Android Studio, or IntelliJ IDEA)
+
+### Getting Started
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/plantarium.git
+   ```
+
+2. Navigate to the project directory:
+   ```bash
    cd plantarium
    ```
 
-2. Install dependencies:
+3. Install dependencies:
    ```bash
    flutter pub get
    ```
 
-3. Configure environment variables (create .env file):
-   ```env
-   PERMAPEOPLE_API_KEY=your_api_key
-   OPENWEATHER_API_KEY=your_api_key
-   ```
-
-4. Run the application:
+4. Run the app:
    ```bash
-   flutter run -d windows  # or macos, linux
+   flutter run
    ```
 
-## Usage
+## Implementation Notes
 
-### Create a Garden
-- Start by defining your garden areas and beds
-- Set your location for climate-specific recommendations
+### Local Storage Strategy
 
-### Add Plants
-- Search the plant database or add custom plants
-- Drag and drop plants onto your garden layout
+For the MVP, we've implemented a simplified local storage approach using SharedPreferences instead of a more complex SQLite solution with connectivity tracking. This decision was made following the YAGNI principle to focus on delivering essential functionality with minimal complexity.
 
-### Plan Your Season
-- View recommended planting dates
-- Set up reminders for garden tasks
+Key aspects of our implementation:
+- SharedPreferences for lightweight data persistence
+- Simple JSON serialization for garden notes
+- Basic caching with minimal error handling
+- Graceful fallback to cached data when network is unavailable
 
-### Maintain Your Garden
-- Track plant growth and rotations
-- Receive notifications for upcoming tasks
+For more details on implementation decisions, see the [Implementation Notes](documentation/mvp/implementation_notes.md).
 
-## Development
+## Project Structure
 
-### Tech Stack
-- Framework: Flutter
-- Database: SQLite
-- APIs: Permapeople (plants), OpenWeather (weather)
-
-### Documentation
-- [Software Specification](software_specification.md) - Detailed technical requirements and specifications
-
-### Scripts
-```bash
-flutter run         # Run development version
-flutter build       # Build application
-flutter test        # Run tests
-flutter analyze     # Run linter
 ```
-
-### Folder Structure
-```
-plantarium/
-├── lib/
-│   ├── main.dart         # Entry point
-│   ├── models/           # Data models
-│   ├── screens/          # UI screens
-│   ├── widgets/          # Reusable widgets
-│   ├── services/         # API & database services
-│   └── utils/            # Helper functions
-├── assets/               # Static assets
-└── test/                 # Tests
+lib/
+├── core/              # Core utilities, services, and configurations
+├── features/          # Feature modules
+│   └── garden_notes/  # Garden notes feature
+│       ├── data/      # Data layer (repositories, models, data sources)
+│       ├── domain/    # Domain layer (entities, use cases)
+│       └── presentation/ # UI layer (screens, widgets, providers)
+└── shared/            # Shared components, widgets, and utilities
 ```
 
 ## Contributing
-We welcome contributions! Please follow these steps:
 
 1. Fork the repository
-2. Create a new branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add some feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-Please ensure your code follows our coding standards and includes appropriate tests.
-
 ## License
+
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Thanks to all contributors who have helped shape this project
+- Special thanks to the Flutter and Dart teams for their amazing frameworks
 
 Happy Gardening! 🌻

@@ -23,9 +23,9 @@ This document outlines the core features implemented in the Plantarium MVP.
 - Edit history tracking
 
 ### Offline Capability
-- Basic caching of notes for offline access
-- Simple persistence of new notes created offline
-- Basic conflict resolution
+- Basic caching of notes using SharedPreferences
+- Simple persistence of garden notes data
+- Focus on essential offline functionality
 
 ## Data Management
 
@@ -60,26 +60,21 @@ This document outlines the core features implemented in the Plantarium MVP.
 ### API Client
 - Basic API interface
 - Simple error handling
-- Minimal logging
+- Minimal logging with print statements
 - Essential endpoints only
 
 ### Local Storage
-- Basic caching functionality
-- Simple data persistence
-- Minimal schema
+- Simple caching using SharedPreferences
+- Basic data persistence
+- Lightweight implementation focused on the MVP needs
+- No complex offline synchronization
 
 ## User Experience
 
 ### Error Handling
 - User-friendly error messages
 - Basic recovery options
-- Offline mode indicator
 - Simple retry mechanisms
-
-### Performance
-- Focus on essential operations
-- Minimal loading times for core functions
-- Basic optimization for critical paths 
 
 ## Related Documents
 

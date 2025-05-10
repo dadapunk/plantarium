@@ -7,15 +7,15 @@ part of 'garden.dto.dart';
 // **************************************************************************
 
 GardenDTO _$GardenDTOFromJson(Map<String, dynamic> json) => GardenDTO(
-      id: (json['id'] as num?)?.toInt(),
       name: json['name'] as String,
-      description: json['description'] as String?,
-      location: json['location'] as String?,
-      imageUrl: json['imageUrl'] as String?,
       plots: (json['plots'] as List<dynamic>)
           .map((e) => PlotDTO.fromJson(e as Map<String, dynamic>))
           .toList(),
       owner: UserDTO.fromJson(json['owner'] as Map<String, dynamic>),
+      id: (json['id'] as num?)?.toInt(),
+      description: json['description'] as String?,
+      location: json['location'] as String?,
+      imageUrl: json['imageUrl'] as String?,
     );
 
 Map<String, dynamic> _$GardenDTOToJson(GardenDTO instance) => <String, dynamic>{

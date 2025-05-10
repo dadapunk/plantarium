@@ -2,14 +2,22 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/api_error.dart';
 import 'logging_interceptor.dart';
+import 'cache_interceptor.dart';
 
 /// Factory for creating and configuring API client interceptors
 class InterceptorFactory {
   /// Creates standard interceptors for the API client
-  static List<Interceptor> createStandardInterceptors({
+  static Future<List<Interceptor>> createStandardInterceptors({
     bool enableLogging = true,
-  }) {
+    bool enableCaching = true,
+  }) async {
     final interceptors = <Interceptor>[];
+
+    // Add cache interceptor if enabled
+    if (enableCaching) {
+      final prefs = await SharedPreferences.getInstance();
+      interceptors.add(CacheInterceptor(prefs: prefs));
+    }
 
     // Add logging interceptor if enabled
     if (enableLogging) {
@@ -20,11 +28,12 @@ class InterceptorFactory {
   }
 
   /// Sets up a Dio instance with standard interceptors
-  static Dio createDioWithStandardInterceptors({
+  static Future<Dio> createDioWithStandardInterceptors({
     required String baseUrl,
     Duration timeout = const Duration(seconds: 30),
     bool enableLogging = true,
-  }) {
+    bool enableCaching = true,
+  }) async {
     final dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
@@ -39,7 +48,10 @@ class InterceptorFactory {
 
     // Add standard interceptors
     dio.interceptors.addAll(
-      createStandardInterceptors(enableLogging: enableLogging),
+      await createStandardInterceptors(
+        enableLogging: enableLogging,
+        enableCaching: enableCaching,
+      ),
     );
 
     return dio;
