@@ -2,6 +2,40 @@
 
 This document outlines the strategic approach to developing the Plantarium application across multiple phases, prioritizing core functionality first and adding more complex features in later phases.
 
+> **Note**: The project has been migrated from Flutter/NestJS to **Rust (Tauri 2.0 + Axum)** for better performance and cross-platform support (desktop + mobile).
+
+## Phase 0: Rust Migration (Current)
+
+### Goals
+- Migrate from Flutter/NestJS to Rust stack
+- Set up Tauri 2.0 for cross-platform desktop/mobile
+- Implement Axum backend with SeaORM
+- Create new documentation
+
+### Key Tasks
+1. **Backend Migration**
+   - Set up Axum API server
+   - Migrate entities to SeaORM
+   - Implement REST endpoints
+   - Integrate external APIs (Permapeople, OpenWeather)
+
+2. **Frontend Migration**
+   - Initialize Tauri 2.0 project
+   - Set up React/Vue frontend
+   - Configure mobile support (iOS/Android)
+   - Implement IPC commands
+
+3. **Documentation**
+   - Create RUST_ARCHITECTURE.md
+   - Create MIGRATION_GUIDE.md
+   - Update specification documents
+
+### Deliverables
+- Rust-based backend API
+- Tauri 2.0 cross-platform app
+- Technical documentation
+- Build system for all platforms
+
 ## Phase 1: Foundation & Core Architecture
 
 ### Goals

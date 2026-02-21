@@ -1,6 +1,6 @@
 # Plantarium 🌱
 
-**A cross-platform desktop application for garden planning and management**
+**A cross-platform desktop & mobile application for garden planning and management**
 
 *(Replace the banner image URL with your actual image)*  
 ![Plantarium Banner](https://via.placeholder.com/1200x400?text=Plantarium+Garden+Planner)
@@ -17,14 +17,16 @@
 
 ## About
 
-Plantarium is a desktop application designed to help home gardeners and small-scale growers:
+Plantarium is a desktop and mobile application designed to help home gardeners and small-scale growers:
 
 - Plan garden layouts visually
 - Get personalized planting schedules
 - Receive timely gardening reminders
 - Implement companion planting and crop rotation strategies
 
-Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
+Built with **Rust + Tauri 2.0**, Plantarium runs on Windows, macOS, Linux, iOS, and Android.
+
+> **Note**: This project has been migrated from Flutter/NestJS to **Rust** for better performance and cross-platform mobile support. See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for details.
 
 ## Features
 
@@ -59,8 +61,8 @@ Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
 ## Installation
 
 ### Prerequisites
-- Flutter SDK (latest stable version)
-- Dart SDK (comes with Flutter)
+- Rust (1.75+)
+- Node.js (for frontend)
 - Git
 
 ### Steps
@@ -70,9 +72,9 @@ Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
    cd plantarium
    ```
 
-2. Install dependencies:
+2. Install Rust:
    ```bash
-   flutter pub get
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
    ```
 
 3. Configure environment variables (create .env file):
@@ -83,7 +85,12 @@ Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
 
 4. Run the application:
    ```bash
-   flutter run -d windows  # or macos, linux
+   # Desktop
+   npm run tauri dev
+
+   # Mobile (requires platform-specific setup)
+   npm run tauri android dev
+   npm run tauri ios dev  # macOS only
    ```
 
 ## Usage
@@ -107,33 +114,42 @@ Built with Flutter and SQLite, Plantarium runs on Windows, macOS, and Linux.
 ## Development
 
 ### Tech Stack
-- Framework: Flutter
-- Database: SQLite
-- APIs: Permapeople (plants), OpenWeather (weather)
+- **Backend**: Rust + Axum + SeaORM + SQLite
+- **Frontend**: Tauri 2.0 + React/Vue/Svelte
+- **APIs**: Permapeople (plants), OpenWeather (weather)
 
 ### Documentation
-- [Software Specification](software_specification.md) - Detailed technical requirements and specifications
+- [Software Specification](software_specification.md) - Detailed technical requirements
+- [Rust Architecture](RUST_ARCHITECTURE.md) - Architecture documentation
+- [Migration Guide](MIGRATION_GUIDE.md) - Migration from Flutter/NestJS
 
 ### Scripts
 ```bash
-flutter run         # Run development version
-flutter build       # Build application
-flutter test        # Run tests
-flutter analyze     # Run linter
+# Backend only
+cd backend && cargo run
+
+# Frontend (Desktop)
+npm run tauri dev
+
+# Build for production
+npm run tauri build
 ```
 
 ### Folder Structure
 ```
 plantarium/
-├── lib/
-│   ├── main.dart         # Entry point
-│   ├── models/           # Data models
-│   ├── screens/          # UI screens
-│   ├── widgets/          # Reusable widgets
-│   ├── services/         # API & database services
-│   └── utils/            # Helper functions
-├── assets/               # Static assets
-└── test/                 # Tests
+├── backend/               # Axum API server
+│   ├── src/
+│   │   ├── entities/     # SeaORM entities
+│   │   ├── handlers/    # HTTP handlers
+│   │   ├── services/    # Business logic
+│   │   └── main.rs
+│   └── Cargo.toml
+├── frontend/              # Tauri application
+│   ├── src/              # Frontend source
+│   ├── src-tauri/        # Rust backend
+│   └── package.json
+└── documentation/        # Project docs
 ```
 
 ## Contributing

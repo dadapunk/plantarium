@@ -72,21 +72,44 @@ Users seeking a digital alternative or supplement to paper-based garden planning
 
 ## 4. Non-Functional Requirements
 
-- **Platform Compatibility**: Must run natively on Windows, macOS, and Linux via Flutter's desktop support.
-- **Performance**: Smooth and responsive UI, especially the Flutter canvas for layout rendering. Asynchronous operations for API calls and background tasks to prevent UI freezes. Efficient data handling.
+- **Platform Compatibility**: Must run natively on Windows, macOS, Linux, iOS, and Android via Tauri 2.0.
+- **Performance**: Smooth and responsive UI. Asynchronous operations for API calls and background tasks. Efficient data handling using Rust's memory safety.
 - **Usability**: High priority on an intuitive, visually clear, and easy-to-navigate interface. Minimal learning curve for the target audience.
 - **Reliability**: Stable operation with minimal crashes. Graceful handling of errors (e.g., network down, API unavailable) with informative messages to the user. Robust data saving.
 - **Data Persistence**: User data (layouts, plant lists, settings, history) must be stored locally and reliably using SQLite. Ensure data integrity and provide backup/restore options if feasible.
 - **Offline Functionality**: Core features (viewing/editing layouts, viewing cached data/schedules) must work without an internet connection. Features requiring live data (weather forecast, new plant searches) should be disabled gracefully when offline.
 - **Security**: Protect user data. Securely store API keys (OpenWeather, Permapeople) – avoid embedding directly in code. Ensure secure connection when accessing external APIs and secure access to the local SQLite database.
+- **Binary Size**: Target <15MB for desktop, <10MB for mobile (compared to 100MB+ for Electron).
 
 ## 5. Technical Specifications
 
-- **Application Framework**: Flutter
-- **UI Rendering**: Flutter's built-in canvas/widget system
-- **External APIs**: Permapeople API (Plants), OpenWeather API (Weather)
-- **Local Data Storage**: SQLite
-- **Code Management**: Git / Version Control System
+### Current Stack (Rust Migration)
+
+| Component | Technology | Version |
+|-----------|------------|---------|
+| **Backend Framework** | Axum | 0.8.x |
+| **ORM** | SeaORM | 0.13.x |
+| **Database** | SQLite | 3.x |
+| **Desktop/Mobile Framework** | Tauri | 2.0 |
+| **HTTP Client** | reqwest | 0.12.x |
+| **Async Runtime** | Tokio | 1.x |
+| **API Documentation** | utoipa | 4.x |
+
+### Previous Stack (Legacy)
+- ~~Flutter~~ → Tauri 2.0
+- ~~NestJS~~ → Axum
+- ~~TypeORM~~ → SeaORM
+- ~~Node.js~~ → Rust
+
+### External APIs
+- Permapeople API (Plant data)
+- OpenWeather API (Weather)
+
+### Local Data Storage
+- SQLite via SeaORM
+
+### Code Management
+- Git / Version Control System
 
 ## 6. UI/UX Considerations
 
@@ -97,7 +120,7 @@ Users seeking a digital alternative or supplement to paper-based garden planning
 
 ## 7. Future Considerations (Potential Roadmap)
 
-- Mobile companion app (read-only or full-featured) - easier to implement with Flutter's cross-platform capabilities.
+- ~~Mobile companion app~~ - Now included via Tauri 2.0!
 - Cloud sync option for multi-device access.
 - Advanced reporting/analytics (e.g., yield tracking per bed/plant).
 - Integration with smart garden sensors.
